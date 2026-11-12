@@ -1,0 +1,432 @@
+---
+/**
+ * Hero visual for each audience page, so the three pages don't open the same way:
+ * Personas shows Vertika's own products, Empresas an operations dashboard, Salud the patient
+ * portal with role access. Everything except the real product screenshots is illustrative.
+ */
+import Icon from './Icon.astro';
+import type { AudienceId } from '../data/site';
+interface Props {
+  id: AudienceId;
+}
+const { id } = Astro.props;
+---
+<div class:list={['pv', `pv--${id}`]} aria-hidden="true">
+  {id === 'personas' && (
+    <>
+      <figure class="pv__win pv__win--back">
+        <span class="pv__bar"><i></i><i></i><i></i><span>vericerbiz.com</span></span>
+        <img src="/fotos/prod-vericerbiz.webp" alt="" width="1440" height="900" loading="eager" decoding="async" />
+      </figure>
+      <figure class="pv__win pv__win--front">
+        <span class="pv__bar"><i></i><i></i><i></i><span>pillket.com</span></span>
+        <img src="/fotos/prod-pillket.webp" alt="" width="1440" height="900" loading="eager" decoding="async" />
+      </figure>
+      <span class="pv__chip pv__chip--a"><span class="pv__ok"><Icon name="check" /></span><span><b>QR validado</b><small>Pillket · en puerta</small></span></span>
+      <span class="pv__chip pv__chip--b"><span class="pv__ok pv__ok--blue"><Icon name="shield" /></span><span><b>Negocio verificado</b><small>VeriCerBiz</small></span></span>
+      <span class="pv__stamp">Productos propios · en línea</span>
+    </>
+  )}
+  {id === 'empresas' && (
+    <>
+      <figure class="pv__win pv__dash">
+        <span class="pv__bar"><i></i><i></i><i></i><span>sistema.tuempresa.pe</span></span>
+        <div class="pv__app">
+          <div class="pv__side"><b>Panel</b><span class="on">Inventario</span><span>Pedidos</span><span>CRM</span><span>Reportes</span></div>
+          <div class="pv__main">
+            <div class="pv__kpis"><span><small>Pedidos hoy</small><b>128</b></span><span><small>Por reponer</small><b>7</b></span><span><small>Facturas</small><b>96</b></span></div>
+            <div class="pv__bars">{[40, 56, 48, 72, 64, 86, 78].map((h, k) => <i style={`--h:${h}%;--k:${k}`}></i>)}</div>
+            <div class="pv__rows"><p><span>Caja A-12</span><em class="ok">ok</em></p><p><span>Caja B-07</span><em>reponer</em></p></div>
+          </div>
+        </div>
+      </figure>
+      <span class="pv__chip pv__chip--a"><span class="pv__ok"><Icon name="chat" /></span><span><b>WhatsApp enviado</b><small>pedido #1042 en camino</small></span></span>
+      <span class="pv__chip pv__chip--b"><span class="pv__ok pv__ok--blue"><Icon name="refresh" /></span><span><b>Flujo n8n</b><small>boleta emitida</small></span></span>
+      <span class="pv__stamp">Ejemplo ilustrativo</span>
+    </>
+  )}
+  {id === 'salud' && (
+    <>
+      <div class="pv__phone">
+        <span class="pv__notch"></span>
+        <p class="pv__ptitle">Clínica Santa Rosa</p>
+        <p class="pv__psub">Hola, María</p>
+        <p class="pv__prow on"><span><b>Próxima cita</b><small>Jue 14 · 10:30 · Dra. Ríos</small></span><Icon name="calendar" /></p>
+        <p class="pv__prow"><span><b>Resultados</b><small>Hemograma · nuevo</small></span><em>PDF</em></p>
+        <p class="pv__prow"><span><b>Indicaciones</b><small>Actualizadas hoy</small></span><em>Ver</em></p>
+        <p class="pv__lock"><Icon name="lock" /> Datos cifrados</p>
+      </div>
+      <div class="pv__roles hoja">
+        <p class="pv__rtitle">Quién ve la historia clínica</p>
+        {[['Médico tratante', true], ['Recepción', false], ['Caja', false]].map(([r, ok]) => (
+          <p class="pv__role"><span>{r}</span><em class:list={{ ok }}>{ok ? 'acceso' : 'sin acceso'}</em></p>
+        ))}
+      </div>
+      <span class="pv__chip pv__chip--b"><span class="pv__ok"><Icon name="eye" /></span><span><b>Registro de actividad</b><small>consulta · 10:42</small></span></span>
+      <span class="pv__stamp">Ejemplo ilustrativo</span>
+    </>
+  )}
+</div>
+
+<style>
+  .pv {
+    position: relative;
+    min-height: 25rem;
+  }
+  .pv__win {
+    position: absolute;
+    margin: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 30px 60px -30px rgba(11, 27, 77, 0.55), 0 0 0 1px rgba(11, 27, 77, 0.08);
+  }
+  .pv__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 0.7rem;
+    background: #f1f3f8;
+    border-bottom: 1px solid var(--linea-2);
+  }
+  .pv__bar i {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #d4d9e6;
+  }
+  .pv__bar span {
+    flex: 1;
+    margin-left: 0.5rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--tinta-2);
+  }
+  .pv__win img {
+    width: 100%;
+    height: auto;
+  }
+  .pv__win--back {
+    top: 0;
+    right: 0;
+    width: 82%;
+    transform: rotate(2.5deg);
+  }
+  .pv__win--front {
+    top: 7.5rem;
+    left: 0;
+    width: 78%;
+    transform: rotate(-2deg);
+    animation: pv-rise 0.9s var(--ease-out) both 0.1s;
+  }
+  @keyframes pv-rise {
+    from { opacity: 0.001; transform: translateY(16px) rotate(-2deg); }
+  }
+  .pv__chip {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.85rem 0.55rem 0.55rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 16px 34px -16px rgba(11, 27, 77, 0.55);
+    font-size: 0.82rem;
+    animation: pv-chip 0.7s var(--ease-out) both;
+  }
+  .pv__chip b {
+    display: block;
+    line-height: 1.2;
+  }
+  .pv__chip small {
+    color: var(--tinta-2);
+  }
+  .pv__chip--a {
+    right: -0.5rem;
+    bottom: 2.5rem;
+    animation-delay: 0.45s;
+  }
+  .pv__chip--b {
+    left: -1rem;
+    top: 1.5rem;
+    animation-delay: 0.7s;
+  }
+  @keyframes pv-chip {
+    from { opacity: 0.001; transform: translateY(10px) scale(0.96); }
+  }
+  .pv__ok {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    flex: none;
+    border-radius: 8px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .pv__ok--blue {
+    background: var(--azul-suave);
+    color: var(--azul);
+  }
+  .pv :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .pv__stamp {
+    position: absolute;
+    right: 0.25rem;
+    bottom: -1.75rem;
+    color: var(--azul);
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transform: rotate(-3deg) skewX(-9deg);
+  }
+
+  /* Empresas */
+  .pv__dash {
+    position: relative;
+    top: 1.5rem;
+    width: 100%;
+  }
+  .pv__app {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    font-size: 0.75rem;
+  }
+  .pv__side {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 0.9rem 0.8rem;
+    background: var(--noche);
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .pv__side b {
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+  .pv__side .on {
+    margin-inline: -0.4rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    background: var(--azul);
+    color: #fff;
+  }
+  .pv__main {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0.9rem;
+  }
+  .pv__kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  .pv__kpis span {
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: var(--papel);
+  }
+  .pv__kpis small {
+    display: block;
+    color: var(--tinta-2);
+  }
+  .pv__kpis b {
+    font-family: var(--display);
+    font-size: 1.2rem;
+  }
+  .pv__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.35rem;
+    height: 6rem;
+  }
+  .pv__bars i {
+    flex: 1;
+    height: var(--h);
+    border-radius: 3px 3px 0 0;
+    background: var(--azul);
+    transform-origin: bottom;
+    animation: pv-bar 0.8s var(--ease-out) both;
+    animation-delay: calc(var(--k) * 70ms + 0.2s);
+  }
+  .pv__bars i:last-child {
+    background: var(--turquesa);
+  }
+  @keyframes pv-bar {
+    from { transform: scaleY(0.1); }
+  }
+  .pv__rows p {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-top: 1px solid var(--linea-2);
+    font-family: var(--mono);
+  }
+  .pv__rows em {
+    font-style: normal;
+    color: var(--azul);
+  }
+  .pv__rows em.ok {
+    color: var(--turquesa-tinta);
+  }
+  .pv--empresas .pv__chip--b {
+    top: -0.5rem;
+    left: auto;
+    right: 1rem;
+  }
+  .pv--empresas .pv__chip--a {
+    left: -1.25rem;
+    right: auto;
+    bottom: -0.5rem;
+  }
+
+  /* Salud */
+  .pv__phone {
+    position: absolute;
+    left: 8%;
+    top: 0;
+    width: 15rem;
+    padding: 0.8rem 0.8rem 1rem;
+    border: 6px solid var(--noche);
+    border-radius: 28px;
+    background: #fff;
+    box-shadow: 0 30px 60px -28px rgba(11, 27, 77, 0.65);
+    font-size: 0.78rem;
+  }
+  .pv__notch {
+    display: block;
+    width: 4rem;
+    height: 0.45rem;
+    margin: 0 auto 0.8rem;
+    border-radius: 999px;
+    background: var(--noche);
+  }
+  .pv__ptitle {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .pv__psub {
+    margin-bottom: 0.6rem;
+    color: var(--tinta-2);
+  }
+  .pv__prow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 10px;
+    background: var(--papel);
+  }
+  .pv__prow b {
+    display: block;
+  }
+  .pv__prow small {
+    color: var(--tinta-2);
+  }
+  .pv__prow.on {
+    background: var(--azul);
+    color: #fff;
+  }
+  .pv__prow.on small {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .pv__prow em {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--turquesa-tinta);
+  }
+  .pv__lock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.8rem;
+    color: var(--turquesa-tinta);
+  }
+  .pv__roles {
+    position: absolute;
+    right: 0;
+    bottom: 1.5rem;
+    width: 15rem;
+    padding: 1rem;
+    border-radius: 14px;
+    font-size: 0.82rem;
+    animation: pv-chip 0.7s var(--ease-out) both 0.4s;
+  }
+  .pv__rtitle {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  .pv__role {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-top: 1px solid var(--linea-2);
+  }
+  .pv__role em {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: var(--papel);
+    color: var(--tinta-3);
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+  }
+  .pv__role em.ok {
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .pv--salud .pv__chip--b {
+    left: auto;
+    right: 2rem;
+    top: 2rem;
+  }
+
+  @media (max-width: 1000px) {
+    .pv {
+      min-height: 22rem;
+      max-width: 34rem;
+    }
+  }
+  @media (max-width: 560px) {
+    .pv {
+      min-height: 19rem;
+    }
+    .pv__win--front {
+      top: 5.5rem;
+    }
+    .pv__chip--b {
+      left: 0;
+    }
+    .pv__phone {
+      left: 0;
+      width: 12.5rem;
+    }
+    .pv__roles {
+      width: 12rem;
+      bottom: 0;
+    }
+    .pv__app {
+      grid-template-columns: 1fr;
+    }
+    .pv__side {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pv * {
+      animation: none !important;
+    }
+  }
+</style>

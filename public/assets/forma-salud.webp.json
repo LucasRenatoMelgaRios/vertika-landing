@@ -1,0 +1,21 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-formas.blend",
+ "fecha": "2026-11-11",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "modulo": 1.0,
+ "grosor": 0.28,
+ "bisel": 0.04,
+ "descripcion": "Cruz redondeada (signo mas) azul Vertika: salud. Nunca roja ni verde.",
+ "color_objetivo": [
+  "#1E4ED8"
+ ],
+ "escena": "forma-salud",
+ "colores_objetivo": [
+  "#1E4ED8"
+ ],
+ "colores_muestreados_cara_iluminada": [
+  "#1E4ED8"
+ ],
+ "postproceso": "Calibracion lineal por color (cara iluminada al objetivo), fundido de alfa en bordes, recorte, WebP q86 a 900 y 450 px."
+}

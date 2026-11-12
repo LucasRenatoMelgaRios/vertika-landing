@@ -1,0 +1,8 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-escenas.blend",
+ "fecha": "2026-11-11",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Banda transportadora con piezas y dos engranajes azul Vertika y azul noche: linea de produccion.",
+ "postproceso": "Recorte ajustado al objeto (sin cola de sombra), fundido inferior, 720 px, WebP q86."
+}

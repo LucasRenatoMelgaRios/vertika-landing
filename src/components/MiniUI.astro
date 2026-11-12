@@ -1,0 +1,457 @@
+---
+import Icon from './Icon.astro';
+import type { Mini } from '../data/site';
+interface Props {
+  kind: Mini;
+}
+const { kind } = Astro.props;
+---
+<div class:list={['mini', `mini--${kind}`]} aria-hidden="true">
+  {kind === 'web' && (
+    <div class="mini__browser">
+      <div class="mini__bar"><span></span><span></span><span></span><i>tunegocio.pe</i></div>
+      <div class="mini__search"><Icon name="globe" /> tienda de cerámica en lima</div>
+      <div class="mini__result"><b>Tu Negocio · Cerámica hecha a mano</b><small>tunegocio.pe › tienda</small></div>
+    </div>
+  )}
+  {kind === 'app' && (
+    <div class="mini__phone">
+      <div class="mini__notch"></div>
+      <p class="mini__ph-title">Reservas</p>
+      {['Lun 10:00 · Clase', 'Mar 18:30 · Clase', 'Jue 07:00 · Clase'].map((t, i) => (
+        <div class:list={['mini__ph-row', { on: i === 1 }]}><span>{t}</span>{i === 1 && <Icon name="check" />}</div>
+      ))}
+    </div>
+  )}
+  {kind === 'proto' && (
+    <div class="mini__proto">
+      <div class="mini__frame"><span class="w60"></span><span class="w40"></span><span class="btnish"></span></div>
+      <Icon name="arrow" />
+      <div class="mini__frame"><span class="w80"></span><span class="w60"></span><span class="w40"></span></div>
+    </div>
+  )}
+  {kind === 'auto' && (
+    <div class="mini__flow mono">
+      <span class="node">pedido nuevo</span><i></i><span class="node">aprobación</span><i></i><span class="node on">aviso enviado</span>
+    </div>
+  )}
+  {kind === 'tabla' && (
+    <div class="mini__table mono">
+      <div class="th"><span>producto</span><span>stock</span><span>estado</span></div>
+      <div><span>Caja A-12</span><span>148</span><span class="ok">ok</span></div>
+      <div><span>Caja B-07</span><span>12</span><span class="warn">reponer</span></div>
+      <div><span>Cinta 48mm</span><span>320</span><span class="ok">ok</span></div>
+    </div>
+  )}
+  {kind === 'insumos' && (
+    <div class="mini__table mono">
+      <div class="th"><span>insumo</span><span>stock</span><span>estado</span></div>
+      <div><span>Guantes de nitrilo</span><span>40</span><span class="warn">reponer</span></div>
+      <div><span>Jeringas 5 ml</span><span>310</span><span class="ok">ok</span></div>
+      <div><span>Gasas estériles</span><span>185</span><span class="ok">ok</span></div>
+    </div>
+  )}
+  {kind === 'crm' && (
+    <div class="mini__crm mono">
+      {[['Prospecto', 'Clínica Norte'], ['Propuesta', 'Comercial Sur'], ['Cerrado', 'Market 24']].map(([e, c], i) => (
+        <div class:list={['mini__stage', { on: i === 2 }]}><small>{e}</small><span>{c}</span></div>
+      ))}
+    </div>
+  )}
+  {kind === 'erp' && (
+    <div class="mini__erp mono">
+      {['Compras', 'Inventario', 'Ventas', 'Finanzas', 'Personal'].map((m, i) => <span class:list={{ on: i === 1 }}>{m}</span>)}
+    </div>
+  )}
+  {kind === 'api' && (
+    <div class="mini__api mono">
+      <span class="node">tu web</span>
+      <span class="wire"><i></i></span>
+      <span class="node node--hub">Vertika</span>
+      <span class="wire"><i></i></span>
+      <span class="node">facturación</span>
+    </div>
+  )}
+  {kind === 'portal' && (
+    <div class="mini__portal">
+      <div class="mini__input"><Icon name="doc" /> Buscar comprobantes…</div>
+      {['F001-00231 · octubre', 'F001-00198 · setiembre'].map((t) => <div class="mini__doc"><span>{t}</span><small>PDF</small></div>)}
+    </div>
+  )}
+  {kind === 'panel' && (
+    <div class="mini__chart">
+      <div class="bars">{[38, 52, 46, 70, 64, 88].map((h) => <span style={`--h:${h}%`}></span>)}</div>
+      <p class="mono">ventas por sede · ejemplo</p>
+    </div>
+  )}
+  {kind === 'agenda' && (
+    <div class="mini__agenda mono">
+      <div class="days"><span>lun</span><span>mar</span><span>mié</span><span>jue</span></div>
+      <div class="slots">
+        {[0, 1, 1, 0, 1, 0, 2, 1, 0, 1, 1, 0].map((s) => <span class:list={{ busy: s === 1, mine: s === 2 }}></span>)}
+      </div>
+      <p>recordatorio enviado · mié 10:30</p>
+    </div>
+  )}
+  {kind === 'roles' && (
+    <div class="mini__roles">
+      {[['Médico tratante', true], ['Recepción', false], ['Caja', false]].map(([r, ok]) => (
+        <div class="mini__role"><span>{r}</span><span class:list={['pill', { ok }]}>{ok ? 've la historia' : 'sin acceso'}</span></div>
+      ))}
+    </div>
+  )}
+  {kind === 'paciente' && (
+    <div class="mini__portal">
+      <div class="mini__doc"><span>Resultados · hemograma</span><small>nuevo</small></div>
+      <div class="mini__doc"><span>Próxima cita · 14 nov</span><small>10:30</small></div>
+      <div class="mini__doc"><span>Indicaciones</span><small>PDF</small></div>
+    </div>
+  )}
+</div>
+
+<style>
+  .mini {
+    margin-top: 1.1rem;
+    padding: 0.9rem;
+    border: 1px solid var(--linea);
+    border-radius: 3px;
+    background: var(--papel);
+    font-size: 0.78rem;
+    color: var(--tinta-2);
+  }
+  .mini :global(.icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .mono {
+    font-size: 0.74rem;
+  }
+  /* web */
+  .mini__browser {
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .mini__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.55rem;
+    border-bottom: 1px solid var(--linea-2);
+  }
+  .mini__bar span {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--linea);
+  }
+  .mini__bar i {
+    margin-left: 0.5rem;
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+  }
+  .mini__search {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin: 0.6rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+  }
+  .mini__result {
+    display: grid;
+    margin: 0 0.75rem 0.7rem;
+  }
+  .mini__result b {
+    color: var(--azul);
+    font-weight: 700;
+  }
+  .mini__result small {
+    color: var(--turquesa-tinta);
+  }
+  /* app */
+  .mini__phone {
+    width: 11rem;
+    margin-inline: auto;
+    padding: 0.6rem 0.6rem 0.75rem;
+    border: 2px solid var(--tinta);
+    border-radius: 14px;
+    background: var(--hoja);
+  }
+  .mini__notch {
+    width: 2.5rem;
+    height: 0.35rem;
+    margin: 0 auto 0.5rem;
+    border-radius: 999px;
+    background: var(--tinta);
+  }
+  .mini__ph-title {
+    font-weight: 700;
+    color: var(--tinta);
+    margin-bottom: 0.35rem;
+  }
+  .mini__ph-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.45rem;
+    border-radius: 4px;
+    margin-top: 0.25rem;
+    background: var(--papel);
+  }
+  .mini__ph-row.on {
+    background: var(--azul);
+    color: #fff;
+  }
+  /* proto */
+  .mini__proto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: var(--azul);
+  }
+  .mini__frame {
+    display: grid;
+    gap: 0.35rem;
+    width: 6.5rem;
+    padding: 0.6rem;
+    border: 1.5px dashed var(--tinta-3);
+    border-radius: 3px;
+    background: var(--hoja);
+  }
+  .mini__frame span {
+    height: 0.4rem;
+    border-radius: 2px;
+    background: var(--linea);
+  }
+  .w80 { width: 80%; }
+  .w60 { width: 60%; }
+  .w40 { width: 40%; }
+  .mini__frame .btnish {
+    width: 50%;
+    height: 0.7rem;
+    background: var(--azul);
+  }
+  /* flow */
+  .mini__flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .mini__flow .node,
+  .mini__api .node {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--linea);
+    border-radius: 3px;
+    background: var(--hoja);
+    color: var(--tinta);
+    white-space: nowrap;
+  }
+  .mini__flow .node.on {
+    border-color: var(--azul);
+    color: var(--azul);
+  }
+  .mini__flow i {
+    flex: 1;
+    min-width: 0.8rem;
+    height: 2px;
+    background: var(--azul);
+  }
+  /* table */
+  .mini__table {
+    display: grid;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    border-radius: 3px;
+  }
+  .mini__table > div {
+    display: grid;
+    grid-template-columns: 1.4fr 0.6fr 0.8fr;
+    padding: 0.35rem 0.6rem;
+    border-top: 1px solid var(--linea-2);
+    color: var(--tinta);
+  }
+  .mini__table .th {
+    border-top: 0;
+    color: var(--tinta-3);
+  }
+  .mini__table .ok { color: var(--turquesa-tinta); }
+  .mini__table .warn { color: var(--azul); font-weight: 500; }
+  /* api */
+  .mini__api {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .mini__api .node--hub {
+    background: var(--tinta);
+    border-color: var(--tinta);
+    color: #fff;
+  }
+  .mini__api .wire {
+    position: relative;
+    flex: 1;
+    height: 2px;
+    background: var(--linea);
+    overflow: hidden;
+  }
+  .mini__api .wire i {
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: var(--azul);
+    animation: flowing 2.2s var(--ease-out) infinite;
+  }
+  @keyframes flowing {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(260%); }
+  }
+  /* portal */
+  .mini__portal {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .mini__input {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--linea);
+    border-radius: 3px;
+    background: var(--hoja);
+    color: var(--tinta-3);
+  }
+  .mini__doc {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0.6rem;
+    border-radius: 3px;
+    background: var(--hoja);
+    color: var(--tinta);
+  }
+  .mini__doc small {
+    font-family: var(--mono);
+    color: var(--tinta-3);
+  }
+  /* chart */
+  .mini__chart .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.4rem;
+    height: 4.5rem;
+  }
+  .mini__chart .bars span {
+    flex: 1;
+    height: var(--h);
+    border-radius: 2px 2px 0 0;
+    background: var(--azul);
+    opacity: 0.85;
+  }
+  .mini__chart .bars span:last-child {
+    background: var(--turquesa);
+  }
+  .mini__chart p {
+    margin-top: 0.45rem;
+    color: var(--tinta-3);
+  }
+  /* agenda */
+  .mini__agenda .days,
+  .mini__agenda .slots {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.3rem;
+  }
+  .mini__agenda .days {
+    margin-bottom: 0.3rem;
+    color: var(--tinta-3);
+  }
+  .mini__agenda .slots span {
+    height: 0.95rem;
+    border-radius: 2px;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+  }
+  .mini__agenda .slots .busy {
+    background: var(--azul-suave);
+    border-color: var(--azul-suave);
+  }
+  .mini__agenda .slots .mine {
+    background: var(--azul);
+    border-color: var(--azul);
+  }
+  .mini__agenda p {
+    margin-top: 0.55rem;
+    color: var(--turquesa-tinta);
+  }
+  /* roles */
+  .mini__roles {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .mini__role {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    border-radius: 3px;
+    background: var(--hoja);
+    color: var(--tinta);
+  }
+  .pill {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: var(--papel);
+    color: var(--tinta-3);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+  }
+  .pill.ok {
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .mini__crm {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+  }
+  .mini__stage {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.45rem;
+    border-radius: 3px;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+  }
+  .mini__stage small {
+    color: var(--tinta-3);
+  }
+  .mini__stage span {
+    color: var(--tinta);
+  }
+  .mini__stage.on {
+    border-color: var(--azul);
+    background: var(--azul-suave);
+  }
+  .mini__erp {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .mini__erp span {
+    padding: 0.3rem 0.55rem;
+    border-radius: 3px;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    color: var(--tinta);
+  }
+  .mini__erp span.on {
+    background: var(--noche);
+    border-color: var(--noche);
+    color: #fff;
+  }
+</style>

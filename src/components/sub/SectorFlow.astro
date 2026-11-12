@@ -1,0 +1,618 @@
+---
+/**
+ * Animated n8n-style workflow per business sector.
+ * Left: an animated SVG scene of the sector. Right: six nodes that run in sequence
+ * (idle → running → done) with an output chip each, pulses travelling the edges and a live log.
+ * Everything is an illustrative example.
+ */
+import Icon, { type IconName } from '../Icon.astro';
+type Node = { t: string; i: IconName; o: string; tone?: 'azul' | 'noche' | 'turq' };
+type Sector = { id: string; label: string; icon: IconName; scene: string; nodes: Node[]; log: string[] };
+const sectors: Sector[] = [
+  {
+    id: 'retail', label: 'Comercio y retail', icon: 'globe', scene: 'Tienda online',
+    nodes: [
+      { t: 'Nuevo pedido', i: 'globe', o: '#1042 · 3 ítems', tone: 'turq' },
+      { t: 'Validar stock', i: 'table', o: 'Lima · ok' },
+      { t: 'Cliente al CRM', i: 'user', o: '12 compras' },
+      { t: 'Emitir boleta', i: 'doc', o: 'B001-01877' },
+      { t: 'WhatsApp', i: 'chat', o: 'enviado' },
+      { t: 'Despacho', i: 'check', o: 'listo', tone: 'noche' },
+    ],
+    log: ['Pedido #1042 recibido desde la web', 'Stock confirmado en el almacén Lima', 'Cliente actualizado en el CRM', 'Boleta B001-01877 emitida', 'WhatsApp enviado al cliente', 'Pedido listo para despacho'],
+  },
+  {
+    id: 'logistica', label: 'Logística', icon: 'layers', scene: 'Envíos en ruta',
+    nodes: [
+      { t: 'Guía creada', i: 'doc', o: 'G002-00045', tone: 'turq' },
+      { t: 'Asignar ruta', i: 'globe', o: 'zona norte' },
+      { t: 'Actualizar ERP', i: 'database', o: 'en camino' },
+      { t: 'App conductor', i: 'phone', o: 'notificado' },
+      { t: 'Aviso al cliente', i: 'chat', o: 'enlace enviado' },
+      { t: 'Entregado', i: 'check', o: '16:42 · firma', tone: 'noche' },
+    ],
+    log: ['Guía G002-00045 creada', 'Ruta asignada: zona norte', 'ERP: envío en camino', 'Conductor notificado en su app', 'Cliente recibió su seguimiento', 'Entrega confirmada con firma'],
+  },
+  {
+    id: 'restaurantes', label: 'Restaurantes', icon: 'calendar', scene: 'Cocina y delivery',
+    nodes: [
+      { t: 'Pedido delivery', i: 'chat', o: '2 platos', tone: 'turq' },
+      { t: 'Comanda', i: 'layers', o: 'cocina 1' },
+      { t: 'Insumos', i: 'table', o: '−4 ítems' },
+      { t: 'Cobro Yape', i: 'key', o: 'S/ 58.00' },
+      { t: 'Repartidor', i: 'phone', o: 'en camino' },
+      { t: 'Entregado', i: 'check', o: 'reseña pedida', tone: 'noche' },
+    ],
+    log: ['Pedido de 2 platos por WhatsApp', 'Comanda enviada a cocina', 'Insumos descontados del inventario', 'Pago Yape de S/ 58.00 confirmado', 'Repartidor en camino', 'Pedido entregado'],
+  },
+  {
+    id: 'inmobiliaria', label: 'Inmobiliaria', icon: 'building', scene: 'Visitas y prospectos',
+    nodes: [
+      { t: 'Lead web', i: 'globe', o: 'depa en Surco', tone: 'turq' },
+      { t: 'Calificar', i: 'eye', o: 'presupuesto ok' },
+      { t: 'CRM', i: 'user', o: 'asesora Ana' },
+      { t: 'Agendar visita', i: 'calendar', o: 'sáb 10:00' },
+      { t: 'Ficha por correo', i: 'mail', o: 'enviada' },
+      { t: 'Confirmada', i: 'check', o: 'recordatorio', tone: 'noche' },
+    ],
+    log: ['Nuevo lead: departamento en Surco', 'Prospecto calificado', 'Oportunidad creada en el CRM', 'Visita agendada para el sábado 10:00', 'Ficha del inmueble enviada', 'Visita confirmada'],
+  },
+  {
+    id: 'educacion', label: 'Educación', icon: 'pen', scene: 'Aula virtual',
+    nodes: [
+      { t: 'Matrícula', i: 'pen', o: 'curso Excel', tone: 'turq' },
+      { t: 'Validar pago', i: 'key', o: 'S/ 120.00' },
+      { t: 'Crear alumno', i: 'database', o: 'ID 2318' },
+      { t: 'Accesos', i: 'mail', o: 'aula virtual' },
+      { t: 'Avisar tutor', i: 'chat', o: 'Prof. Ríos' },
+      { t: 'Activo', i: 'check', o: 'clase lun 7pm', tone: 'noche' },
+    ],
+    log: ['Matrícula recibida: curso de Excel', 'Pago de S/ 120.00 validado', 'Alumno 2318 creado', 'Accesos al aula virtual enviados', 'Tutor notificado', 'Alumno activo para su primera clase'],
+  },
+  {
+    id: 'manufactura', label: 'Manufactura', icon: 'code', scene: 'Línea de producción',
+    nodes: [
+      { t: 'Orden', i: 'doc', o: 'OP-0318', tone: 'turq' },
+      { t: 'Materiales', i: 'table', o: 'reservados' },
+      { t: 'Turno', i: 'calendar', o: 'tarde · 6 pers.' },
+      { t: 'Calidad', i: 'eye', o: 'aprobado' },
+      { t: 'Inventario', i: 'database', o: '+500 und.' },
+      { t: 'Reporte', i: 'chart', o: 'a gerencia', tone: 'noche' },
+    ],
+    log: ['Orden de producción OP-0318 creada', 'Materiales reservados en el ERP', 'Turno de tarde planificado', 'Control de calidad aprobado', 'Inventario: +500 unidades', 'Reporte enviado a gerencia'],
+  },
+];
+// node centres in the 1000×400 canvas
+const P = [[90, 200], [300, 95], [300, 305], [530, 95], [530, 305], [770, 200]];
+const E: [number, number][] = [[0, 1], [0, 2], [1, 3], [2, 4], [1, 4], [3, 5], [4, 5]];
+const curve = ([a, b]: [number, number]) => {
+  const [x1, y1] = P[a], [x2, y2] = P[b];
+  const m = (x1 + x2) / 2;
+  return `M${x1 + 34} ${y1} C${m} ${y1} ${m} ${y2} ${x2 - 34} ${y2}`;
+};
+const sceneDims: Record<string, [number, number]> = {
+  retail: [683, 548], logistica: [720, 446], restaurantes: [635, 467], inmobiliaria: [682, 541], educacion: [690, 396], manufactura: [622, 538],
+};
+const data = Object.fromEntries(sectors.map((s) => [s.id, s.log]));
+---
+<section class="sec sfl" id="automatizacion" aria-labelledby="sfl-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="sfl-t" class="display sec__title">Automatiza<br />tu rubro.</h2>
+      <p class="sec__lead">Diseñamos flujos con n8n que conectan tu CRM, tu ERP y tus herramientas, con agentes de IA que saben cuándo pasarle el tema a una persona. Elige un rubro y mira un flujo trabajando de principio a fin.</p>
+    </div>
+
+    <div class="sfl__chips" role="tablist" aria-label="Rubros">
+      {sectors.map((s, i) => (
+        <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-sfl={s.id}>
+          <Icon name={s.icon} /> {s.label}
+        </button>
+      ))}
+    </div>
+
+    <div class="sfl__board" data-sfl-board>
+      <div class="sfl__top">
+        <span class="sfl__tag"><span class="sfl__live"></span>Flujo en n8n · ejemplo ilustrativo</span>
+        <span class="sfl__run mono"><span data-sfl-state>en espera</span> · <span data-sfl-run>ejecución #1</span></span>
+      </div>
+
+      <div class="sfl__body">
+        <!-- Sector scenes -->
+        <div class="sfl__scene" aria-hidden="true">
+          {sectors.map((s, si) => (
+            <figure class:list={['scn', `scn--${s.id}`]} data-sfl-scene={s.id} hidden={si !== 0}>
+              <img class="scn__img" src={`/assets/escena-${s.id === 'retail' ? 'tienda' : s.id}.webp`} alt="" width={sceneDims[s.id][0]} height={sceneDims[s.id][1]} loading={si === 0 ? 'eager' : 'lazy'} decoding="async" />
+              <figcaption>{s.scene}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <!-- Workflow canvas -->
+        <div class="sfl__canvas">
+          <svg class="sfl__svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+            <defs><pattern id="sfl-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1.2" fill="#5EE0D9" fill-opacity="0.12" /></pattern></defs>
+            <rect width="1000" height="400" fill="url(#sfl-dots)" />
+            {E.map((e, k) => <path id={`sfl-e${k}`} d={curve(e)} class="sfl__edge" />)}
+            {E.map((e) => <path d={curve(e)} class="sfl__draw" pathLength="100" data-edge-to={e[1]} />)}
+          </svg>
+          <svg class="sfl__svg sfl__pulses" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+            {E.map((e, k) => (
+              <rect class="sfl__pulse" data-pulse-to={e[1]} x="-6" y="-6" width="12" height="12" rx="2">
+                <animateMotion dur="0.7s" begin="indefinite" fill="freeze" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.45 0 0.25 1"><mpath href={`#sfl-e${k}`} /></animateMotion>
+              </rect>
+            ))}
+          </svg>
+          {sectors.map((s, si) => (
+            <ol class="sfl__nodes" data-sfl-pane={s.id} hidden={si !== 0}>
+              {s.nodes.map((n, k) => (
+                <li class:list={['nd', `nd--${n.tone ?? 'azul'}`]} data-k={k} style={`left:${P[k][0] / 10}%;top:${(P[k][1] / 400) * 100}%`}>
+                  <span class="nd__tile">
+                    <Icon name={n.i} />
+                    <svg class="nd__trace" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                      <rect class="nd__track" x="2" y="2" width="96" height="96" rx="27" ry="27" pathLength="100" />
+                      <rect class="nd__line" x="2" y="2" width="96" height="96" rx="27" ry="27" pathLength="100" />
+                    </svg>
+                    {k === 0 && <span class="nd__bolt"></span>}
+                  </span>
+                  <span class="nd__t">{n.t}</span>
+                  <span class="nd__o mono">{n.o}</span>
+                </li>
+              ))}
+            </ol>
+          ))}
+        </div>
+      </div>
+
+      <ol class="sfl__log mono" aria-live="polite" data-sfl-log></ol>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ data }}>
+  (() => {
+    const board = document.querySelector('[data-sfl-board]');
+    if (!board) return;
+    const tabs = [...document.querySelectorAll('[data-sfl]')];
+    const panes = [...board.querySelectorAll('[data-sfl-pane]')];
+    const scenes = [...board.querySelectorAll('[data-sfl-scene]')];
+    const logEl = board.querySelector('[data-sfl-log]');
+    const runEl = board.querySelector('[data-sfl-run]');
+    const stEl = board.querySelector('[data-sfl-state]');
+    const edges = [...board.querySelectorAll('[data-edge-to]')];
+    const pulses = [...board.querySelectorAll('[data-pulse-to]')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cur = tabs[0].dataset.sfl, step = 0, run = 1, timer = 0, started = false;
+    const nodes = () => [...board.querySelector(`[data-sfl-pane="${cur}"]`).children];
+    const time = () => new Date().toTimeString().slice(0, 8);
+    const reset = () => {
+      nodes().forEach((n) => n.classList.remove('is-run', 'is-done'));
+      edges.forEach((e) => e.classList.remove('is-drawing', 'is-drawn'));
+      pulses.forEach((p) => p.classList.remove('is-hot'));
+      logEl.innerHTML = '';
+    };
+    const log = (txt) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${time()}</span><span>✓</span>${txt}`;
+      logEl.appendChild(li);
+      while (logEl.children.length > 4) logEl.firstChild.remove();
+    };
+    const TRAVEL = 700, TRACE = 850, GAP = 160;
+    const tick = () => {
+      const ns = nodes();
+      const lines = data[cur];
+      if (step === 0) { reset(); stEl.textContent = 'ejecutando'; board.classList.add('is-running'); }
+      const k = step;
+      const n = ns[k];
+      const inEdges = edges.filter((e) => Number(e.dataset.edgeTo) === k);
+      const inPulses = pulses.filter((p) => Number(p.dataset.pulseTo) === k);
+      // 1) the signal travels along every connection that leads into this node
+      inEdges.forEach((e) => { e.classList.remove('is-drawn'); void e.getBoundingClientRect(); e.classList.add('is-drawing'); });
+      inPulses.forEach((p) => { p.classList.add('is-hot'); const am = p.querySelector('animateMotion'); try { am.beginElement(); } catch (_) {} });
+      const travel = inEdges.length ? TRAVEL : 0;
+      timer = setTimeout(() => {
+        inEdges.forEach((e) => { e.classList.remove('is-drawing'); e.classList.add('is-drawn'); });
+        inPulses.forEach((p) => p.classList.remove('is-hot'));
+        // 2) only once it arrives, the node border traces itself
+        n.classList.add('is-run');
+        timer = setTimeout(() => {
+          n.classList.remove('is-run'); n.classList.add('is-done'); log(lines[k]);
+          step++;
+          if (step >= ns.length) {
+            stEl.textContent = 'completado'; board.classList.remove('is-running');
+            step = 0; timer = setTimeout(() => { run++; runEl.textContent = 'ejecución #' + run; tick(); }, 2800);
+          } else timer = setTimeout(tick, GAP);
+        }, TRACE);
+      }, travel);
+    };
+    const pick = (id, focus) => {
+      clearTimeout(timer); cur = id; step = 0;
+      tabs.forEach((t) => { const on = t.dataset.sfl === id; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+      panes.forEach((p) => (p.hidden = p.dataset.sflPane !== id));
+      scenes.forEach((s) => (s.hidden = s.dataset.sflScene !== id));
+      if (reduce) { reset(); nodes().forEach((n) => n.classList.add('is-done')); data[id].slice(-4).forEach(log); stEl.textContent = 'completado'; return; }
+      if (started) tick();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => pick(t.dataset.sfl));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return; e.preventDefault(); pick(tabs[(i + d + tabs.length) % tabs.length].dataset.sfl, true);
+      });
+    });
+    const io = new IntersectionObserver((en) => { if (en[0].isIntersecting && !started) { started = true; pick(cur); } }, { threshold: 0.3 });
+    io.observe(board);
+  })();
+</script>
+
+<style>
+  .sfl__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .sfl__chips button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    background: var(--hoja);
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.925rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .sfl__chips button :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .sfl__chips button:hover {
+    border-color: var(--tinta);
+  }
+  .sfl__chips button[aria-selected='true'] {
+    background: var(--noche);
+    border-color: var(--noche);
+    color: #fff;
+  }
+  .sfl__board {
+    border-radius: 18px;
+    background: var(--noche);
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -40px rgba(11, 27, 77, 0.8);
+  }
+  .sfl__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid rgba(94, 224, 217, 0.18);
+    font-size: 0.85rem;
+    color: var(--sobre-noche-2);
+  }
+  .sfl__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .sfl__live {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--turquesa-claro);
+  }
+  .sfl__board.is-running .sfl__live {
+    animation: sfl-live 1s ease-in-out infinite;
+  }
+  @keyframes sfl-live {
+    50% { box-shadow: 0 0 0 5px rgba(94, 224, 217, 0.18); }
+  }
+  .sfl__body {
+    display: grid;
+    grid-template-columns: minmax(0, 0.32fr) minmax(0, 1fr);
+  }
+
+  /* ---------- Scene ---------- */
+  .sfl__scene {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    border-right: 1px solid rgba(94, 224, 217, 0.18);
+    background: radial-gradient(circle at 50% 40%, rgba(30, 78, 216, 0.45), transparent 70%);
+  }
+  .scn {
+    margin: 0;
+    width: 100%;
+    display: grid;
+    gap: 0.75rem;
+    justify-items: center;
+    animation: scn-in 0.6s var(--ease-out);
+  }
+  @keyframes scn-in {
+    from { opacity: 0.001; transform: translateY(10px) scale(0.97); }
+  }
+  .scn figcaption {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--turquesa-claro);
+  }
+  .scn__img {
+    width: 100%;
+    max-width: 19rem;
+    margin-bottom: -0.25rem;
+    height: auto;
+    filter: drop-shadow(0 24px 24px rgba(0, 0, 0, 0.35));
+    animation: scn-float 3.2s ease-in-out infinite;
+  }
+  @keyframes scn-float {
+    50% { transform: translateY(-6px); }
+  }
+  /* ---------- Canvas & nodes ---------- */
+  .sfl__canvas {
+    position: relative;
+    aspect-ratio: 1000 / 400;
+  }
+  .sfl__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .sfl__edge {
+    fill: none;
+    stroke: rgba(185, 197, 232, 0.25);
+    stroke-width: 2;
+    stroke-dasharray: 4 6;
+    vector-effect: non-scaling-stroke;
+    transition: stroke 0.3s;
+  }
+  .sfl__draw {
+    fill: none;
+    stroke: var(--turquesa-claro);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    vector-effect: non-scaling-stroke;
+  }
+  .sfl__draw.is-drawing {
+    animation: sfl-draw 0.7s cubic-bezier(0.45, 0, 0.25, 1) forwards;
+  }
+  .sfl__draw.is-drawn {
+    stroke-dashoffset: 0;
+    stroke: rgba(94, 224, 217, 0.55);
+    transition: stroke 0.6s;
+  }
+  @keyframes sfl-draw {
+    to { stroke-dashoffset: 0; }
+  }
+  .sfl__pulse {
+    fill: var(--turquesa-claro);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .sfl__pulse.is-hot {
+    opacity: 1;
+  }
+  .sfl__nodes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nd {
+    position: absolute;
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    width: 8.5rem;
+    transform: translate(-50%, -2.1rem);
+    animation: nd-in 0.5s var(--ease-out) both;
+    animation-delay: calc(var(--k, 0) * 60ms);
+  }
+  @keyframes nd-in {
+    from { opacity: 0.001; transform: translate(-50%, -1.6rem) scale(0.9); }
+  }
+  .nd__tile {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--azul);
+    box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.7), inset 0 0 0 2px rgba(11, 27, 77, 0.06);
+    transition: transform 0.35s var(--ease-out), box-shadow 0.35s;
+  }
+  .nd__tile > :global(.icon) {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .nd--turq .nd__tile {
+    background: var(--turquesa-claro);
+    color: var(--noche);
+  }
+  .nd--noche .nd__tile {
+    background: var(--azul);
+    color: #fff;
+  }
+  .nd__bolt {
+    position: absolute;
+    left: -0.55rem;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 2px;
+    background: var(--turquesa-claro);
+    transform: translateY(-50%) rotate(45deg);
+    box-shadow: 0 0 0 3px var(--noche);
+  }
+  .nd__trace {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    max-width: none;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .nd__trace rect {
+    fill: none;
+    stroke-width: 2.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .nd__track {
+    stroke: rgba(94, 224, 217, 0);
+    transition: stroke 0.3s;
+  }
+  .nd__line {
+    stroke: var(--turquesa-claro);
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  .nd.is-run .nd__track {
+    stroke: rgba(94, 224, 217, 0.16);
+  }
+  .nd.is-run .nd__line {
+    opacity: 1;
+    animation: nd-trace 0.85s cubic-bezier(0.45, 0, 0.25, 1) forwards;
+  }
+  .nd.is-done .nd__line {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  @keyframes nd-trace {
+    to { stroke-dashoffset: 0; }
+  }
+  .nd__t {
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .nd__o {
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(94, 224, 217, 0.14);
+    color: var(--turquesa-claro);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.3s, transform 0.35s var(--ease-out);
+  }
+  .nd.is-run .nd__tile {
+    transform: translateY(-3px);
+  }
+  .nd.is-run .nd__tile > :global(.icon) {
+    animation: nd-breathe 0.85s ease-in-out;
+  }
+  @keyframes nd-breathe {
+    50% { opacity: 0.45; transform: scale(0.92); }
+  }
+  .nd.is-done .nd__tile {
+    box-shadow: 0 0 0 5px rgba(94, 224, 217, 0.12), 0 16px 30px -14px rgba(0, 0, 0, 0.7);
+  }
+  .nd.is-done .nd__o {
+    opacity: 1;
+    transform: none;
+  }
+  .nd.is-done .nd__t {
+    color: #fff;
+  }
+  .nd:not(.is-done):not(.is-run) .nd__t {
+    color: var(--sobre-noche-2);
+  }
+  .nd.is-done:last-child .nd__tile {
+    animation: done 0.7s var(--ease-out);
+  }
+  @keyframes done {
+    50% { box-shadow: 0 0 0 14px rgba(94, 224, 217, 0.22); }
+  }
+  .sfl__nodes .nd:nth-child(1) { --k: 0; }
+  .sfl__nodes .nd:nth-child(2), .sfl__nodes .nd:nth-child(3) { --k: 1; }
+  .sfl__nodes .nd:nth-child(4), .sfl__nodes .nd:nth-child(5) { --k: 2; }
+  .sfl__nodes .nd:nth-child(6) { --k: 3; }
+
+  .sfl__log {
+    display: grid;
+    gap: 0.25rem;
+    min-height: 7.2rem;
+    margin: 0;
+    padding: 1rem 1.25rem 1.1rem;
+    list-style: none;
+    border-top: 1px solid rgba(94, 224, 217, 0.18);
+    font-size: 0.8rem;
+    color: var(--sobre-noche-2);
+  }
+  .sfl__log :global(li) {
+    display: flex;
+    gap: 0.8rem;
+    animation: sfl-log 0.4s var(--ease-out);
+  }
+  .sfl__log :global(li span:first-child) { color: rgba(185, 197, 232, 0.6); }
+  .sfl__log :global(li span:nth-child(2)) { color: var(--turquesa-claro); }
+  .sfl__log :global(li:last-child) { color: #fff; }
+  @keyframes sfl-log {
+    from { opacity: 0.001; transform: translateY(4px); }
+  }
+  .sfl__board :focus-visible { outline-color: var(--turquesa-claro); }
+
+  @media (max-width: 1000px) {
+    .sfl__body {
+      grid-template-columns: 1fr;
+    }
+    .sfl__scene {
+      border-right: 0;
+      border-bottom: 1px solid rgba(94, 224, 217, 0.18);
+    }
+    .scn__img {
+      max-width: 14rem;
+    }
+  }
+  @media (max-width: 760px) {
+    .sfl__canvas {
+      aspect-ratio: auto;
+      padding: 1.5rem 1rem;
+    }
+    .sfl__svg {
+      display: none;
+    }
+    .sfl__nodes:not([hidden]) {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem 0.5rem;
+    }
+    .nd {
+      position: static;
+      width: auto;
+      transform: none;
+    }
+    @keyframes nd-in {
+      from { opacity: 0.001; transform: translateY(8px); }
+    }
+    .nd__tile {
+      width: 3.4rem;
+      height: 3.4rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scn__img,
+    .nd,
+    .sfl__pulse {
+      animation: none !important;
+    }
+    .sfl__pulse { display: none; }
+  }
+</style>

@@ -1,0 +1,128 @@
+---
+/** Full-width closing band on navy, big type on the left, the action on the right. */
+import Icon from '../Icon.astro';
+import { site, waLink } from '../../data/site';
+interface Props {
+  title: string;
+  text: string;
+  message: string;
+}
+const { title, text, message } = Astro.props;
+---
+<section class="ctab" aria-labelledby="ctab-t">
+  <div class="wrap ctab__inner">
+    <div>
+      <h2 id="ctab-t" class="display ctab__title" set:html={title} />
+      <p class="ctab__text">{text}</p>
+    </div>
+    <div class="ctab__actions">
+      <a class="ctab__wa" href={waLink(message)} target="_blank" rel="noopener"><Icon name="chat" /> Escríbenos por WhatsApp <Icon name="arrow" /></a>
+      <a class="ctab__mail" href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a>
+    </div>
+  </div>
+  <span class="ctab__knot k1" aria-hidden="true"></span>
+  <span class="ctab__knot k2" aria-hidden="true"></span>
+</section>
+
+<style>
+  .ctab {
+    position: relative;
+    overflow: hidden;
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+    background: var(--azul);
+    color: #fff;
+  }
+  .ctab::before {
+    content: '';
+    position: absolute;
+    right: -8%;
+    top: -40%;
+    width: 46rem;
+    height: 46rem;
+    border: 3px solid rgba(94, 224, 217, 0.35);
+    transform: rotate(45deg);
+    border-radius: 24px;
+  }
+  .ctab__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+    gap: 2.5rem;
+    align-items: end;
+  }
+  .ctab__title {
+    font-size: clamp(2.6rem, 1rem + 5vw, 5.4rem);
+    color: #fff;
+  }
+  .ctab__title :global(em) {
+    color: var(--turquesa-claro);
+  }
+  .ctab__text {
+    margin-top: 1.25rem;
+    max-width: 44ch;
+    font-size: var(--step-1);
+    color: rgba(255, 255, 255, 0.86);
+  }
+  .ctab__actions {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+  }
+  .ctab__wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.4rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--noche);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  .ctab__wa:hover {
+    background: var(--turquesa-claro);
+  }
+  .ctab__mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.86);
+    text-decoration: none;
+  }
+  .ctab__mail:hover {
+    color: #fff;
+  }
+  .ctab :global(.icon) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .ctab__knot {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 2px;
+    background: var(--turquesa-claro);
+    transform: rotate(45deg);
+  }
+  .k1 {
+    right: 32%;
+    top: 18%;
+  }
+  .k2 {
+    right: 9%;
+    bottom: 22%;
+    width: 0.6rem;
+    height: 0.6rem;
+    opacity: 0.7;
+  }
+  .ctab :focus-visible {
+    outline-color: var(--turquesa-claro);
+  }
+  @media (max-width: 860px) {
+    .ctab__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

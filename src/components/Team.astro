@@ -1,0 +1,365 @@
+---
+/**
+ * The team, grouped by area. Calm by design: static cards, colour photos, everything readable
+ * without hovering. Scales by data: add a member to `team` in site.ts and it lands in its area;
+ * a new area becomes a new group automatically.
+ */
+import Icon from './Icon.astro';
+import { team, site, processSteps } from '../data/site';
+const areas = [...new Set(team.map((m) => m.area))];
+const groups = areas.map((a) => ({ area: a, people: team.filter((m) => m.area === a) }));
+const anyMuestra = team.some((m) => m.muestra);
+// Few people: large two-column cards with more detail. Many: compact grid with area filters.
+const compact = team.length > 6;
+---
+{team.length > 0 && (
+  <div class:list={['tm', { 'tm--big': !compact }]} data-tm>
+    {compact && areas.length > 1 && (
+      <div class="tm__filters" role="group" aria-label="Filtrar por área">
+        <button type="button" aria-pressed="true" data-f="*">Todos <span>{team.length}</span></button>
+        {groups.map((g) => <button type="button" aria-pressed="false" data-f={g.area}>{g.area} <span>{g.people.length}</span></button>)}
+      </div>
+    )}
+    <ul class="tm__grid">
+      {team.map((m) => (
+        <li class="tm__card hoja" data-area={m.area}>
+          <div class="tm__photo">
+            {m.photo
+              ? <img src={m.photo} alt={`Retrato de ${m.name}`} width="640" height="800" loading="lazy" decoding="async" />
+              : <span class="tm__initials" aria-hidden="true">{m.name.split(' ').slice(0, 2).map((w) => w[0]).join('')}</span>}
+            {m.muestra && <span class="tm__sample">Foto de muestra</span>}
+          </div>
+          <div class="tm__body">
+            <p class="tm__tag"><span class="knot" aria-hidden="true"></span>{m.area}</p>
+            <p class="tm__name">{m.name}</p>
+            <p class="tm__role">{m.role}</p>
+            {m.tareas.length > 0 && <ul class="tm__tasks">{m.tareas.slice(0, 3).map((t) => <li>{t}</li>)}</ul>}
+            {!compact && m.etapas.length > 0 && (
+              <div class="tm__steps">
+                <p>Te acompaña en</p>
+                <ul>{m.etapas.map((e) => <li>{processSteps[e].name}</li>)}</ul>
+              </div>
+            )}
+            {m.linkedin && <a class="tm__in" href={m.linkedin} target="_blank" rel="noopener">LinkedIn <Icon name="arrow" /></a>}
+          </div>
+        </li>
+      ))}
+      <li class="tm__join">
+        <a href={`mailto:${site.email}?subject=${encodeURIComponent('Quiero sumarme a Vertika')}`}>
+          <span class="tm__join-ico" aria-hidden="true"><Icon name="plus" /></span>
+          <b>¿Quieres sumarte al equipo?</b>
+          <small>Escríbenos y cuéntanos qué haces.</small>
+        </a>
+      </li>
+    </ul>
+    {anyMuestra && <p class="tm__note">Fotos de muestra: se reemplazarán por las del equipo.</p>}
+  </div>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tm]').forEach((root) => {
+    const btns = [...root.querySelectorAll<HTMLButtonElement>('[data-f]')];
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-area]')];
+    btns.forEach((b) =>
+      b.addEventListener('click', () => {
+        const f = b.dataset.f;
+        btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        cards.forEach((c) => (c.hidden = f !== '*' && c.dataset.area !== f));
+      }),
+    );
+  });
+</script>
+
+<style>
+  .tm {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .tm__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tm__filters button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    background: var(--hoja);
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .tm__filters button span {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 0.78rem;
+    color: var(--tinta-3);
+  }
+  .tm__filters button[aria-pressed='true'] {
+    background: var(--noche);
+    border-color: var(--noche);
+    color: #fff;
+  }
+  .tm__filters button[aria-pressed='true'] span {
+    color: var(--sobre-noche-2);
+  }
+  .tm__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tm__card {
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    padding: 0.75rem 0.75rem 1.1rem;
+    border-radius: 14px;
+    transition: border-color 0.2s;
+  }
+  .tm__card:hover {
+    border-color: var(--tinta-3);
+  }
+  .tm__photo {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--azul-suave);
+  }
+  .tm__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 25%;
+  }
+  .tm__initials {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--display);
+    font-weight: 850;
+    font-size: 2.4rem;
+    color: var(--azul);
+  }
+  .tm__sample {
+    position: absolute;
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(11, 27, 77, 0.78);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .tm__body {
+    display: grid;
+    gap: 0.2rem;
+    padding-inline: 0.35rem;
+  }
+  .tm__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+  .tm__tag .knot {
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--azul);
+  }
+  .tm__name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+  .tm__role {
+    color: var(--azul);
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .tm__tasks {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0.7rem 0 0;
+    padding: 0.7rem 0 0;
+    list-style: none;
+    border-top: 1px dashed var(--linea);
+  }
+  .tm__tasks li {
+    position: relative;
+    padding-left: 0.9rem;
+    color: var(--tinta-2);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .tm__tasks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 1px;
+    background: var(--turquesa);
+    transform: rotate(45deg);
+  }
+  .tm__in {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .tm__in :global(.icon) {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  .tm__join a {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.5rem;
+    height: 100%;
+    min-height: 14rem;
+    padding: 1.5rem;
+    border: 1.5px dashed var(--linea);
+    border-radius: 14px;
+    color: var(--tinta);
+    text-align: center;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .tm__join a:hover {
+    border-color: var(--azul);
+  }
+  .tm__join small {
+    color: var(--tinta-2);
+  }
+  .tm__join-ico {
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 10px;
+    background: var(--azul-suave);
+    color: var(--azul);
+  }
+  .tm__join :global(.icon) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .tm__note {
+    font-size: 0.8125rem;
+    color: var(--tinta-2);
+  }
+  /* Few people: large cards, two columns */
+  .tm--big .tm__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .tm--big .tm__card {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 1.5rem;
+    padding: 1rem;
+    border-radius: 18px;
+  }
+  .tm--big .tm__photo {
+    aspect-ratio: 4 / 5;
+    border-radius: 12px;
+  }
+  .tm--big .tm__body {
+    padding: 0.5rem 0.5rem 0.5rem 0;
+    align-content: start;
+  }
+  .tm--big .tm__name {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 108%;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-top: 0.2rem;
+  }
+  .tm--big .tm__role {
+    font-size: 1rem;
+  }
+  .tm--big .tm__tasks li {
+    font-size: 0.925rem;
+  }
+  .tm__steps {
+    margin-top: 0.9rem;
+  }
+  .tm__steps p {
+    margin-bottom: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta-3);
+  }
+  .tm__steps ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tm__steps li {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--papel);
+    border: 1px solid var(--linea);
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .tm--big .tm__join {
+    grid-column: 1 / -1;
+  }
+  .tm--big .tm__join a {
+    grid-template-columns: auto 1fr;
+    place-content: initial;
+    justify-items: start;
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.1rem;
+    min-height: 0;
+    padding: 1rem 1.25rem;
+    text-align: left;
+  }
+  .tm--big .tm__join-ico {
+    grid-row: span 2;
+  }
+  @media (max-width: 900px) {
+    .tm--big .tm__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 480px) {
+    .tm--big .tm__card {
+      grid-template-columns: 1fr;
+    }
+    .tm--big .tm__photo {
+      aspect-ratio: 1;
+    }
+  }
+</style>

@@ -1,0 +1,343 @@
+---
+/**
+ * AI triage with human handoff. Messages arrive, the AI agent classifies them: simple questions
+ * get answered automatically; complaints, payment problems and sensitive topics are filed for a
+ * person with the full context. Illustrative example.
+ */
+import Icon from '../Icon.astro';
+const msgs = [
+  { q: '¿Hasta qué hora atienden hoy?', h: false, tag: 'Horario', a: 'Respondido: hasta las 8:00 p. m.' },
+  { q: 'Mi pedido llegó dañado, quiero hacer un reclamo', h: true, tag: 'Reclamo', a: 'Derivado a Atención al cliente' },
+  { q: '¿Tienen stock de la caja A-12?', h: false, tag: 'Stock', a: 'Respondido: 148 unidades en Lima' },
+  { q: 'Me cobraron dos veces el mismo pedido', h: true, tag: 'Pago', a: 'Derivado a Caja · prioridad alta' },
+  { q: 'Necesito factura a nombre de mi empresa', h: false, tag: 'Factura', a: 'Respondido: factura F001 enviada' },
+  { q: 'Quiero hablar con un asesor', h: true, tag: 'Asesor', a: 'Derivado a Ventas' },
+  { q: '¿Hacen envíos a Arequipa?', h: false, tag: 'Envíos', a: 'Respondido: sí, en 48 h' },
+];
+---
+<section class="sec hh" id="ia-humana" aria-labelledby="hh-t">
+  <div class="wrap hh__grid">
+    <div class="hh__copy">
+      <h2 id="hh-t" class="display sec__title">IA con<br /><em>criterio humano.</em></h2>
+      <p class="sec__lead">Nuestras automatizaciones responden al instante lo que se puede resolver solo. Cuando la IA detecta un reclamo, un problema de pago o un tema delicado, no improvisa: lo archiva para una persona de tu equipo, con la conversación y los datos del cliente.</p>
+      <ul class="hh__rules">
+        <li><Icon name="check" /><span><b>Responde lo simple</b> horarios, stock, envíos, comprobantes.</span></li>
+        <li><Icon name="user" /><span><b>Deriva lo delicado</b> reclamos, cobros, salud, quejas o pedidos de hablar con alguien.</span></li>
+        <li><Icon name="eye" /><span><b>Tú defines las reglas</b> qué temas pasan siempre por una persona.</span></li>
+      </ul>
+    </div>
+
+    <div class="hh__board" data-hh aria-hidden="true">
+      <div class="hh__in">
+        <p class="hh__lbl">Mensajes entrantes</p>
+        <div class="hh__msg" data-hh-msg><span class="hh__typing"><i></i><i></i><i></i></span></div>
+      </div>
+      <div class="hh__agent">
+        <span class="hh__core"><Icon name="code" /></span>
+        <span class="hh__agent-t">Agente IA</span>
+        <span class="hh__verdict mono" data-hh-verdict>clasificando…</span>
+      </div>
+      <div class="hh__lanes">
+        <div class="hh__lane">
+          <p class="hh__lbl"><span class="hh__k hh__k--ia"></span>Resuelto por la IA</p>
+          <ol data-hh-ia></ol>
+        </div>
+        <div class="hh__lane hh__lane--h">
+          <p class="hh__lbl"><span class="hh__k"></span>Para tu equipo</p>
+          <ol data-hh-h></ol>
+        </div>
+      </div>
+      <p class="hh__fine">Ejemplo ilustrativo</p>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ msgs }}>
+  (() => {
+    const root = document.querySelector('[data-hh]');
+    if (!root) return;
+    const box = root.querySelector('[data-hh-msg]');
+    const verdict = root.querySelector('[data-hh-verdict]');
+    const ia = root.querySelector('[data-hh-ia]');
+    const hu = root.querySelector('[data-hh-h]');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const card = (m) => {
+      const li = document.createElement('li');
+      li.className = m.h ? 'is-h' : '';
+      li.innerHTML = `<span class="hh__tag">${m.tag}</span><span class="hh__q">${m.q}</span><span class="hh__a">${m.a}</span>`;
+      return li;
+    };
+    const put = (list, li) => {
+      list.prepend(li);
+      while (list.children.length > 3) list.lastChild.remove();
+    };
+    if (reduce) {
+      msgs.forEach((m) => put(m.h ? hu : ia, card(m)));
+      box.textContent = msgs[0].q; verdict.textContent = 'listo';
+      return;
+    }
+    let i = 0;
+    const next = () => {
+      const m = msgs[i % msgs.length];
+      box.classList.remove('is-out');
+      box.innerHTML = `<span class="hh__q">${m.q}</span>`;
+      box.classList.add('is-in');
+      verdict.textContent = 'clasificando…';
+      root.classList.remove('is-h', 'is-ia');
+      setTimeout(() => {
+        verdict.textContent = m.h ? `${m.tag.toLowerCase()} → persona` : `${m.tag.toLowerCase()} → responder`;
+        root.classList.add(m.h ? 'is-h' : 'is-ia');
+      }, 900);
+      setTimeout(() => {
+        box.classList.remove('is-in'); box.classList.add('is-out');
+        put(m.h ? hu : ia, card(m));
+      }, 1900);
+      i++;
+      setTimeout(next, 2900);
+    };
+    const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { next(); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(root);
+  })();
+</script>
+
+<style>
+  .hh__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .hh__copy :global(.sec__title) {
+    padding-left: 0;
+  }
+  .hh__copy :global(.sec__title)::before {
+    display: none;
+  }
+  .hh__copy :global(.sec__lead) {
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+  .hh__rules {
+    display: grid;
+    gap: 0.8rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hh__rules li {
+    display: flex;
+    gap: 0.7rem;
+    color: var(--tinta-2);
+  }
+  .hh__rules b {
+    display: block;
+    color: var(--tinta);
+  }
+  .hh__rules :global(.icon) {
+    flex: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.2rem;
+    color: var(--azul);
+  }
+  .hh__board {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    padding: 1.4rem;
+    border-radius: 18px;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    box-shadow: var(--shadow);
+  }
+  .hh__lbl {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+  .hh__msg {
+    display: flex;
+    align-items: center;
+    min-height: 3.2rem;
+    padding: 0.75rem 1rem;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--papel);
+    font-size: 0.95rem;
+    max-width: 85%;
+  }
+  .hh__msg.is-in {
+    animation: hh-in 0.45s var(--ease-out);
+  }
+  .hh__msg.is-out {
+    animation: hh-out 0.5s var(--ease-out) forwards;
+  }
+  @keyframes hh-in { from { opacity: 0.001; transform: translateY(8px); } }
+  @keyframes hh-out { to { opacity: 0.25; transform: translateY(18px) scale(0.96); } }
+  .hh__typing {
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+  .hh__typing i {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--tinta-3);
+    animation: hh-dot 1s ease-in-out infinite;
+  }
+  .hh__typing i:nth-child(2) { animation-delay: 0.15s; }
+  .hh__typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes hh-dot { 50% { transform: translateY(-3px); opacity: 0.4; } }
+  .hh__agent {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-self: center;
+    padding: 0.55rem 1rem 0.55rem 0.55rem;
+    border-radius: 999px;
+    background: var(--noche);
+    color: #fff;
+    transition: box-shadow 0.4s;
+  }
+  .hh__core {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--azul);
+  }
+  .hh__core::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--turquesa-claro);
+    animation: hh-spin 1s linear infinite;
+  }
+  @keyframes hh-spin { to { transform: rotate(360deg); } }
+  .hh__core :global(.icon) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .hh__agent-t {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .hh__verdict {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--sobre-noche-2);
+    font-size: 0.75rem;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .hh__board.is-ia .hh__verdict {
+    background: rgba(94, 224, 217, 0.18);
+    color: var(--turquesa-claro);
+  }
+  .hh__board.is-h .hh__verdict {
+    background: #fff;
+    color: var(--noche);
+  }
+  .hh__board.is-h .hh__agent {
+    box-shadow: 0 0 0 5px rgba(30, 78, 216, 0.18);
+  }
+  .hh__lanes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .hh__lane {
+    padding: 0.9rem;
+    border-radius: 12px;
+    background: var(--papel);
+    min-height: 15rem;
+  }
+  .hh__lane--h {
+    background: var(--azul-suave);
+  }
+  .hh__k {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background: var(--azul);
+    transform: rotate(45deg);
+  }
+  .hh__k--ia {
+    background: var(--turquesa);
+  }
+  .hh__lane ol {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hh__lane :global(li) {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 6px 14px -10px rgba(11, 27, 77, 0.45);
+    animation: hh-drop 0.5s var(--ease-out);
+  }
+  .hh__lane :global(li.is-h) {
+    box-shadow: inset 3px 0 0 var(--azul), 0 6px 14px -10px rgba(11, 27, 77, 0.45);
+  }
+  @keyframes hh-drop { from { opacity: 0.001; transform: translateY(-10px); } }
+  .hh__lane :global(.hh__tag) {
+    justify-self: start;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .hh__lane :global(li.is-h .hh__tag) {
+    background: var(--noche);
+    color: #fff;
+  }
+  .hh__lane :global(.hh__q) {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+  .hh__lane :global(.hh__a) {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--tinta-2);
+  }
+  .hh__fine {
+    font-size: 0.75rem;
+    color: var(--tinta-2);
+    text-align: right;
+  }
+  @media (max-width: 900px) {
+    .hh__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .hh__lanes {
+      grid-template-columns: 1fr;
+    }
+    .hh__lane {
+      min-height: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hh__core::after,
+    .hh__typing i {
+      animation: none;
+    }
+  }
+</style>

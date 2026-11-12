@@ -1,0 +1,40 @@
+---
+/**
+ * Desk stationery rendered in Blender (tape, clip, pin, pencil, notes), laid on the page as
+ * decoration. Lit from the top-left like every other render, so its shadow falls the same way.
+ */
+import { asset } from '../lib/assets';
+const sizes: Record<string, [number, number]> = {
+  'cinta-turquesa': [835, 295],
+  'cinta-azul': [828, 293],
+  clip: [127, 300],
+  chincheta: [300, 295],
+  lapiz: [1040, 250],
+  notas: [600, 549],
+};
+interface Props {
+  name: keyof typeof sizes;
+  /** width in rem */
+  w: number;
+  /** inline position, e.g. "top:-1rem;left:40%" */
+  at: string;
+  rot?: number;
+  mobile?: boolean;
+}
+const { name, w, at, rot = 0, mobile = false } = Astro.props;
+const src = asset(`${name}.webp`);
+const [iw, ih] = sizes[name];
+---
+{src && (
+  <img
+    class:list={['prop', { 'prop--desk': !mobile }]}
+    src={src}
+    alt=""
+    aria-hidden="true"
+    width={iw}
+    height={ih}
+    loading="lazy"
+    decoding="async"
+    style={`--w:${w}rem;--r:${rot}deg;${at}`}
+  />
+)}

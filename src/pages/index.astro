@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Brief from '../components/Brief.astro';
+import Audiences from '../components/Audiences.astro';
+import Showcase from '../components/Showcase.astro';
+import Gallery from '../components/Gallery.astro';
+import Process from '../components/Process.astro';
+import DataCare from '../components/DataCare.astro';
+import Faq from '../components/Faq.astro';
+import ContactClose from '../components/ContactClose.astro';
+import { site, audiences, generalFaq } from '../data/site';
+
+const faq = [...generalFaq, audiences[2].faq[0]];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Soluciones de software a medida',
+    itemListElement: audiences.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: `Software para ${a.label.toLowerCase()}`,
+      url: new URL(a.path, site.url).href,
+    })),
+  },
+];
+---
+<Base title="Vertika Platforms | Desarrollo de software a medida en Perú" description={site.description} path="/" jsonLd={jsonLd}>
+  <Hero variant="home" />
+  <Audiences />
+  <Showcase />
+  <Brief />
+  <Process />
+  <Gallery />
+  <DataCare />
+  <Faq items={faq} />
+  <ContactClose />
+</Base>

@@ -1,0 +1,434 @@
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-var.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/fonts/dm-mono-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/fonts/dm-mono-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
+:root {
+  --azul: #1e4ed8;
+  --azul-hover: #1a43bb;
+  --azul-suave: #e6ecfc;
+  --noche: #0b1b4d;
+  --noche-hover: #162a6b;
+  --turquesa: #0fb5ae;
+  --turquesa-claro: #5ee0d9;
+  --turquesa-suave: #e1f6f5;
+  --turquesa-tinta: #0a6b67;
+  --nube: #f4f6fa;
+
+  --papel: #eef1f7;
+  --hoja: #fbfcfe;
+  --tinta: #0b1b4d;
+  --tinta-2: #46527c;
+  --tinta-3: #56618a;
+  --linea: #d6dcea;
+  --linea-2: #e4e8f1;
+
+  --sobre-noche: #ffffff;
+  --sobre-noche-2: #b9c5e8;
+  --linea-noche: rgba(94, 224, 217, 0.28);
+
+  --display: 'Archivo', 'DM Sans', system-ui, sans-serif;
+  --font: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'DM Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --gutter: clamp(1rem, 4vw, 4rem);
+  --max: 1312px;
+  --radius: 4px;
+  --cord: 2px;
+  --shadow: 0 1px 0 rgba(11, 27, 77, 0.04), 0 14px 32px -20px rgba(11, 27, 77, 0.32);
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+  --step-3: clamp(2.1rem, 1.3rem + 3vw, 3.6rem);
+  --step-4: clamp(2.9rem, 1.2rem + 6.4vw, 6rem);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  scrollbar-color: var(--noche) var(--papel);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--tinta);
+  background-color: var(--papel);
+  background-image: var(--paper-image, none);
+  background-size: 1400px 1400px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--turquesa-claro);
+  color: var(--noche);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 700;
+  text-wrap: balance;
+}
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--azul);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.icon {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--max) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--noche);
+  color: #fff;
+  font-weight: 700;
+}
+.skip:focus {
+  top: 1rem;
+}
+
+/* Dark surface (footer) */
+.on-noche {
+  background: var(--noche);
+  color: var(--sobre-noche);
+}
+.on-noche :where(a:not(.btn)) {
+  color: var(--turquesa-claro);
+}
+
+/* Display type: heavy, expanded, uppercase */
+.display {
+  font-family: var(--display);
+  font-weight: 860;
+  font-stretch: 118%;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.96;
+}
+.display em {
+  font-style: normal;
+  color: var(--azul);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+}
+
+/* Section opener: heavy ink rule, a knot, the heading */
+.sec {
+  padding-block: clamp(4.5rem, 9vw, 8rem) 0;
+}
+.sec:last-of-type {
+  padding-bottom: clamp(4.5rem, 9vw, 8rem);
+}
+.sec__head {
+  display: grid;
+  gap: 1.1rem;
+  padding-top: 1.25rem;
+  margin-bottom: clamp(2.25rem, 4.5vw, 3.5rem);
+  border-top: 2px solid var(--tinta);
+}
+.sec__title {
+  position: relative;
+  padding-left: 1.6rem;
+  font-size: var(--step-3);
+}
+.sec__title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.32em;
+  width: 0.62rem;
+  height: 0.62rem;
+  background: var(--azul);
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+.sec__lead {
+  padding-left: 1.6rem;
+  max-width: 58ch;
+  color: var(--tinta-2);
+  font-size: 1.125rem;
+}
+.sec__headrow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem 2rem;
+}
+
+/* Sheets: the cards of this world */
+.hoja {
+  background: var(--hoja);
+  border: 1px solid var(--linea);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 3.1rem;
+  padding: 0.85rem 1.4rem;
+  border: 0;
+  border-radius: 2px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 0.9375rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
+}
+.btn .icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  transition: transform 0.3s var(--ease-out);
+}
+.btn:hover .icon:last-child {
+  transform: translateX(3px);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn--ink {
+  background: var(--noche);
+  color: #fff;
+}
+.btn--ink:hover {
+  background: var(--noche-hover);
+  box-shadow: 0 10px 24px -12px rgba(11, 27, 77, 0.7);
+}
+.btn--line {
+  background: transparent;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 1.5px var(--tinta);
+}
+.btn--line:hover {
+  background: var(--hoja);
+  box-shadow: inset 0 0 0 2px var(--tinta);
+}
+.btn--blue {
+  background: var(--azul);
+  color: #fff;
+}
+.btn--blue:hover {
+  background: var(--azul-hover);
+}
+
+/* The knot: the logo's diamond */
+.knot {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: var(--turquesa);
+  transform: rotate(45deg);
+  border-radius: 1.5px;
+  flex: none;
+}
+
+/* Icon tile: solid blue square with a white glyph */
+.tile {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 3px;
+  background: var(--azul);
+  color: #fff;
+  flex: none;
+}
+.tile .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  background: var(--turquesa-suave);
+  color: var(--turquesa-tinta);
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.link-arrow .icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s var(--ease-out);
+}
+.link-arrow:hover .icon {
+  transform: translateX(3px);
+}
+
+/* Reveal on scroll (content visible by default; JS opts in) */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.9s var(--ease-out);
+}
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Blender stationery laid on the page */
+.prop {
+  position: absolute;
+  z-index: 4;
+  width: var(--w);
+  height: auto;
+  transform: rotate(var(--r, 0deg));
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 860px) {
+  .prop--desk {
+    display: none;
+  }
+}

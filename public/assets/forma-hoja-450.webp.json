@@ -1,0 +1,21 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-formas.blend",
+ "fecha": "2026-11-11",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "modulo": 1.0,
+ "grosor": 0.28,
+ "bisel": 0.04,
+ "descripcion": "Hoja gris nube con la esquina doblada a 45 grados y lineas en relieve: todo por escrito.",
+ "color_objetivo": [
+  "#F4F6FA"
+ ],
+ "escena": "forma-hoja",
+ "colores_objetivo": [
+  "#F4F6FA"
+ ],
+ "colores_muestreados_cara_iluminada": [
+  "#F4F6FA"
+ ],
+ "postproceso": "Calibracion lineal por color (cara iluminada al objetivo), fundido de alfa en bordes, recorte, WebP q86 a 900 y 450 px."
+}

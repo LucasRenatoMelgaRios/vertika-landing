@@ -1,0 +1,448 @@
+---
+/**
+ * The end of the quipu. Link columns hang from the main cord as pendant cords, each link a knot.
+ * Below, a giant VERTIKA wordmark ruled in vertical stripes that light up under the cursor, with
+ * the Blender objects from the file world resting on the letters.
+ */
+import Icon from './Icon.astro';
+import { site, audiences, waLink } from '../data/site';
+import { asset } from '../lib/assets';
+const year = new Date().getFullYear();
+const cols = [
+  {
+    title: 'Soluciones',
+    links: [
+      ...audiences.map((a) => ({ href: a.path, label: `Software para ${a.label.toLowerCase()}` })),
+      { href: '/empresas/crm-whatsapp/', label: 'CRM para WhatsApp' },
+      { href: '/empresas/automatizacion-n8n/', label: 'Automatización con n8n' },
+      { href: '/empresas/erp-a-medida/', label: 'ERP a medida' },
+    ],
+  },
+  {
+    title: 'Cómo trabajamos',
+    links: [
+      { href: '/#proceso', label: 'Nuestro proceso' },
+      { href: '/#arma', label: 'Arma tu brief' },
+      { href: '/#construimos', label: 'Lo que construimos' },
+      { href: '/#preguntas', label: 'Preguntas frecuentes' },
+    ],
+  },
+  {
+    title: 'Vertika',
+    links: [
+      { href: '/nosotros/', label: 'Nosotros' },
+      { href: '/seguridad-y-datos/', label: 'Seguridad y datos' },
+      { href: '/contacto/', label: 'Contacto' },
+    ],
+  },
+];
+const nudo = asset('exp-nudo.webp');
+---
+<footer class="ftr" data-ftr>
+  <div class="wrap ftr__top">
+    <div class="ftr__brand">
+      <img src="/brand/vertika-horizontal-blanco.svg" alt={site.name} width="150" height="36" loading="lazy" />
+      <p>Software a medida para personas, empresas y el sector salud. Hecho en {site.countryName}.</p>
+      <div class="ftr__contact">
+        <a class="ftr__wa" href={waLink('Hola Vertika, quiero conversar sobre un proyecto.')} target="_blank" rel="noopener">
+          <Icon name="chat" /> Escríbenos por WhatsApp
+        </a>
+        <a class="ftr__mail" href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a>
+      </div>
+    </div>
+
+    <div class="ftr__quipu">
+      <span class="ftr__cord" aria-hidden="true"></span>
+      {cols.map((c, ci) => (
+        <nav class="ftr__col" aria-label={c.title} style={`--c:${ci}`}>
+          <span class="ftr__pend" aria-hidden="true"></span>
+          <h2>{c.title}</h2>
+          <ul>
+            {c.links.map((l) => (
+              <li><a href={l.href}><span class="ftr__k" aria-hidden="true"></span>{l.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+  </div>
+
+  <div class="ftr__mark" data-mark aria-hidden="true">
+    <div class="ftr__props">
+      {nudo && ['n1', 'n2', 'n3'].map((k) => <img class:list={['ftr__prop', 'ftr__nudo', k]} src={nudo} alt="" width="248" height="287" loading="lazy" decoding="async" />)}
+    </div>
+    <canvas class="ftr__fx" data-fx></canvas>
+    <svg class="ftr__word" viewBox="0 0 1000 176" preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <pattern id="ftr-rayas" width="9" height="10" patternUnits="userSpaceOnUse">
+          <rect width="9" height="10" fill="#B9C5E8" fill-opacity="0.025" />
+          <rect width="2" height="10" fill="#B9C5E8" fill-opacity="0.16" />
+        </pattern>
+        <radialGradient id="ftr-luz">
+          <stop offset="0" stop-color="#fff" />
+          <stop offset="1" stop-color="#fff" stop-opacity="0" />
+        </radialGradient>
+        <mask id="ftr-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="176">
+          <circle data-luz cx="-400" cy="90" r="170" fill="url(#ftr-luz)" />
+        </mask>
+      </defs>
+      <text x="500" y="168" text-anchor="middle" textLength="992" lengthAdjust="spacingAndGlyphs" fill="url(#ftr-rayas)">VERTIKA</text>
+      <g mask="url(#ftr-mask)">
+        <text x="500" y="168" text-anchor="middle" textLength="992" lengthAdjust="spacingAndGlyphs" fill="#5EE0D9" fill-opacity="0.32">VERTIKA</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="wrap ftr__base">
+    <p>© {year} {site.name}. Todos los derechos reservados.</p>
+    <p class="ftr__made"><span class="ftr__kk" aria-hidden="true"></span>Lima, {site.countryName}</p>
+    <a href="#contenido" class="ftr__up">Volver arriba <Icon name="arrow" /></a>
+  </div>
+</footer>
+
+<script>
+  const mark = document.querySelector<HTMLElement>('[data-mark]');
+  const svg = mark?.querySelector<SVGSVGElement>('svg');
+  const luz = svg?.querySelector<SVGCircleElement>('[data-luz]');
+  const cv = mark?.querySelector<HTMLCanvasElement>('[data-fx]');
+  const fine = matchMedia('(hover: hover)').matches;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (mark && svg && luz && cv && fine) {
+    const ctx = cv.getContext('2d')!;
+    let W = 0, H = 0, dpr = 1;
+    // Sample where the letters are, so particles rise only from the wordmark itself.
+    let inside: (x: number, y: number) => boolean = () => false;
+    const size = () => {
+      const r = mark.getBoundingClientRect();
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = r.width; H = r.height;
+      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const sr = svg.getBoundingClientRect();
+      const off = document.createElement('canvas'); off.width = Math.ceil(sr.width); off.height = Math.ceil(sr.height);
+      const o = off.getContext('2d')!;
+      const fs = (sr.width / 1000) * 200;
+      o.font = `900 ${fs}px Archivo, sans-serif`;
+      try { (o as any).fontStretch = 'ultra-expanded'; } catch {}
+      o.textAlign = 'center'; o.textBaseline = 'alphabetic';
+      const tw = o.measureText('VERTIKA').width; const sx = (sr.width * 0.992) / tw;
+      o.setTransform(sx, 0, 0, 1, sr.width / 2, (168 / 176) * sr.height);
+      o.fillText('VERTIKA', 0, 0);
+      const data = o.getImageData(0, 0, off.width, off.height).data;
+      const ox = sr.left - r.left, oy = sr.top - r.top;
+      inside = (x, y) => { const ix = Math.round(x - ox), iy = Math.round(y - oy); if (ix < 0 || iy < 0 || ix >= off.width || iy >= off.height) return false; return data[(iy * off.width + ix) * 4 + 3] > 128; };
+    };
+    (document as any).fonts?.ready.then(size); size();
+    addEventListener('resize', size);
+    type P = { x: number; y: number; vy: number; vx: number; life: number; max: number; s: number };
+    const parts: P[] = [];
+    let mx = -999, my = -999, raf = 0, active = false;
+    const loop = () => {
+      ctx.clearRect(0, 0, W, H);
+      if (active && !reduce) {
+        for (let k = 0; k < 3; k++) {
+          const a = Math.random() * Math.PI * 2, d = Math.random() * 90;
+          const px = mx + Math.cos(a) * d, py = my + Math.sin(a) * d * 0.7;
+          if (inside(px, py)) parts.push({ x: px, y: py, vx: (Math.random() - 0.5) * 0.15, vy: -0.25 - Math.random() * 0.45, life: 0, max: 50 + Math.random() * 40, s: 1.2 + Math.random() * 1.6 });
+        }
+      }
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i]; p.life++; p.x += p.vx; p.y += p.vy;
+        const t = p.life / p.max; if (t >= 1) { parts.splice(i, 1); continue; }
+        const al = (t < 0.15 ? t / 0.15 : 1 - (t - 0.15) / 0.85) * 0.6;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(Math.PI / 4);
+        ctx.fillStyle = `rgba(94,224,217,${al.toFixed(3)})`; ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s); ctx.restore();
+      }
+      raf = parts.length || active ? requestAnimationFrame(loop) : 0;
+    };
+    mark.addEventListener('pointermove', (e) => {
+      const r = mark.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top;
+      const ctm = svg.getScreenCTM();
+      if (ctm) { const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse()); luz.setAttribute('cx', pt.x.toFixed(1)); luz.setAttribute('cy', pt.y.toFixed(1)); }
+      active = true; if (!raf) raf = requestAnimationFrame(loop);
+    });
+    mark.addEventListener('pointerleave', () => { active = false; luz.setAttribute('cx', '-400'); });
+  }
+</script>
+
+<style>
+  .ftr {
+    position: relative;
+    overflow: hidden;
+    background: var(--noche);
+    color: #fff;
+    padding-top: clamp(3.5rem, 7vw, 5.5rem);
+  }
+  .ftr a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .ftr__top {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 2fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+  }
+  .ftr__brand {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+  .ftr__brand img {
+    width: 9.5rem;
+    height: auto;
+  }
+  .ftr__brand > p {
+    color: var(--sobre-noche-2);
+    max-width: 30ch;
+  }
+  .ftr__contact {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+  }
+  .ftr__wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--noche) !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: background-color 0.2s, transform 0.2s var(--ease-out);
+  }
+  .ftr__wa:hover {
+    background: var(--turquesa-claro);
+    transform: translateY(-1px);
+  }
+  .ftr__mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--sobre-noche-2) !important;
+    font-size: 0.95rem;
+  }
+  .ftr__mail:hover {
+    color: #fff !important;
+  }
+  .ftr :global(.icon) {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  /* Link columns hang from one cord */
+  .ftr__quipu {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding-top: 2.6rem;
+  }
+  .ftr__cord {
+    position: absolute;
+    left: 0;
+    right: calc(var(--gutter) * -1);
+    top: 0;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--turquesa-claro);
+    opacity: 0.85;
+  }
+  .ftr__col {
+    position: relative;
+    padding-left: 1.4rem;
+  }
+  .ftr__pend {
+    position: absolute;
+    left: 0.3rem;
+    top: -2.6rem;
+    bottom: 0.6rem;
+    width: 2px;
+    background: rgba(94, 224, 217, 0.4);
+  }
+  .ftr__pend::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--turquesa-claro);
+    transform: rotate(45deg);
+  }
+  .ftr__col h2 {
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--turquesa-claro);
+  }
+  .ftr__col ul {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ftr__col a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    color: var(--sobre-noche-2);
+    transition: color 0.2s, transform 0.3s var(--ease-out);
+  }
+  .ftr__k {
+    position: absolute;
+    left: calc(-1.1rem - 1px);
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 1px;
+    background: var(--noche);
+    border: 1.5px solid rgba(94, 224, 217, 0.55);
+    transform: rotate(45deg);
+    transition: background-color 0.25s, border-color 0.25s, transform 0.4s var(--ease-out);
+  }
+  .ftr__col a:hover,
+  .ftr__col a:focus-visible {
+    color: #fff;
+    transform: translateX(3px);
+  }
+  .ftr__col a:hover .ftr__k,
+  .ftr__col a:focus-visible .ftr__k {
+    background: var(--turquesa-claro);
+    border-color: var(--turquesa-claro);
+    transform: rotate(225deg) scale(1.2);
+  }
+
+  /* The wordmark */
+  .ftr__mark {
+    position: relative;
+    margin-top: clamp(4.5rem, 9vw, 7rem);
+    padding-inline: var(--gutter);
+  }
+  .ftr__word {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 125%;
+    font-size: 200px;
+    letter-spacing: -0.02em;
+    user-select: none;
+  }
+  .ftr__fx {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .ftr__props {
+    position: absolute;
+    inset: 0 var(--gutter);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .ftr__prop {
+    position: absolute;
+    height: auto;
+    filter: drop-shadow(0 14px 14px rgba(0, 0, 0, 0.35));
+  }
+  .ftr__nudo {
+    animation: float 6s ease-in-out infinite;
+  }
+  .n1 {
+    left: 16%;
+    top: -26%;
+    width: 4.2%;
+  }
+  .n2 {
+    left: 54%;
+    top: -42%;
+    width: 2.6%;
+    opacity: 0.75;
+    filter: blur(0.5px) drop-shadow(0 10px 10px rgba(0, 0, 0, 0.3));
+    animation-delay: -2s;
+  }
+  .n3 {
+    right: 12%;
+    top: -18%;
+    width: 3.4%;
+    animation-delay: -4s;
+  }
+  @keyframes float {
+    50% {
+      transform: translateY(-10px) rotate(8deg);
+    }
+  }
+
+  .ftr__base {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    padding-block: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(94, 224, 217, 0.22);
+    background: var(--noche);
+    font-size: 0.875rem;
+    color: var(--sobre-noche-2);
+  }
+  .ftr__made {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ftr__kk {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 1px;
+    background: var(--turquesa-claro);
+    transform: rotate(45deg);
+  }
+  .ftr__up {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .ftr__up :global(.icon) {
+    transform: rotate(-90deg);
+  }
+  .ftr__up:hover {
+    color: #fff;
+  }
+  .ftr :focus-visible {
+    outline-color: var(--turquesa-claro);
+  }
+
+  @media (max-width: 960px) {
+    .ftr__top {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .ftr__quipu {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 2.5rem;
+    }
+    .ftr__col:nth-child(4) .ftr__pend {
+      top: -2.5rem;
+    }
+    .ftr__base {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ftr__nudo {
+      animation: none;
+    }
+  }
+</style>

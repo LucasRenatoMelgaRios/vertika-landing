@@ -1,0 +1,9 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "d:\\Vertika Landing Page\\assets-blender\\simbolo-3d.blend",
+ "fecha": "2026-11-10",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Símbolo Vertika (V + rombo) extruido desde kit-de-marca/logo/svg/vertika-simbolo-color.svg, azul Vertika y turquesa claro, fondo transparente con sombra de contacto.",
+ "postproceso": "Fundido de alfa en bordes (cola de sombra), reescalado y exportado a WebP q86.",
+ "fuente_png": "assets-blender/renders/simbolo-3d.png"
+}

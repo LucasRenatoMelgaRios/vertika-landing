@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import DataCare from '../components/DataCare.astro';
+import ContactClose from '../components/ContactClose.astro';
+
+const sections = [
+  {
+    h: 'Desde el diseño',
+    p: [
+      'Antes de programar definimos qué datos necesita el sistema, quién puede verlos y por cuánto tiempo se guardan. Así evitamos recolectar información que no se usa.',
+      'En proyectos de salud identificamos desde el inicio qué datos son sensibles y aplicamos controles adicionales sobre ellos.',
+    ],
+  },
+  {
+    h: 'Durante el desarrollo',
+    p: [
+      'Trabajamos con entornos separados para desarrollo, pruebas y producción. En las pruebas usamos datos ficticios, nunca datos reales de tus clientes o pacientes.',
+      'El acceso del equipo a la información es el mínimo necesario y queda registrado.',
+    ],
+  },
+  {
+    h: 'En el sistema terminado',
+    p: [
+      'La información viaja cifrada y se almacena protegida. Cada usuario entra con su propia cuenta y ve solo lo que su rol permite.',
+      'El sistema registra quién consultó o modificó datos sensibles y cuenta con copias de seguridad periódicas.',
+    ],
+  },
+  {
+    h: 'La Ley N.° 29733',
+    p: [
+      'La Ley de Protección de Datos Personales del Perú y su reglamento establecen cómo deben tratarse los datos personales, con exigencias especiales para los datos sensibles, como los de salud.',
+      'Diseñamos cada sistema para que tu organización pueda cumplirla. El cumplimiento también depende de tus procesos internos, por eso te ayudamos a identificar qué te corresponde, como informar a los titulares de los datos y atender sus solicitudes de acceso o corrección.',
+    ],
+  },
+];
+---
+<Base
+  title="Seguridad y protección de datos personales"
+  description="Cómo Vertika Platforms protege los datos personales y de salud en el software que desarrolla: cifrado, acceso por roles, registro de actividad y Ley N.° 29733."
+  path="/seguridad-y-datos/"
+  crumbs={[{ name: 'Seguridad y datos', path: '/seguridad-y-datos/' }]}
+>
+  <PageHero
+    title="Seguridad y protección de datos"
+    lead="El software que construimos maneja información de personas. Esta es la forma en que la protegemos, en cada etapa del proyecto."
+  />
+  <section class="sec sd" aria-label="Cómo protegemos los datos">
+    <div class="wrap sd__list">
+      {sections.map((s) => (
+        <article class="sd__item">
+          <h2><span class="knot" aria-hidden="true"></span>{s.h}</h2>
+          <div>{s.p.map((t) => <p>{t}</p>)}</div>
+        </article>
+      ))}
+    </div>
+  </section>
+  <DataCare title="Prácticas que aplicamos<br />en cada proyecto." lead="Un resumen de lo que encontrarás en cualquier sistema que construyamos." showLink={false} />
+  <ContactClose message="Hola Vertika, tengo preguntas sobre cómo protegen los datos en sus proyectos." />
+</Base>
+
+<style>
+  .sd__list {
+    display: grid;
+    gap: 0;
+  }
+  .sd__item:first-child {
+    border-top: 2px solid var(--tinta);
+  }
+  .sd__item {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(1.25rem, 5vw, 5rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
+    border-bottom: 1px solid var(--linea);
+  }
+  .sd__item h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    font-size: var(--step-2);
+  }
+  .sd__item h2 .knot {
+    background: var(--azul);
+    transform: translateY(-0.15rem) rotate(45deg);
+  }
+  .sd__item div {
+    display: grid;
+    gap: 1rem;
+    max-width: 62ch;
+  }
+  .sd__item p {
+    color: var(--tinta-2);
+    font-size: 1.0625rem;
+  }
+  @media (max-width: 760px) {
+    .sd__item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

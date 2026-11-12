@@ -1,0 +1,102 @@
+---
+/** Areas where Vertika builds its own technology: a navy grid of short capabilities. */
+import Icon, { type IconName } from '../Icon.astro';
+interface Props {
+  items: { icon: IconName; titulo: string; texto: string }[];
+}
+const { items } = Astro.props;
+---
+<section class="ars" aria-labelledby="ars-t">
+  <div class="wrap">
+    <div class="ars__head">
+      <h2 id="ars-t" class="display ars__title">Lo que ya sabemos<br /><em>construir y operar.</em></h2>
+      <p>Cada producto propio nos dejó piezas probadas en producción. Las combinamos para crear nuevas plataformas y automatizaciones.</p>
+    </div>
+    <ul class="ars__grid">
+      {items.map((it) => (
+        <li>
+          <span class="ars__ico"><Icon name={it.icon} /></span>
+          <h3>{it.titulo}</h3>
+          <p>{it.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ars {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3.5rem, 7vw, 5.5rem);
+    background: var(--noche);
+    color: #fff;
+  }
+  .ars__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .ars__title {
+    font-size: var(--step-3);
+  }
+  .ars__title :global(em) {
+    color: var(--turquesa-claro);
+  }
+  .ars__head p {
+    color: var(--sobre-noche-2);
+    font-size: 1.0625rem;
+  }
+  .ars__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(94, 224, 217, 0.25);
+    border-left: 1px solid rgba(94, 224, 217, 0.25);
+  }
+  .ars__grid li {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    padding: 1.6rem;
+    border-right: 1px solid rgba(94, 224, 217, 0.25);
+    border-bottom: 1px solid rgba(94, 224, 217, 0.25);
+  }
+  .ars__ico {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 8px;
+    background: rgba(94, 224, 217, 0.12);
+    color: var(--turquesa-claro);
+    margin-bottom: 0.4rem;
+  }
+  .ars__ico :global(.icon) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .ars__grid h3 {
+    font-size: 1.1rem;
+  }
+  .ars__grid p {
+    color: var(--sobre-noche-2);
+    font-size: 0.95rem;
+  }
+  @media (max-width: 900px) {
+    .ars__head {
+      grid-template-columns: 1fr;
+    }
+    .ars__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .ars__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,217 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import { dataPractices } from '../data/site';
+import Forma from './Forma.astro';
+interface Props {
+  title?: string;
+  lead?: string;
+  showLink?: boolean;
+  usuarios?: string;
+}
+const {
+  title = 'Tus datos,<br />bien cuidados.',
+  lead = 'Muchos sistemas manejan datos personales; en salud, datos sensibles. La protección se diseña desde el primer día, pensando en la Ley N.° 29733 de Protección de Datos Personales del Perú.',
+  showLink = true,
+  usuarios = 'pacientes · clientes',
+} = Astro.props;
+const icons: IconName[] = ['lock', 'key', 'eye', 'database', 'refresh', 'shield'];
+---
+<section class="sec dc" id="seguridad" aria-labelledby="dc-titulo">
+  <div class="wrap">
+    <div class="sec__head dc__head">
+      <Forma name="candado" class="dc__forma" sizes="220px" />
+      <h2 id="dc-titulo" class="display sec__title" set:html={title} />
+      <p class="sec__lead">{lead}</p>
+    </div>
+
+    <div class="dc__grid">
+      <figure class="dc__flow hoja" data-reveal>
+        <p class="dc__claim">Cada dato entra cifrado, lo ve solo quien debe y queda constancia de quién lo consultó.</p>
+        <ol class="dc__path" aria-label="Recorrido de un dato">
+          <li>
+            <span class="dc__pt"></span>
+            <Icon name="user" />
+            <b>Tus usuarios</b>
+            <small>{usuarios}</small>
+          </li>
+          <li>
+            <span class="dc__pt"></span>
+            <Icon name="shield" />
+            <b>El sistema</b>
+            <small>cifrado · roles · registro</small>
+          </li>
+          <li class="is-end">
+            <span class="dc__pt"></span>
+            <Icon name="key" />
+            <b>Tu equipo autorizado</b>
+            <small>solo lo que necesita</small>
+          </li>
+        </ol>
+      </figure>
+
+      <ul class="dc__list">
+        {dataPractices.map((p, i) => (
+          <li>
+            <h3><Icon name={icons[i]} />{p.name}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    {showLink && (
+      <a class="link-arrow dc__link" href="/seguridad-y-datos/">Cómo tratamos los datos, en detalle <Icon name="arrow" /></a>
+    )}
+  </div>
+</section>
+
+<style>
+  .dc__head {
+    position: relative;
+  }
+  .dc__head :global(.dc__forma) {
+    position: absolute;
+    right: 2%;
+    top: 1.25rem;
+    width: min(18%, 13rem);
+    height: auto;
+    pointer-events: none;
+  }
+  @media (max-width: 860px) {
+    .dc__head :global(.dc__forma) {
+      display: none;
+    }
+  }
+  .dc__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .dc__flow {
+    position: relative;
+    margin: 0;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .dc__claim {
+    font-size: var(--step-2);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--linea-2);
+  }
+  .dc__path {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dc__path li {
+    position: relative;
+    display: grid;
+    gap: 0.35rem;
+    justify-items: start;
+    padding-top: 1.6rem;
+  }
+  .dc__path li:not(.is-end)::after {
+    content: '';
+    position: absolute;
+    top: 0.45rem;
+    left: 1.5rem;
+    right: 0.75rem;
+    height: 2px;
+    background:
+      linear-gradient(var(--azul), var(--azul)) left / calc(100% - 6px) 2px no-repeat;
+  }
+  .dc__path li:not(.is-end)::before {
+    content: '';
+    position: absolute;
+    top: calc(0.45rem - 4px);
+    right: 0.75rem;
+    width: 8px;
+    height: 10px;
+    background: var(--azul);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+  .dc__pt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--azul);
+  }
+  .is-end .dc__pt {
+    box-shadow: 0 0 0 4px var(--hoja), 0 0 0 5.5px var(--azul);
+  }
+  .dc__path :global(.icon) {
+    width: 1.35rem;
+    height: 1.35rem;
+    color: var(--azul);
+  }
+  .dc__path b {
+    font-size: 1.05rem;
+  }
+  .dc__path small {
+    color: var(--tinta-2);
+    font-size: 0.875rem;
+  }
+  .dc__list {
+    display: grid;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dc__list h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.15rem;
+    margin-bottom: 0.25rem;
+  }
+  .dc__list h3 :global(.icon) {
+    color: var(--azul);
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .dc__list p {
+    color: var(--tinta-2);
+    padding-left: 1.75rem;
+  }
+  .dc__link {
+    margin-top: 2.5rem;
+  }
+  @media (max-width: 900px) {
+    .dc__head {
+    position: relative;
+  }
+  .dc__head :global(.dc__forma) {
+    position: absolute;
+    right: 2%;
+    top: 1.25rem;
+    width: min(18%, 13rem);
+    height: auto;
+    pointer-events: none;
+  }
+  @media (max-width: 860px) {
+    .dc__head :global(.dc__forma) {
+      display: none;
+    }
+  }
+  .dc__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .dc__path {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    .dc__path li::after,
+    .dc__path li::before {
+      display: none;
+    }
+  }
+</style>

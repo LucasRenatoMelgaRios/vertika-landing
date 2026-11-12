@@ -1,0 +1,8 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-expediente.blend",
+ "fecha": "2026-11-10",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Carpeta azul Vertika con separadores de pestanas en colores de marca y etiqueta blanca.",
+ "postproceso": "azules calibrados a #1E4ED8 (factor lineal [0.133, 0.479, 0.851]); fundido de alfa en bordes, recorte al contenido, WebP q86."
+}

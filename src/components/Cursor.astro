@@ -1,0 +1,226 @@
+---
+/**
+ * Custom cursor: a navy dot, a ring that trails it, and a faint trail of knot-shaped particles.
+ * Over links and buttons the ring grows; near a Blender object the object leans toward the cursor
+ * and the ring turns turquoise. Only for fine pointers with motion allowed; the native cursor
+ * stays everywhere else (touch, reduced motion, text fields).
+ */
+---
+<div class="cur" aria-hidden="true" data-cur>
+  <canvas class="cur__fx"></canvas>
+  <span class="cur__ring"></span>
+  <span class="cur__dot"></span>
+</div>
+
+<style is:global>
+  .cur {
+    display: none;
+  }
+  html.has-cur .cur {
+    display: block;
+  }
+  html.has-cur,
+  html.has-cur body,
+  html.has-cur a,
+  html.has-cur button,
+  html.has-cur label,
+  html.has-cur summary,
+  html.has-cur [role='tab'] {
+    cursor: none;
+  }
+  html.has-cur input[type='text'],
+  html.has-cur input[type='email'],
+  html.has-cur textarea {
+    cursor: text;
+  }
+  .cur__fx {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+  .cur__dot,
+  .cur__ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .cur__dot {
+    width: 7px;
+    height: 7px;
+    margin: -3.5px 0 0 -3.5px;
+    background: var(--noche);
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+    transition: background-color 0.2s, opacity 0.2s;
+  }
+  .cur__ring {
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    border: 1.5px solid rgba(11, 27, 77, 0.45);
+    transition:
+      width 0.35s var(--ease-out),
+      height 0.35s var(--ease-out),
+      margin 0.35s var(--ease-out),
+      border-color 0.25s,
+      background-color 0.25s,
+      opacity 0.25s;
+  }
+  .cur.is-link .cur__ring {
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border-color: var(--azul);
+    background: rgba(30, 78, 216, 0.07);
+  }
+  .cur.is-link .cur__dot {
+    background: var(--azul);
+  }
+  .cur.is-obj .cur__ring {
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-color: var(--turquesa);
+    background: rgba(94, 224, 217, 0.12);
+  }
+  .cur.is-dark .cur__dot {
+    background: var(--turquesa-claro);
+    box-shadow: none;
+  }
+  .cur.is-dark .cur__ring {
+    border-color: rgba(94, 224, 217, 0.55);
+  }
+  .cur.is-down .cur__ring {
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+  }
+  .cur.is-out .cur__dot,
+  .cur.is-out .cur__ring {
+    opacity: 0;
+  }
+  .cur.is-text .cur__dot,
+  .cur.is-text .cur__ring {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.querySelector<HTMLElement>('[data-cur]');
+  if (root && fine && !reduce) {
+    document.documentElement.classList.add('has-cur');
+    const dot = root.querySelector<HTMLElement>('.cur__dot')!;
+    const ring = root.querySelector<HTMLElement>('.cur__ring')!;
+    const cv = root.querySelector<HTMLCanvasElement>('canvas')!;
+    const ctx = cv.getContext('2d')!;
+    let dpr = 1;
+    const size = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = innerWidth * dpr;
+      cv.height = innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    size();
+    addEventListener('resize', size);
+
+    // Only a few hero objects react; tape, clip, pencil and the rest stay put.
+    const OBJ = '.hero__obj';
+    let objs: HTMLElement[] = [];
+    const collect = () => (objs = [...document.querySelectorAll<HTMLElement>(OBJ)]);
+    collect();
+    setTimeout(collect, 1500);
+
+    let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y, lx = x, ly = y;
+    let moved = false;
+    type P = { x: number; y: number; vx: number; vy: number; life: number; max: number; s: number; r: number; c: string };
+    const parts: P[] = [];
+    const COLORS = ['94,224,217', '30,78,216', '15,181,174'];
+    const spawn = (px: number, py: number, n: number, burst = false) => {
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = burst ? 0.8 + Math.random() * 1.8 : 0.15 + Math.random() * 0.35;
+        parts.push({
+          x: px, y: py,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (burst ? 0 : 0.25),
+          life: 0, max: burst ? 38 + Math.random() * 20 : 34 + Math.random() * 26,
+          s: burst ? 2.5 + Math.random() * 2.5 : 1.6 + Math.random() * 1.8,
+          r: Math.random() * Math.PI, c: COLORS[(Math.random() * COLORS.length) | 0],
+        });
+      }
+      if (parts.length > 160) parts.splice(0, parts.length - 160);
+    };
+
+    let hoverObj: HTMLElement | null = null;
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      x = e.clientX; y = e.clientY; moved = true;
+      root.classList.remove('is-out');
+      const t = e.target as HTMLElement;
+      root.classList.toggle('is-text', !!t.closest('input[type=text], input[type=email], textarea'));
+      root.classList.toggle('is-link', !!t.closest('a, button, label, summary, [role=tab], input'));
+      root.classList.toggle('is-dark', !!t.closest('.ftr, .aud__card, .tm__back, .shop, .dash__side'));
+    }, { passive: true });
+    addEventListener('pointerdown', () => { root.classList.add('is-down'); spawn(x, y, 10, true); });
+    addEventListener('pointerup', () => root.classList.remove('is-down'));
+    document.addEventListener('pointerleave', () => root.classList.add('is-out'));
+
+    const tick = () => {
+      rx += (x - rx) * 0.18; ry += (y - ry) * 0.18;
+      dot.style.transform = `translate3d(${x}px,${y}px,0)`;
+      ring.style.transform = `translate3d(${rx}px,${ry}px,0)`;
+
+      // trail: a knot every ~22px of travel, sparse and quiet
+      const d = Math.hypot(x - lx, y - ly);
+      if (moved && d > 22) { spawn(x, y, 1); lx = x; ly = y; }
+
+      // objects lean toward the cursor when it is near
+      let near: HTMLElement | null = null;
+      for (const o of objs) {
+        if (!o.isConnected || o.offsetParent === null) continue;
+        const r = o.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > innerHeight + 100) continue;
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        const dx = x - cx, dy = y - cy;
+        const reach = Math.max(r.width, r.height) * 0.7 + 40;
+        const dist = Math.hypot(dx, dy);
+        const k = Math.max(0, 1 - dist / reach);
+        const e = k * k * (3 - 2 * k);
+        o.style.translate = `${(dx * 0.018 * e).toFixed(1)}px ${(dy * 0.018 * e - 2 * e).toFixed(1)}px`;
+        o.style.rotate = `${(dx / reach * 1.5 * e).toFixed(2)}deg`;
+        o.style.scale = `${(1 + 0.012 * e).toFixed(3)}`;
+        if (dist < Math.max(r.width, r.height) * 0.5) near = o;
+      }
+      if (near !== hoverObj) {
+        hoverObj = near;
+        root.classList.toggle('is-obj', !!near);
+        if (near) spawn(x, y, 3, true);
+      }
+
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        p.life++; p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy = p.vy * 0.97 - 0.006; p.r += 0.03;
+        const t = p.life / p.max;
+        if (t >= 1) { parts.splice(i, 1); continue; }
+        const a = (t < 0.2 ? t / 0.2 : 1 - (t - 0.2) / 0.8) * 0.55;
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(Math.PI / 4 + p.r * 0.2);
+        ctx.fillStyle = `rgba(${p.c},${a.toFixed(3)})`;
+        const s = p.s * (1 - t * 0.4);
+        ctx.fillRect(-s / 2, -s / 2, s, s);
+        ctx.restore();
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) parts.length = 0; });
+  }
+</script>

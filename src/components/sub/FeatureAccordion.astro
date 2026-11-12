@@ -1,0 +1,211 @@
+---
+/**
+ * Accordion on one side, a visual on the other that follows the open item (Hostinger-style).
+ * Each visual is a real photo with a small product card over it (MiniUI); photos are CC0 stock.
+ */
+import Icon from '../Icon.astro';
+import MiniUI from '../MiniUI.astro';
+import type { Mini } from '../../data/site';
+export interface AccItem {
+  title: string;
+  text: string;
+  photo: string;
+  alt: string;
+  pos?: string;
+  mini: Mini;
+  chip: string;
+}
+interface Props {
+  id: string;
+  title: string;
+  lead: string;
+  items: AccItem[];
+  flip?: boolean;
+}
+const { id, title, lead, items, flip = false } = Astro.props;
+---
+<section class="sec fac" id={id} aria-labelledby={`${id}-t`}>
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id={`${id}-t`} class="display sec__title" set:html={title} />
+      <p class="sec__lead">{lead}</p>
+    </div>
+    <div class:list={['fac__grid', { 'fac__grid--flip': flip }]} data-fac>
+      <div class="fac__list">
+        {items.map((it, i) => (
+          <div class:list={['fac__item', { 'is-open': i === 0 }]}>
+            <h3>
+              <button type="button" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`${id}-p${i}`} data-fac-btn={i}>
+                <span class="fac__n">{String(i + 1).padStart(2, '0')}</span>
+                <span class="fac__h">{it.title}</span>
+                <Icon name="plus" class="fac__ico" />
+              </button>
+            </h3>
+            <div class="fac__body" id={`${id}-p${i}`} hidden={i !== 0}>
+              <p>{it.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="fac__stage" aria-hidden="true">
+        {items.map((it, i) => (
+          <figure class:list={['fac__vis', { 'is-on': i === 0 }]} data-fac-vis={i}>
+            <img src={it.photo} alt="" width="960" height="640" loading="lazy" decoding="async" style={it.pos ? `object-position:${it.pos}` : undefined} />
+            <span class="fac__chip">{it.chip}</span>
+            <div class="fac__card"><MiniUI kind={it.mini} /></div>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-fac]').forEach((root) => {
+    const btns = [...root.querySelectorAll<HTMLButtonElement>('[data-fac-btn]')];
+    const vis = [...root.querySelectorAll<HTMLElement>('[data-fac-vis]')];
+    btns.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        btns.forEach((x, j) => {
+          const on = j === i;
+          x.setAttribute('aria-expanded', String(on));
+          x.closest('.fac__item')!.classList.toggle('is-open', on);
+          (document.getElementById(x.getAttribute('aria-controls')!) as HTMLElement).hidden = !on;
+        });
+        vis.forEach((v, j) => v.classList.toggle('is-on', j === i));
+      }),
+    );
+  });
+</script>
+
+<style>
+  .fac__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 6vw, 5.5rem);
+    align-items: center;
+  }
+  .fac__grid--flip .fac__stage {
+    order: -1;
+  }
+  .fac__list {
+    border-top: 2px solid var(--tinta);
+  }
+  .fac__item {
+    border-bottom: 1px solid var(--linea);
+  }
+  .fac__item h3 {
+    margin: 0;
+  }
+  .fac__item button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.25rem 0;
+    border: 0;
+    background: none;
+    color: var(--tinta);
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-align: left;
+    cursor: pointer;
+  }
+  .fac__n {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--tinta-3);
+  }
+  .fac__h {
+    flex: 1;
+  }
+  .fac__item button:hover .fac__h {
+    color: var(--azul);
+  }
+  .fac__item :global(.fac__ico) {
+    width: 1.15rem;
+    height: 1.15rem;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .fac__item.is-open :global(.fac__ico) {
+    transform: rotate(45deg);
+  }
+  .fac__item.is-open .fac__n {
+    color: var(--azul);
+  }
+  .fac__body p {
+    padding: 0 0 1.4rem 2.35rem;
+    color: var(--tinta-2);
+    max-width: 48ch;
+  }
+  .fac__stage {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--noche);
+    box-shadow: var(--shadow);
+  }
+  .fac__vis {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .fac__vis.is-on {
+    opacity: 1;
+  }
+  .fac__vis img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.03);
+    transition: transform 1.2s var(--ease-out);
+  }
+  .fac__vis.is-on img {
+    transform: none;
+  }
+  .fac__chip {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: var(--noche);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .fac__card {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    width: min(62%, 22rem);
+    padding: 0.4rem 0.9rem 0.9rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 24px 50px -24px rgba(11, 27, 77, 0.6);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: transform 0.6s var(--ease-out) 0.1s, opacity 0.5s var(--ease-out) 0.1s;
+  }
+  .fac__vis.is-on .fac__card {
+    transform: none;
+    opacity: 1;
+  }
+  @media (max-width: 900px) {
+    .fac__grid {
+      grid-template-columns: 1fr;
+    }
+    .fac__grid--flip .fac__stage {
+      order: 0;
+    }
+    .fac__card {
+      width: calc(100% - 2.5rem);
+    }
+  }
+</style>

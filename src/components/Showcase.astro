@@ -1,0 +1,795 @@
+---
+/**
+ * Hostinger-style showcase: a segmented control per audience, then alternating rows of a product
+ * screen (with real photos inside) and a short pitch with an "Explora" link. Every screen is an
+ * illustrative example of what Vertika can build; the brands shown are invented demo names.
+ */
+import Icon from './Icon.astro';
+
+const tabs = [
+  { id: 'personas', label: 'Personas' },
+  { id: 'empresas', label: 'Empresas' },
+  { id: 'salud', label: 'Salud' },
+];
+---
+<section class="sec shw" id="construimos" aria-labelledby="shw-titulo">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="shw-titulo" class="display sec__title">Lo que<br />construimos.</h2>
+      <p class="sec__lead">Software hecho para cómo trabajas tú, no al revés. Estos son ejemplos ilustrativos de lo que podemos diseñar y desarrollar para ti.</p>
+    </div>
+
+    <div class="shw__seg" role="tablist" aria-label="Ejemplos por público" data-seg>
+      {tabs.map((t, i) => (
+        <button type="button" role="tab" id={`shwt-${t.id}`} aria-controls={`shwp-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-seg-tab={t.id}>
+          {t.label}
+        </button>
+      ))}
+    </div>
+
+    <!-- PERSONAS -->
+    <div class="shw__pane" role="tabpanel" id="shwp-personas" aria-labelledby="shwt-personas" data-seg-pane="personas">
+      <article class="shw__row">
+        <div class="shw__media shw__media--sky">
+          <div class="win">
+            <div class="win__bar"><i></i><i></i><i></i><span>anima-ropa.pe/tienda</span></div>
+            <div class="shop">
+              <div class="shop__nav"><b>Ánima</b><span>Inicio</span><span class="on">Productos</span><span>Carrito (2)</span></div>
+              <div class="shop__grid">
+                <figure><img src="/fotos/camisas.webp" alt="Camisas dobladas en la mesa de una tienda" width="933" height="1400" loading="lazy" style="object-position:50% 70%" /><figcaption><b>Camisa Oxford</b><span>S/ 89</span></figcaption><span class="shop__btn">Añadir al carrito</span></figure>
+                <figure><img src="/fotos/boutique.webp" alt="Interior de una boutique con ropa colgada" width="960" height="641" loading="lazy" style="object-position:30% 50%" /><figcaption><b>Colección otoño</b><span>S/ 129</span></figcaption><span class="shop__btn">Añadir al carrito</span></figure>
+                <figure><img src="/fotos/boutique.webp" alt="" width="960" height="641" loading="lazy" style="object-position:85% 60%" /><figcaption><b>Saco lino</b><span>S/ 159</span></figcaption><span class="shop__btn">Añadir al carrito</span></figure>
+              </div>
+            </div>
+          </div>
+          <span class="toast"><span class="toast__ok"><Icon name="check" /></span><span><b>Pago confirmado</b><small>Pedido #1024 · Yape</small></span></span>
+        </div>
+        <div class="shw__copy">
+          <h3>Vende en línea con tu propia tienda</h3>
+          <p>Catálogo, carrito y pagos con tarjeta, Yape o Plin. Tú actualizas tus productos sin depender de nadie.</p>
+          <a class="shw__more" href="/personas/">Explora soluciones para personas <Icon name="arrow" /></a>
+        </div>
+      </article>
+      <article class="shw__row shw__row--flip">
+        <div class="shw__media shw__media--photo">
+          <img class="shw__bg" src="/fotos/yoga.webp" alt="Clase de yoga en un estudio con luz natural" width="960" height="640" loading="lazy" />
+          <div class="phone">
+            <div class="phone__notch"></div>
+            <p class="phone__title">Estudio Prana</p>
+            <p class="phone__sub">Elige tu clase</p>
+            {[['Lun', '07:00', 'Hatha', false], ['Mar', '18:30', 'Vinyasa', true], ['Jue', '19:00', 'Yin', false]].map(([d, h, n, on]) => (
+              <div class:list={['phone__row', { on }]}><span><b>{d} {h}</b><small>{n}</small></span>{on ? <Icon name="check" /> : <span class="phone__free">3 cupos</span>}</div>
+            ))}
+            <span class="phone__cta">Reservar</span>
+          </div>
+        </div>
+        <div class="shw__copy">
+          <h3>Reservas y recordatorios para tu negocio</h3>
+          <p>Tus clientes reservan desde el celular y reciben un recordatorio. Tú ves tu agenda del día en un solo lugar.</p>
+          <a class="shw__more" href="/personas/">Explora apps a medida <Icon name="arrow" /></a>
+        </div>
+      </article>
+    </div>
+
+    <!-- EMPRESAS -->
+    <div class="shw__pane" role="tabpanel" id="shwp-empresas" aria-labelledby="shwt-empresas" data-seg-pane="empresas" hidden>
+      <article class="shw__row">
+        <div class="shw__media shw__media--photo">
+          <img class="shw__bg" src="/fotos/reunion.webp" alt="Equipo de una empresa revisando un tablero en la laptop" width="960" height="640" loading="lazy" />
+          <div class="win win--float">
+            <div class="win__bar"><i></i><i></i><i></i><span>sistema.distribuidora.pe/inventario</span></div>
+            <div class="dash">
+              <div class="dash__side"><b>Panel</b><span class="on">Inventario</span><span>Pedidos</span><span>Facturación</span><span>Reportes</span></div>
+              <div class="dash__main">
+                <div class="dash__kpis"><span><small>Pedidos hoy</small><b>128</b></span><span><small>Por reponer</small><b>7</b></span><span><small>Facturas</small><b>96</b></span></div>
+                <div class="dash__bars">{[42, 58, 50, 74, 66, 88, 80].map((h) => <i style={`--h:${h}%`}></i>)}</div>
+                <div class="dash__table">
+                  <p><span>Caja A-12</span><span>148</span><em class="ok">ok</em></p>
+                  <p><span>Caja B-07</span><span>12</span><em>reponer</em></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="shw__copy">
+          <h3>Ordena tu operación en un solo sistema</h3>
+          <p>Inventario, pedidos y facturación electrónica conectados. Reemplaza las hojas de cálculo por información al día.</p>
+          <a class="shw__more" href="/empresas/">Explora sistemas para empresas <Icon name="arrow" /></a>
+        </div>
+      </article>
+      <article class="shw__row shw__row--flip">
+        <div class="shw__media shw__media--sky">
+          <div class="win">
+            <div class="win__bar"><i></i><i></i><i></i><span>portal.tuempresa.pe</span></div>
+            <div class="portal">
+              <p class="portal__hi">Hola, Comercial Andina</p>
+              <div class="portal__search"><Icon name="doc" /> Buscar comprobantes…</div>
+              {[['F001-00231', 'Octubre', 'Pagado'], ['F001-00198', 'Setiembre', 'Pagado'], ['G002-00045', 'Guía de remisión', 'Entregado']].map(([a, b, c]) => (
+                <p class="portal__row"><span><b>{a}</b><small>{b}</small></span><em>{c}</em><span class="portal__pdf">PDF</span></p>
+              ))}
+            </div>
+          </div>
+          <span class="toast toast--tl"><span class="toast__ok"><Icon name="refresh" /></span><span><b>Sincronizado</b><small>con tu sistema contable</small></span></span>
+        </div>
+        <div class="shw__copy">
+          <h3>Un portal para tus clientes y proveedores</h3>
+          <p>Consultan pedidos, descargan comprobantes y siguen sus trámites sin llamar ni escribir.</p>
+          <a class="shw__more" href="/empresas/">Explora integraciones y portales <Icon name="arrow" /></a>
+        </div>
+      </article>
+    </div>
+
+    <!-- SALUD -->
+    <div class="shw__pane" role="tabpanel" id="shwp-salud" aria-labelledby="shwt-salud" data-seg-pane="salud" hidden>
+      <article class="shw__row">
+        <div class="shw__media shw__media--photo">
+          <img class="shw__bg" src="/fotos/medico.webp" alt="Médico revisando la agenda en una tablet" width="960" height="640" loading="lazy" style="object-position:30% 30%" />
+          <div class="phone phone--r">
+            <div class="phone__notch"></div>
+            <p class="phone__title">Clínica Santa Rosa</p>
+            <p class="phone__sub">Hola, María</p>
+            <div class="phone__row on"><span><b>Próxima cita</b><small>Jue 14 · 10:30 · Dra. Ríos</small></span><Icon name="calendar" /></div>
+            <div class="phone__row"><span><b>Resultados</b><small>Hemograma · nuevo</small></span><span class="phone__free">PDF</span></div>
+            <div class="phone__row"><span><b>Indicaciones</b><small>Actualizadas hoy</small></span><span class="phone__free">Ver</span></div>
+            <span class="phone__lock"><Icon name="lock" /> Datos cifrados</span>
+          </div>
+        </div>
+        <div class="shw__copy">
+          <h3>El portal del paciente, privado y claro</h3>
+          <p>Citas, resultados e indicaciones en un espacio seguro para cada paciente, con acceso cifrado.</p>
+          <a class="shw__more" href="/salud/">Explora software para salud <Icon name="arrow" /></a>
+        </div>
+      </article>
+      <article class="shw__row shw__row--flip">
+        <div class="shw__media shw__media--photo">
+          <img class="shw__bg" src="/fotos/consulta.webp" alt="Médico conversando con un paciente en el consultorio" width="960" height="640" loading="lazy" />
+          <div class="win win--float">
+            <div class="win__bar"><i></i><i></i><i></i><span>historia.clinica.pe</span></div>
+            <div class="hc">
+              <p class="hc__head"><b>Historia clínica · Paciente 00482</b><span class="hc__role">Médico tratante</span></p>
+              <p class="hc__line"><span>Motivo de consulta</span><span class="hc__bar" style="--w:72%"></span></p>
+              <p class="hc__line"><span>Diagnóstico</span><span class="hc__bar" style="--w:54%"></span></p>
+              <p class="hc__line"><span>Indicaciones</span><span class="hc__bar" style="--w:64%"></span></p>
+              <p class="hc__log"><Icon name="eye" /> Consultado por Dr. Salas · 10:42 · registro de actividad</p>
+            </div>
+          </div>
+        </div>
+        <div class="shw__copy">
+          <h3>Historia clínica con acceso por roles</h3>
+          <p>Cada persona ve solo lo que necesita, y queda registro de quién consultó o modificó cada dato.</p>
+          <a class="shw__more" href="/seguridad-y-datos/">Cómo protegemos los datos <Icon name="arrow" /></a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-seg]').forEach((seg) => {
+    const root = seg.closest('section')!;
+    const tabs = [...seg.querySelectorAll<HTMLButtonElement>('[data-seg-tab]')];
+    const pick = (id: string, focus = false) => {
+      tabs.forEach((t) => {
+        const on = t.dataset.segTab === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (on && focus) t.focus();
+      });
+      root.querySelectorAll<HTMLElement>('[data-seg-pane]').forEach((p) => (p.hidden = p.dataset.segPane !== id));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => pick(t.dataset.segTab!));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        pick(tabs[(i + d + tabs.length) % tabs.length].dataset.segTab!, true);
+      });
+    });
+    // The hero's audience chips also choose the tab here.
+    document.addEventListener('vertika:audiencia', (e) => pick((e as CustomEvent).detail));
+  });
+</script>
+
+<style>
+  .shw__seg {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    margin: 0 0 clamp(2rem, 4vw, 3rem);
+    border-radius: 999px;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    box-shadow: var(--shadow);
+  }
+  .shw__seg button {
+    padding: 0.6rem 1.2rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .shw__seg button[aria-selected='true'] {
+    background: var(--noche);
+    color: #fff;
+  }
+  .shw__pane:not([hidden]) {
+    display: grid;
+    gap: clamp(3rem, 7vw, 5.5rem);
+    animation: pane-in 0.5s var(--ease-out);
+  }
+  @keyframes pane-in {
+    from {
+      opacity: 0.001;
+      transform: translateY(10px);
+    }
+  }
+  .shw__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+  .shw__row--flip .shw__media {
+    order: 2;
+  }
+  .shw__copy {
+    display: grid;
+    gap: 1rem;
+    max-width: 30rem;
+  }
+  .shw__copy h3 {
+    font-size: var(--step-3);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .shw__copy p {
+    color: var(--tinta-2);
+    font-size: 1.0625rem;
+  }
+  .shw__more {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--linea);
+    color: var(--tinta);
+    font-size: 1.125rem;
+    text-decoration: none;
+  }
+  .shw__more :global(.icon) {
+    width: 1.2rem;
+    height: 1.2rem;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .shw__more:hover {
+    color: var(--azul);
+    border-color: var(--azul);
+  }
+  .shw__more:hover :global(.icon) {
+    transform: translateX(4px);
+  }
+
+  .shw__media {
+    position: relative;
+    min-height: 26rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border-radius: 18px;
+    overflow: visible;
+    display: grid;
+    place-items: center;
+  }
+  .shw__media--sky {
+    background: linear-gradient(150deg, #dfe7fb, #eef2fb 55%, #d9f4f2);
+  }
+  .shw__media--photo {
+    isolation: isolate;
+  }
+  .shw__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+  .shw__media--photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 18px;
+    background: linear-gradient(90deg, rgba(11, 27, 77, 0.05), rgba(11, 27, 77, 0.25));
+  }
+  .shw__obj {
+    position: absolute;
+    right: -1.75rem;
+    bottom: -2rem;
+    width: clamp(7rem, 30%, 11rem);
+    filter: drop-shadow(0 16px 18px rgba(11, 27, 77, 0.3));
+    transform: rotate(-5deg);
+    pointer-events: none;
+  }
+  .shw__obj--l {
+    right: auto;
+    left: -2rem;
+    width: clamp(9rem, 36%, 14rem);
+  }
+
+  /* Browser window */
+  .win {
+    width: 100%;
+    max-width: 38rem;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 30px 60px -30px rgba(11, 27, 77, 0.55), 0 0 0 1px rgba(11, 27, 77, 0.06);
+  }
+  .win--float {
+    max-width: 30rem;
+    margin-left: auto;
+  }
+  .win__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.8rem;
+    background: #f1f3f8;
+    border-bottom: 1px solid var(--linea-2);
+  }
+  .win__bar i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: #d4d9e6;
+  }
+  .win__bar i:first-child {
+    background: #f28b82;
+  }
+  .win__bar i:nth-child(2) {
+    background: #f6c563;
+  }
+  .win__bar i:nth-child(3) {
+    background: #7fd18b;
+  }
+  .win__bar span {
+    flex: 1;
+    margin-left: 0.6rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--tinta-2);
+  }
+
+  /* Shop */
+  .shop {
+    background: var(--noche);
+    color: #fff;
+    padding: 0.9rem 1rem 1.1rem;
+  }
+  .shop__nav {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 0.9rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .shop__nav b {
+    margin-right: auto;
+    font-family: var(--display);
+    font-stretch: 112%;
+    font-size: 1.05rem;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .shop__nav .on {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .shop__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+  .shop__grid figure {
+    margin: 0;
+    padding: 0.4rem;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--tinta);
+  }
+  .shop__grid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  .shop__grid figcaption {
+    display: grid;
+    padding: 0.35rem 0.15rem;
+    font-size: 0.7rem;
+  }
+  .shop__grid figcaption span {
+    color: var(--tinta-2);
+  }
+  .shop__btn {
+    display: block;
+    padding: 0.3rem;
+    border-radius: 3px;
+    background: var(--noche);
+    color: #fff;
+    font-size: 0.62rem;
+    text-align: center;
+  }
+
+  /* Toast */
+  .toast {
+    position: absolute;
+    right: 1.25rem;
+    top: -1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.9rem 0.55rem 0.55rem;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 16px 34px -16px rgba(11, 27, 77, 0.55);
+    font-size: 0.8rem;
+  }
+  .toast--tl {
+    right: auto;
+    left: 1.25rem;
+  }
+  .toast b {
+    display: block;
+    line-height: 1.2;
+  }
+  .toast small {
+    color: var(--tinta-2);
+  }
+  .toast__ok {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 7px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .toast__ok :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 2.4;
+  }
+
+  /* Phone */
+  .phone {
+    width: 15.5rem;
+    padding: 0.8rem 0.8rem 1rem;
+    border: 6px solid var(--noche);
+    border-radius: 28px;
+    background: #fff;
+    box-shadow: 0 30px 60px -28px rgba(11, 27, 77, 0.7);
+  }
+  .phone--r {
+    margin-left: auto;
+  }
+  .phone__notch {
+    width: 4rem;
+    height: 0.45rem;
+    margin: 0 auto 0.8rem;
+    border-radius: 999px;
+    background: var(--noche);
+  }
+  .phone__title {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .phone__sub {
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--tinta-2);
+  }
+  .phone__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 10px;
+    background: var(--papel);
+    font-size: 0.78rem;
+  }
+  .phone__row b {
+    display: block;
+  }
+  .phone__row small {
+    color: var(--tinta-2);
+  }
+  .phone__row.on {
+    background: var(--azul);
+    color: #fff;
+  }
+  .phone__row.on small {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .phone__row :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .phone__free {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--turquesa-tinta);
+  }
+  .phone__cta {
+    display: block;
+    margin-top: 0.8rem;
+    padding: 0.55rem;
+    border-radius: 999px;
+    background: var(--noche);
+    color: #fff;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .phone__lock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-top: 0.8rem;
+    font-size: 0.72rem;
+    color: var(--turquesa-tinta);
+  }
+  .phone__lock :global(.icon) {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  /* Dashboard */
+  .dash {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    font-size: 0.72rem;
+  }
+  .dash__side {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 0.8rem;
+    background: var(--noche);
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .dash__side b {
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+  .dash__side .on {
+    color: #fff;
+    padding: 0.2rem 0.4rem;
+    margin-inline: -0.4rem;
+    border-radius: 4px;
+    background: var(--azul);
+  }
+  .dash__main {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.8rem;
+  }
+  .dash__kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  .dash__kpis span {
+    padding: 0.45rem;
+    border-radius: 6px;
+    background: var(--papel);
+  }
+  .dash__kpis small {
+    display: block;
+    color: var(--tinta-2);
+  }
+  .dash__kpis b {
+    font-family: var(--display);
+    font-size: 1.1rem;
+  }
+  .dash__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.3rem;
+    height: 3.5rem;
+  }
+  .dash__bars i {
+    flex: 1;
+    height: var(--h);
+    border-radius: 2px 2px 0 0;
+    background: var(--azul);
+  }
+  .dash__bars i:last-child {
+    background: var(--turquesa);
+  }
+  .dash__table p {
+    display: grid;
+    grid-template-columns: 1fr auto 4rem;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    border-top: 1px solid var(--linea-2);
+    font-family: var(--mono);
+  }
+  .dash__table em {
+    font-style: normal;
+    color: var(--azul);
+    text-align: right;
+  }
+  .dash__table em.ok {
+    color: var(--turquesa-tinta);
+  }
+
+  /* Portal */
+  .portal {
+    display: grid;
+    gap: 0.45rem;
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+  .portal__hi {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .portal__search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    color: var(--tinta-2);
+  }
+  .portal__search :global(.icon) {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+  .portal__row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 6px;
+    background: var(--papel);
+  }
+  .portal__row b {
+    display: block;
+    font-family: var(--mono);
+    font-weight: 500;
+  }
+  .portal__row small {
+    color: var(--tinta-2);
+  }
+  .portal__row em {
+    font-style: normal;
+    color: var(--turquesa-tinta);
+    font-weight: 700;
+  }
+  .portal__pdf {
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: var(--noche);
+    color: #fff;
+    font-size: 0.65rem;
+  }
+
+  /* Historia clínica */
+  .hc {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem;
+    font-size: 0.78rem;
+  }
+  .hc__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .hc__role {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+    font-weight: 700;
+    font-size: 0.7rem;
+  }
+  .hc__line {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--tinta-2);
+  }
+  .hc__bar {
+    height: 0.5rem;
+    width: var(--w);
+    border-radius: 999px;
+    background: var(--linea);
+  }
+  .hc__log {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--linea);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--tinta-2);
+  }
+  .hc__log :global(.icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    .shw__row {
+      grid-template-columns: 1fr;
+    }
+    .shw__row--flip .shw__media {
+      order: 0;
+    }
+    .shw__media {
+      min-height: 20rem;
+      padding: 1.25rem;
+    }
+    .shw__obj,
+    .shw__obj--l {
+      width: 7rem;
+      right: -0.5rem;
+      left: auto;
+      bottom: -1.5rem;
+    }
+    .win--float {
+      margin: 0;
+    }
+  }
+  @media (max-width: 560px) {
+    .shw__seg {
+      display: flex;
+    }
+    .shw__seg button {
+      flex: 1;
+      padding-inline: 0.5rem;
+    }
+    .shop__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .shop__grid figure:nth-child(3) {
+      display: none;
+    }
+    .dash {
+      grid-template-columns: 1fr;
+    }
+    .dash__side {
+      display: none;
+    }
+    .toast {
+      right: 0.5rem;
+    }
+    .toast--tl {
+      left: 0.5rem;
+    }
+  }
+</style>

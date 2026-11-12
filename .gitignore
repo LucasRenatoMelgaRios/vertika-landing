@@ -1,0 +1,23 @@
+# dependencias y build
+node_modules/
+dist/
+.astro/
+
+# entorno
+.env
+.env.*
+!.env.example
+
+# impeccable: solo se versionan surfaces/, config.json y design.json
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/live/
+.impeccable/critique/
+.impeccable/hook.cache.json
+.impeccable/config.local.json
+
+# sistema
+.DS_Store
+Thumbs.db
+*.log

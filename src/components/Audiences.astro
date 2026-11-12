@@ -1,0 +1,307 @@
+---
+/**
+ * Tall photo cards per audience (Hostinger-style): a real photo, a label chip, a floating
+ * Blender object from the file world and a small live-looking UI, then the pitch and a link.
+ * Photos are CC0 stock and illustrative; nobody pictured is presented as a client.
+ */
+import Icon from './Icon.astro';
+import { asset } from '../lib/assets';
+
+const cards = [
+  {
+    id: 'personas',
+    chip: 'Personas',
+    href: '/personas/',
+    photo: '/fotos/emprendedora.webp',
+    pos: '58% 40%',
+    alt: 'Emprendedora trabajando en su laptop en un taller creativo',
+    title: 'Plataformas propias que la gente usa',
+    text: 'Creamos y operamos redes y herramientas como VeriCerBiz y Pillket.',
+    ui: { k: 'QR validado', v: 'Pillket · en puerta', ok: true },
+    tone: 'foto',
+  },
+  {
+    id: 'empresas',
+    chip: 'Empresas',
+    href: '/empresas/',
+    photo: '/fotos/equipo.webp',
+    pos: '50% 35%',
+    alt: 'Equipo de trabajo revisando información en una laptop',
+    title: 'Sistemas hechos para cómo trabaja tu empresa',
+    text: 'Inventario, integraciones, portales y reportes en un solo lugar.',
+    ui: { k: 'Pedidos sincronizados', v: '128 hoy', ok: true },
+    tone: 'azul',
+  },
+  {
+    id: 'salud',
+    chip: 'Salud',
+    href: '/salud/',
+    photo: '/fotos/enfermera.webp',
+    pos: '38% 25%',
+    alt: 'Enfermera revisando la información de un paciente en una tablet',
+    title: 'Software para tu clínica, con los datos protegidos',
+    text: 'Citas, historia clínica y portal del paciente, con acceso por roles.',
+    ui: { k: 'Historia clínica', v: 'Acceso: solo médico tratante', ok: true },
+    tone: 'foto',
+  },
+];
+import Forma from './Forma.astro';
+---
+<section class="sec aud" id="para-quien" aria-labelledby="aud-titulo">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="aud-titulo" class="display sec__title">Software para<br />cada tipo de proyecto.</h2>
+      <p class="sec__lead">Personas, empresas y organizaciones de salud. Distintas necesidades, el mismo cuidado: entender, diseñar, construir por etapas y acompañar.</p>
+    </div>
+
+    <ul class="aud__row">
+      {cards.map((c, i) => (
+        <li class:list={['aud__card', `aud__card--${c.tone}`]} data-reveal style={`transition-delay:${i * 80}ms`}>
+          <a href={c.href} class="aud__link" aria-label={`${c.title}. Ver software para ${c.chip.toLowerCase()}`}>
+            <img class="aud__photo" src={c.photo} alt={c.alt} width="960" height="640" loading="lazy" decoding="async" style={`object-position:${c.pos}`} />
+            <span class="aud__shade" aria-hidden="true"></span>
+            <span class="aud__chip">{c.chip}</span>
+            <span class="aud__go" aria-hidden="true"><Icon name="arrow" /></span>
+            <span class="aud__ui" aria-hidden="true">
+              <span class="aud__ui-ok"><Icon name="check" /></span>
+              <span><b>{c.ui.k}</b><small>{c.ui.v}</small></span>
+            </span>
+            <span class="aud__body">
+              <span class="aud__title">{c.title}</span>
+              <span class="aud__text">{c.text}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+      <li class="aud__card aud__card--brief" data-reveal style="transition-delay:240ms">
+        <a href="#arma" class="aud__link">
+          <span class="aud__chip aud__chip--light">Empieza aquí</span>
+          <span class="aud__go" aria-hidden="true"><Icon name="arrow" /></span>
+          <Forma name="hoja" class="aud__sello" sizes="170px" />
+          <span class="aud__body">
+            <span class="aud__title">Arma tu brief en un minuto</span>
+            <span class="aud__text">Marca lo que necesitas y te respondemos para agendar una conversación inicial.</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+    <p class="aud__note">Fotografías ilustrativas: las personas que aparecen no son clientes de Vertika.</p>
+  </div>
+</section>
+
+<style>
+  .aud__row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .aud__card {
+    position: relative;
+    min-height: 31rem;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--noche);
+    box-shadow: var(--shadow);
+    isolation: isolate;
+  }
+  .aud__link {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: #fff;
+    text-decoration: none;
+  }
+  .aud__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out);
+  }
+  .aud__card:hover .aud__photo {
+    transform: scale(1.015);
+  }
+  .aud__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 27, 77, 0) 35%, rgba(11, 27, 77, 0.55) 62%, rgba(11, 27, 77, 0.94) 100%);
+  }
+  .aud__card--azul .aud__shade {
+    background: linear-gradient(180deg, rgba(30, 78, 216, 0.08) 20%, rgba(30, 78, 216, 0.7) 58%, rgba(30, 78, 216, 0.97) 100%);
+  }
+  .aud__chip {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 3;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: var(--noche);
+    color: #fff;
+    font-family: var(--display);
+    font-weight: 800;
+    font-stretch: 108%;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .aud__chip--light {
+    background: #fff;
+    color: var(--noche);
+  }
+  .aud__go {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--noche);
+    transition: transform 0.35s var(--ease-out);
+  }
+  .aud__go :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    transform: rotate(-45deg);
+  }
+  .aud__card:hover .aud__go {
+    transform: translate(2px, -2px);
+  }
+  .aud__ui {
+    position: absolute;
+    z-index: 3;
+    left: 1rem;
+    top: 38%;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: calc(100% - 5rem);
+    padding: 0.55rem 0.8rem 0.55rem 0.55rem;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--tinta);
+    box-shadow: 0 14px 30px -14px rgba(11, 27, 77, 0.6);
+    transform: rotate(-2deg);
+    transition: transform 0.6s var(--ease-out);
+  }
+  .aud__card:hover .aud__ui {
+    transform: rotate(-1deg) translateY(-2px);
+  }
+  .aud__ui-ok {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    flex: none;
+    border-radius: 7px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .aud__ui-ok :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 2.4;
+  }
+  .aud__ui b {
+    display: block;
+    font-size: 0.8rem;
+    line-height: 1.2;
+  }
+  .aud__ui small {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--tinta-2);
+    line-height: 1.3;
+  }
+  .aud__obj {
+    position: absolute;
+    z-index: 2;
+    right: -0.25rem;
+    top: 50%;
+    width: 44%;
+    height: auto;
+    filter: drop-shadow(0 18px 18px rgba(11, 27, 77, 0.35));
+    transform: rotate(-6deg);
+    transition: transform 0.7s var(--ease-out);
+  }
+  .aud__card:hover .aud__obj {
+    transform: rotate(-5deg) translateY(-2px);
+  }
+  .aud__body {
+    position: absolute;
+    z-index: 3;
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .aud__title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .aud__text {
+    font-size: 0.925rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.86);
+  }
+  .aud__card--brief {
+    background: var(--azul);
+  }
+  .aud__card--brief::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(94, 224, 217, 0.35), transparent 45%),
+      linear-gradient(160deg, #2a5cf0, var(--azul) 55%, #1a43bb);
+  }
+  .aud__card :global(.aud__sello) {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 17%;
+    width: 46%;
+    height: auto;
+    transform: translateX(-50%) rotate(-4deg);
+    filter: drop-shadow(0 18px 20px rgba(11, 27, 77, 0.4));
+    transition: transform 0.7s var(--ease-out);
+  }
+  .aud__card--brief:hover :global(.aud__sello) {
+    transform: translateX(-50%) rotate(-3deg) translateY(-2px);
+  }
+  .aud__link:focus-visible {
+    outline: 3px solid var(--turquesa-claro);
+    outline-offset: -6px;
+    border-radius: 14px;
+  }
+  .aud__note {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: var(--tinta-2);
+  }
+  @media (max-width: 1100px) {
+    .aud__row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 600px) {
+    .aud__row {
+      grid-template-columns: 1fr;
+    }
+    .aud__card {
+      min-height: 27rem;
+    }
+  }
+</style>

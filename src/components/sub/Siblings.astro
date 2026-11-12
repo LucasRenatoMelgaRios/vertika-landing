@@ -1,0 +1,96 @@
+---
+/** «También hacemos»: links to the sibling service pages. */
+import Icon from '../Icon.astro';
+import Forma from '../Forma.astro';
+import { subpages, type Slug } from '../../data/empresas';
+interface Props {
+  current?: Slug;
+}
+const { current } = Astro.props;
+const items = subpages.filter((p) => p.slug !== current);
+---
+<section class="sec sib" aria-labelledby="sib-t">
+  <div class="wrap">
+    <h2 id="sib-t" class="sib__title">También hacemos para empresas</h2>
+    <ul class="sib__row">
+      {items.map((p) => (
+        <li>
+          <a class="sib__card hoja" href={p.path}>
+            <Forma name={p.forma} class="sib__forma" sizes="110px" />
+            <span class="sib__txt">
+              <b>{p.short}</b>
+              <small>{p.kind === 'producto' ? 'Producto listo para usar' : 'Desarrollo a medida'}</small>
+            </span>
+            <Icon name="arrow" class="sib__go" />
+          </a>
+        </li>
+      ))}
+      <li>
+        <a class="sib__card sib__card--all hoja" href="/empresas/">
+          <span class="sib__txt"><b>Todo para empresas</b><small>Portales, paneles, apps y CRM a medida</small></span>
+          <Icon name="arrow" class="sib__go" />
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sib__title {
+    margin-bottom: 1.25rem;
+    font-size: 1.2rem;
+  }
+  .sib__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sib__card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    color: var(--tinta);
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.3s var(--ease-out);
+  }
+  .sib__card:hover {
+    border-color: var(--azul);
+    transform: translateY(-2px);
+  }
+  .sib__card :global(.sib__forma) {
+    width: 4rem;
+    height: auto;
+    flex: none;
+  }
+  .sib__txt {
+    flex: 1;
+  }
+  .sib__txt b {
+    display: block;
+  }
+  .sib__txt small {
+    color: var(--tinta-2);
+  }
+  .sib__card :global(.sib__go) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--azul);
+  }
+  .sib__card--all {
+    background: var(--noche);
+    border-color: var(--noche);
+    color: #fff;
+  }
+  .sib__card--all small {
+    color: var(--sobre-noche-2);
+  }
+  .sib__card--all :global(.sib__go) {
+    color: var(--turquesa-claro);
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+/** Two-option comparison. Honest rows, no scores. */
+interface Props {
+  id?: string;
+  title: string;
+  lead?: string;
+  a: string;
+  b: string;
+  rows: [string, string, string][];
+  note?: string;
+}
+const { id, title, lead, a, b, rows, note } = Astro.props;
+---
+<section class="sec vs" id={id} aria-labelledby={`${id ?? 'vs'}-t`}>
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id={`${id ?? 'vs'}-t`} class="display sec__title" set:html={title} />
+      {lead && <p class="sec__lead">{lead}</p>}
+    </div>
+    <div class="vs__table hoja" role="table">
+      <div class="vs__row vs__row--head" role="row">
+        <span role="columnheader"></span>
+        <span role="columnheader" class="vs__a">{a}</span>
+        <span role="columnheader">{b}</span>
+      </div>
+      {rows.map(([k, x, y]) => (
+        <div class="vs__row" role="row">
+          <span role="rowheader" class="vs__k">{k}</span>
+          <span role="cell" class="vs__a">{x}</span>
+          <span role="cell">{y}</span>
+        </div>
+      ))}
+    </div>
+    {note && <p class="vs__note" set:html={note} />}
+  </div>
+</section>
+
+<style>
+  .vs__table {
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .vs__row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .vs__row > span {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--linea-2);
+  }
+  .vs__row--head > span {
+    border-top: 0;
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+  }
+  .vs__k {
+    font-weight: 700;
+    color: var(--tinta-2);
+  }
+  .vs__a {
+    background: var(--azul-suave);
+  }
+  .vs__row--head .vs__a {
+    background: var(--azul);
+    color: #fff;
+  }
+  .vs__note {
+    margin-top: 1rem;
+    color: var(--tinta-2);
+  }
+  @media (max-width: 640px) {
+    .vs__row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .vs__k {
+      grid-column: 1 / -1;
+      padding-bottom: 0.2rem !important;
+      background: var(--papel);
+    }
+    .vs__row--head > span:first-child {
+      display: none;
+    }
+  }
+</style>

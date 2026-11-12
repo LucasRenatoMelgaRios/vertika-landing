@@ -1,0 +1,24 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-formas.blend",
+ "fecha": "2026-11-11",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "modulo": 1.0,
+ "grosor": 0.28,
+ "bisel": 0.04,
+ "descripcion": "Cuerda azul noche con cuatro nudos-rombo turquesa: el proceso y sus cuatro aprobaciones.",
+ "color_objetivo": [
+  "#0B1B4D",
+  "#0FB5AE"
+ ],
+ "escena": "forma-cuerda",
+ "colores_objetivo": [
+  "#0B1B4D",
+  "#0FB5AE"
+ ],
+ "colores_muestreados_cara_iluminada": [
+  "#0B1B4D",
+  "#0FB5AE"
+ ],
+ "postproceso": "Recorte del 58 % superior (sin banda de sombra). Calibracion lineal por color (cara iluminada al objetivo), fundido de alfa en bordes, recorte, WebP q86 a 900 y 450 px."
+}

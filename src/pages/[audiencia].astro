@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Bento from '../components/Bento.astro';
+import Process from '../components/Process.astro';
+import DataCare from '../components/DataCare.astro';
+import CtaBand from '../components/sub/CtaBand.astro';
+import TabBand from '../components/sub/TabBand.astro';
+import Responsibility from '../components/sub/Responsibility.astro';
+import { productos, personasAreas, saludTabs } from '../data/subpaginas';
+import Productos from '../components/sub/Productos.astro';
+import Areas from '../components/sub/Areas.astro';
+import Teasers from '../components/sub/Teasers.astro';
+import Faq from '../components/Faq.astro';
+import ContactClose from '../components/ContactClose.astro';
+import { site, audiences, generalFaq, type Audience } from '../data/site';
+
+export function getStaticPaths() {
+  return audiences.map((a) => ({ params: { audiencia: a.id }, props: { a } }));
+}
+
+const { a } = Astro.props as { a: Audience };
+const faq = [...a.faq, ...generalFaq];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: a.h1,
+    serviceType: 'Desarrollo de software a medida',
+    description: a.seoDescription,
+    provider: { '@id': `${site.url}/#organizacion` },
+    areaServed: { '@type': 'Country', name: site.countryName },
+    audience: { '@type': 'Audience', audienceType: a.label },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `Soluciones para ${a.label.toLowerCase()}`,
+      itemListElement: a.services.map((s) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: s.name, description: s.text, ...(s.href && !s.href.includes('#') ? { url: new URL(s.href, site.url).href } : {}) },
+      })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+<Base
+  title={a.seoTitle}
+  description={a.seoDescription}
+  path={a.path}
+  crumbs={[{ name: `Software para ${a.label.toLowerCase()}`, path: a.path }]}
+  jsonLd={jsonLd}
+>
+  <Hero variant="page" a={a} />
+
+  {a.id === 'personas' && (
+    <>
+      <Productos items={productos} />
+      <Areas items={personasAreas} />
+      <Process />
+      <Faq items={faq} />
+      <CtaBand title="¿Tienes la próxima<br /><em>plataforma?</em>" text="Si tienes una idea de red, herramienta o automatización, conversemos. Te contamos lo que aprendimos construyendo las nuestras." message={a.waMessage} />
+    </>
+  )}
+
+  {a.id === 'empresas' && (
+    <>
+      <Teasers kind="producto" />
+      <Bento only={a} group="medida" title="Desarrollo<br />a medida." lead="Cuando necesitas un sistema hecho para tu operación. Se cotiza por etapas, con una propuesta escrita." />
+      <Process />
+      <Faq items={faq} />
+      <ContactClose message={a.waMessage} title="Hablemos de<br /><em>tu operación.</em>" />
+    </>
+  )}
+
+  {a.id === 'salud' && (
+    <>
+      <TabBand id="soluciones" title="Pensado para cada<br />persona de tu clínica." lead="Cada rol ve solo lo que necesita. Así se protege la información de tus pacientes sin complicar el trabajo diario." tabs={saludTabs} url="clinica.pe" />
+      <DataCare
+        usuarios="tus pacientes"
+        title="Datos de salud,<br />protegidos."
+        lead="La información de salud es un dato personal sensible según la Ley N.° 29733. Cada sistema que construimos para el sector salud parte de estas prácticas."
+      />
+      <Responsibility />
+      <Process />
+      <Faq items={faq} />
+      <CtaBand title="Software para tu clínica,<br /><em>con calma.</em>" text="Conversemos sobre cómo trabaja hoy tu centro de salud. Empezamos por entender qué datos manejan y quién los usa." message={a.waMessage} />
+    </>
+  )}
+</Base>

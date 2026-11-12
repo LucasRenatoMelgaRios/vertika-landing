@@ -1,0 +1,233 @@
+---
+import Icon from './Icon.astro';
+import { audiences } from '../data/site';
+
+const rows: { label: string; icon: 'user' | 'layers' | 'lock' | 'eye' | 'rocket'; values: Record<string, string> }[] = [
+  {
+    label: 'Ideal para',
+    icon: 'user',
+    values: {
+      personas: 'Personas que usan nuestras propias plataformas y redes.',
+      empresas: 'Pymes y empresas que quieren ordenar y automatizar su operación.',
+      salud: 'Clínicas, consultorios, laboratorios y centros de salud.',
+    },
+  },
+  {
+    label: 'Construimos',
+    icon: 'layers',
+    values: {
+      personas: 'Productos propios: VeriCerBiz, Pillket y más.',
+      empresas: 'Sistemas internos, integraciones, portales y paneles.',
+      salud: 'Agenda, historia clínica, portal del paciente y gestión.',
+    },
+  },
+  {
+    label: 'Datos',
+    icon: 'lock',
+    values: {
+      personas: 'Pagos en custodia y datos protegidos.',
+      empresas: 'Datos de la operación con acceso por roles.',
+      salud: 'Datos sensibles de salud: protección reforzada.',
+    },
+  },
+  {
+    label: 'Primer paso',
+    icon: 'rocket',
+    values: {
+      personas: 'Conocer nuestros productos o proponer uno nuevo.',
+      empresas: 'Mostrarnos cómo trabajan hoy.',
+      salud: 'Revisar qué datos manejan y quién los usa.',
+    },
+  },
+];
+const level: Record<string, number> = { personas: 3, empresas: 4, salud: 5 };
+---
+<section class="sec cmp" id="soluciones" aria-labelledby="cmp-titulo">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="cmp-titulo" class="display sec__title">Compara<br />los tres caminos.</h2>
+      <p class="sec__lead">Cada público tiene necesidades distintas. El método es el mismo: entender, diseñar, construir por etapas y acompañar.</p>
+    </div>
+
+    <div class="cmp__frame" data-reveal>
+      <div class="cmp__table hoja" role="table" aria-label="Comparación de soluciones por público">
+        <div class="cmp__row cmp__row--head" role="row">
+          {audiences.map((a) => (
+            <div class="cmp__cell" role="columnheader">
+              <h3 class="cmp__name">{a.label}</h3>
+              <p class="cmp__sub">{a.knots.join(' · ')}</p>
+            </div>
+          ))}
+        </div>
+        {rows.map((r) => (
+          <div class="cmp__row" role="row">
+            {audiences.map((a) => (
+              <div class="cmp__cell" role="cell">
+                <p class="cmp__label"><Icon name={r.icon} />{r.label}</p>
+                <p>{r.values[a.id]}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+        <div class="cmp__row" role="row">
+          {audiences.map((a) => (
+            <div class="cmp__cell" role="cell">
+              <p class="cmp__label"><Icon name="shield" />Sensibilidad de los datos</p>
+              <p class="cmp__dots" aria-label={`${level[a.id]} de 5`}>
+                {[1, 2, 3, 4, 5].map((i) => <span class:list={{ on: i <= level[a.id] }}></span>)}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div class="cmp__row cmp__row--foot" role="row">
+          {audiences.map((a) => (
+            <div class="cmp__cell" role="cell">
+              <a class="link-arrow" href={a.path}>Software para {a.label.toLowerCase()}<Icon name="arrow" /></a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="cmp__cta">
+      <a class="btn btn--ink" href="#arma">Arma tu brief <Icon name="arrow" /></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cmp__frame {
+    position: relative;
+  }
+  .cmp__quipu {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: -2px;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .cmp__table {
+    position: relative;
+    z-index: 1;
+  }
+  .cmp__row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .cmp__row + .cmp__row {
+    border-top: 1px solid var(--linea-2);
+  }
+  .cmp__row--head {
+    border-bottom: 2px solid var(--tinta);
+  }
+  .cmp__row--head + .cmp__row {
+    border-top: 0;
+  }
+  .cmp__cell {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+    padding: 1.15rem 1.6rem;
+  }
+  .cmp__cell + .cmp__cell {
+    border-left: 1px solid var(--linea-2);
+  }
+  .cmp__row--head .cmp__cell {
+    padding-top: 1.6rem;
+    padding-bottom: 1.4rem;
+  }
+  .cmp__name {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 112%;
+    font-size: var(--step-2);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  .cmp__sub {
+    color: var(--tinta-2);
+    font-size: 0.95rem;
+  }
+  .cmp__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta-3);
+  }
+  .cmp__label :global(.icon) {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+  .cmp__cell > p:not(.cmp__label) {
+    color: var(--tinta);
+  }
+  .cmp__dots {
+    display: flex;
+    gap: 0.35rem;
+    padding-top: 0.2rem;
+  }
+  .cmp__dots span {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--azul);
+  }
+  .cmp__dots span.on {
+    background: var(--azul);
+  }
+  .cmp__row--foot .cmp__cell {
+    padding-block: 1.25rem;
+  }
+  .cmp__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 860px) {
+    .cmp__quipu {
+      display: none;
+    }
+    .cmp__table {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    /* On phones each audience becomes its own sheet: reorder by column via grid areas */
+    .cmp__row {
+      display: contents;
+    }
+    .cmp__cell {
+      background: var(--hoja);
+      border-inline: 1px solid var(--linea);
+    }
+    .cmp__cell + .cmp__cell {
+      border-left: 1px solid var(--linea);
+    }
+    .cmp__row .cmp__cell:nth-child(1) {
+      order: 1;
+    }
+    .cmp__row .cmp__cell:nth-child(2) {
+      order: 2;
+    }
+    .cmp__row .cmp__cell:nth-child(3) {
+      order: 3;
+    }
+    .cmp__row--head .cmp__cell {
+      padding-top: 1.4rem;
+      border-top: 2px solid var(--tinta);
+      margin-top: 1.25rem;
+    }
+    .cmp__row--foot .cmp__cell {
+      border-bottom: 1px solid var(--linea);
+      box-shadow: var(--shadow);
+    }
+  }
+</style>

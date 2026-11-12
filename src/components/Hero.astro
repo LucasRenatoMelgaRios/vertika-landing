@@ -1,0 +1,390 @@
+---
+import Icon from './Icon.astro';
+import Expediente from './Expediente.astro';
+import PageVisual from './PageVisual.astro';
+import { asset } from '../lib/assets';
+import { audiences, waLink, type Audience } from '../data/site';
+
+interface Props {
+  /** home: audience chips switch the page in place. page: one audience. */
+  variant: 'home' | 'page';
+  a?: Audience;
+}
+const { variant, a } = Astro.props;
+const active = a ?? audiences[0];
+const facts = [
+  { icon: 'doc', big: 'Por escrito', text: 'propuesta con alcance, etapas, plazos y presupuesto' },
+  { icon: 'layers', big: '6 etapas', text: '4 de ellas pasan por tu aprobación' },
+  { icon: 'shield', big: 'Ley 29733', text: 'protección de datos personales desde el diseño' },
+  { icon: 'chat', big: 'Directo', text: 'hablas con el equipo que construye tu proyecto' },
+] as const;
+const tech = ['Astro', 'React', 'Next.js', 'TypeScript', 'Node.js', 'Python', 'PostgreSQL', 'Flutter', 'React Native', 'AWS', 'Google Cloud', 'Docker'];
+// The richer Blender objects from the file world, one per audience.
+const objFile: Record<string, [string, number, number]> = {
+  personas: ['exp-pantalla-personas.webp', 391, 348],
+  empresas: ['exp-carpeta-empresas.webp', 557, 346],
+  salud: ['exp-carpeta-salud.webp', 668, 429],
+};
+const objetos = (a ? [a] : audiences).map((x) => ({ id: x.id, src: asset(objFile[x.id][0]), w: objFile[x.id][1], h: objFile[x.id][2] }));
+---
+<section class="hero" data-hero={variant} aria-labelledby="hero-titulo">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      {variant === 'home' ? (
+        <h1 id="hero-titulo" class="display hero__h1">
+          Software<br /><em>a medida.</em><br />Hecho en&nbsp;Perú.
+        </h1>
+      ) : (
+        <h1 id="hero-titulo" class="display hero__h1 hero__h1--page" set:html={active.h1.replace(/para (.*)$/i, '<em>para $1</em>')} />
+      )}
+      <p class="hero__lead">
+        {variant === 'home'
+          ? 'Apps, sistemas web e integraciones para personas, empresas y el sector salud. Con un proceso que puedes seguir paso a paso y tus datos protegidos.'
+          : active.pitch}
+      </p>
+
+      {variant === 'home' && (
+        <div class="hero__aud" role="group" aria-label="¿Para quién es el software?">
+          <p class="hero__aud-label">¿Para quién es?</p>
+          <div class="hero__chips" data-chips>
+            {audiences.map((x) => (
+              <a class="chip" href={x.path} data-pick={x.id} aria-pressed={x.id === active.id ? 'true' : 'false'}>
+                <span class="knot" aria-hidden="true"></span>
+                {x.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="hero__actions">
+        {audiences.map((x) => (
+          <a
+            class="btn btn--ink"
+            href={waLink(x.waMessage)}
+            target="_blank"
+            rel="noopener"
+            data-aud={variant === 'home' ? x.id : undefined}
+            hidden={x.id !== active.id}
+          >
+            Escríbenos por WhatsApp
+            <Icon name="arrow" />
+          </a>
+        ))}
+        <a class="btn btn--line" href={variant === 'home' ? '#arma' : '#soluciones'}>
+          {variant === 'home' ? 'Arma tu brief' : 'Ver qué construimos'}
+        </a>
+      </div>
+      <p class="hero__fine">
+        <Icon name="chat" /> Respondemos por WhatsApp o correo para agendar una conversación inicial.
+      </p>
+    </div>
+
+    <div class="hero__side">
+      {variant === 'home' ? (
+        <>
+          {audiences.map((x) => <Expediente a={x} dataAud hidden={x.id !== active.id} />)}
+          {objetos.map((o) => o.src && (
+            <img class="hero__obj" src={o.src} alt="" aria-hidden="true" width={o.w} height={o.h} data-aud={o.id} hidden={o.id !== active.id} loading={o.id === active.id ? 'eager' : 'lazy'} decoding="async" />
+          ))}
+        </>
+      ) : (
+        <PageVisual id={active.id} />
+      )}
+    </div>
+  </div>
+
+  <div class="wrap">
+    <ul class="hero__facts hoja">
+      {facts.map((f) => (
+        <li>
+          <span class="tile tile--soft"><Icon name={f.icon} /></span>
+          <div>
+            <p class="hero__big">{f.big}</p>
+            <p class="hero__small">{f.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <div class="hero__tech">
+      <p>Trabajamos con</p>
+      <div class="hero__marquee" aria-label={`Tecnologías: ${tech.join(', ')}`}>
+        <ul aria-hidden="true">
+          {[...tech, ...tech].map((t) => <li><span class="knot"></span>{t}</li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(2.75rem, 6vw, 5rem);
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .hero__copy {
+    display: grid;
+    gap: 1.6rem;
+    align-content: start;
+  }
+  .hero__h1 {
+    font-size: clamp(2.7rem, 0.9rem + 4.6vw, 4.75rem);
+  }
+  .hero__copy {
+    container-type: inline-size;
+  }
+  .hero__h1--page {
+    font-size: min(4.3rem, 7.4cqi);
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+  .hero__lead {
+    max-width: 46ch;
+    font-size: var(--step-1);
+    color: var(--tinta-2);
+  }
+  .hero__aud {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .hero__aud-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--linea);
+    border-radius: 2px;
+    background: var(--hoja);
+    color: var(--tinta);
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  }
+  .chip .knot {
+    background: var(--linea);
+    transition: background-color 0.2s, transform 0.4s var(--ease-out);
+  }
+  .chip:hover {
+    border-color: var(--tinta);
+  }
+  .chip[aria-pressed='true'] {
+    border-color: var(--tinta);
+    box-shadow: inset 0 0 0 1px var(--tinta);
+  }
+  .chip[aria-pressed='true'] .knot {
+    background: var(--turquesa);
+    transform: rotate(225deg) scale(1.25);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    padding-top: 0.4rem;
+  }
+  .hero__fine {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--tinta-2);
+  }
+  .hero__side {
+    position: relative;
+    padding-top: 0.5rem;
+  }
+  .hero[data-hero='home'] .hero__side {
+    margin-bottom: clamp(6rem, 10vw, 10rem);
+  }
+  .hero__side :global(.hero__obj) {
+    position: absolute;
+    z-index: 3;
+    left: 1.5rem;
+    top: calc(100% - 0.25rem);
+    width: min(44%, 16rem);
+    pointer-events: none;
+    filter: drop-shadow(0 18px 18px rgba(11, 27, 77, 0.22));
+    animation: obj-in 0.9s var(--ease-out) both;
+  }
+  @keyframes obj-in {
+    from {
+      opacity: 0.001;
+      transform: translateY(14px) rotate(-2deg);
+    }
+  }
+  .hero__side :global(.exp) {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero__facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: clamp(4rem, 7vw, 5.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hero__facts li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.35rem 1.5rem;
+  }
+  .hero__facts li + li {
+    border-left: 1px solid var(--linea-2);
+  }
+  .tile--soft {
+    background: var(--azul-suave);
+    color: var(--azul);
+  }
+  .hero__big {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 108%;
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .hero__small {
+    font-size: 0.9rem;
+    color: var(--tinta-2);
+    line-height: 1.4;
+  }
+
+  .hero__tech {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2.25rem;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--linea);
+  }
+  .hero__tech > p {
+    font-size: 0.9rem;
+    color: var(--tinta-2);
+    line-height: 1.3;
+    max-width: 7rem;
+  }
+  .hero__marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .hero__marquee ul {
+    display: flex;
+    gap: 2.5rem;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: marquee 38s linear infinite;
+  }
+  .hero__marquee li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--tinta-2);
+    white-space: nowrap;
+  }
+  .hero__marquee .knot {
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--linea);
+  }
+  .hero__marquee:hover ul {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+    .hero__side {
+      max-width: 38rem;
+    }
+    .hero__side :global(.hero__obj) {
+      left: auto;
+      right: -0.5rem;
+      bottom: -3.5rem;
+      width: 9.5rem;
+    }
+    .hero__facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .hero__facts li:nth-child(3) {
+      border-left: 0;
+    }
+    .hero__facts li:nth-child(n + 3) {
+      border-top: 1px solid var(--linea-2);
+    }
+  }
+  @media (max-width: 560px) {
+    .hero__facts li {
+      flex-direction: column;
+      gap: 0.6rem;
+      padding: 1.1rem;
+    }
+    .hero__facts .tile {
+      width: 2rem;
+      height: 2rem;
+    }
+    .hero__tech {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .hero__tech > p {
+      max-width: none;
+    }
+    .hero__actions .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  type Aud = 'personas' | 'empresas' | 'salud';
+  const root = document.querySelector<HTMLElement>('[data-hero="home"]');
+  if (root) {
+    const chips = [...root.querySelectorAll<HTMLAnchorElement>('[data-pick]')];
+    const select = (id: Aud, push = false) => {
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.pick === id)));
+      // Every block tied to an audience across the page follows the choice.
+      document.querySelectorAll<HTMLElement>('[data-aud]').forEach((el) => (el.hidden = el.dataset.aud !== id));
+      document.dispatchEvent(new CustomEvent('vertika:audiencia', { detail: id }));
+      if (push) {
+        const url = new URL(location.href);
+        url.searchParams.set('para', id);
+        history.replaceState(null, '', url);
+      }
+    };
+    chips.forEach((c) =>
+      c.addEventListener('click', (e) => {
+        e.preventDefault();
+        select(c.dataset.pick as Aud, true);
+      }),
+    );
+    const q = new URL(location.href).searchParams.get('para');
+    if (q && chips.some((c) => c.dataset.pick === q)) select(q as Aud);
+  }
+</script>

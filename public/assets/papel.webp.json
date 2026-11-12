@@ -1,0 +1,9 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "d:\\Vertika Landing Page\\assets-blender\\papel2.blend",
+ "fecha": "2026-11-10",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Papel arrugado en tres escalas (pliegues grandes, medianos y finos) más fibras, gris nube, render ortográfico cenital con sol rasante.",
+ "postproceso": "Paso alto (blur 90 px) más 35 % de variación tonal de baja frecuencia, hecho repetible (offset 50 % + fundido sinusoidal), normalizado a #EEF1F7, 1600 px, WebP q78.",
+ "fuente_png": "assets-blender/renders/papel2.png"
+}

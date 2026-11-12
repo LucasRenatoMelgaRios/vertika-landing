@@ -1,0 +1,111 @@
+---
+/** Who does what for Ley 29733: two honest columns, Vertika and the clinic. */
+import Icon from '../Icon.astro';
+const vertika = [
+  'Diseñamos el sistema con acceso por roles y el mínimo de datos necesario.',
+  'Ciframos la información y registramos quién consulta o modifica datos sensibles.',
+  'Usamos datos ficticios en pruebas y firmamos acuerdos de confidencialidad.',
+  'Te entregamos la documentación técnica de cómo se protegen los datos.',
+];
+const clinica = [
+  'Informar a tus pacientes cómo usas sus datos y pedir su consentimiento.',
+  'Definir quién de tu equipo accede a qué información.',
+  'Atender las solicitudes de acceso, corrección o cancelación de tus pacientes.',
+  'Inscribir tu banco de datos ante la Autoridad Nacional de Protección de Datos Personales, cuando corresponda.',
+];
+---
+<section class="sec rsp" aria-labelledby="rsp-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="rsp-t" class="display sec__title">La Ley 29733,<br />en equipo.</h2>
+      <p class="sec__lead">Cumplir la ley de protección de datos es una tarea compartida. Esto es lo que hacemos nosotros y lo que te corresponde a ti, dicho con claridad.</p>
+    </div>
+    <div class="rsp__cols">
+      <div class="rsp__col rsp__col--v">
+        <p class="rsp__who"><span class="rsp__k"></span>Lo que hace Vertika</p>
+        <ul>{vertika.map((t) => <li><Icon name="check" />{t}</li>)}</ul>
+      </div>
+      <div class="rsp__col hoja">
+        <p class="rsp__who"><span class="rsp__k rsp__k--line"></span>Lo que hace tu clínica</p>
+        <ul>{clinica.map((t) => <li><Icon name="user" />{t}</li>)}</ul>
+        <p class="rsp__note">Te ayudamos a identificar estos pasos. No reemplazamos la asesoría legal de tu organización.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rsp__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .rsp__col {
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: 16px;
+  }
+  .rsp__col--v {
+    background: var(--noche);
+    color: #fff;
+  }
+  .rsp__who {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    font-size: 1.05rem;
+  }
+  .rsp__k {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 2px;
+    background: var(--turquesa-claro);
+    transform: rotate(45deg);
+  }
+  .rsp__k--line {
+    background: transparent;
+    border: 2px solid var(--azul);
+  }
+  .rsp__col ul {
+    display: grid;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rsp__col li {
+    display: flex;
+    gap: 0.65rem;
+    line-height: 1.5;
+  }
+  .rsp__col--v li {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .rsp__col li :global(.icon) {
+    flex: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    margin-top: 0.25rem;
+    color: var(--azul);
+  }
+  .rsp__col--v li :global(.icon) {
+    color: var(--turquesa-claro);
+    stroke-width: 2.4;
+  }
+  .rsp__note {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--linea);
+    font-size: 0.875rem;
+    color: var(--tinta-2);
+  }
+  @media (max-width: 800px) {
+    .rsp__cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

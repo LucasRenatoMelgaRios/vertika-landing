@@ -1,0 +1,8 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-expediente.blend",
+ "fecha": "2026-11-10",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Carpeta de expediente gris nube con franja azul y un candado azul Vertika con arco metalico y cerradura.",
+ "postproceso": "azules calibrados a #1E4ED8 (factor lineal [0.212, 0.781, 1.101]); fundido de alfa en bordes, recorte al contenido, WebP q86."
+}

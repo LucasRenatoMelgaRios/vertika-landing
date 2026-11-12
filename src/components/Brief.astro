@@ -1,0 +1,441 @@
+---
+import Icon from './Icon.astro';
+import Prop from './Prop.astro';
+import { audiences, site } from '../data/site';
+const users = ['Solo yo', 'Hasta 10', 'Hasta 100', 'Hasta 1000', 'Más de 1000'];
+const data = audiences.map((a) => ({ id: a.id, label: a.label, services: a.services.map((s) => s.name) }));
+---
+<section class="sec brf" id="arma" aria-labelledby="brf-titulo">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="brf-titulo" class="display sec__title">Arma tu brief<br />en un minuto.</h2>
+      <p class="sec__lead">Marca lo que necesitas y te preparamos el mensaje. Lo envías por WhatsApp y con eso empezamos la conversación.</p>
+    </div>
+
+    <div class="brf__grid">
+      <form class="brf__form" data-brief onsubmit="return false">
+        <fieldset>
+          <legend><Icon name="user" />¿Para quién es?</legend>
+          <div class="brf__radios">
+            {data.map((a, i) => (
+              <label class="brf__radio">
+                <input type="radio" name="para" value={a.id} checked={i === 0} />
+                <span class="brf__mark" aria-hidden="true"></span>
+                <span>{a.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><Icon name="layers" />¿Qué necesitas?</legend>
+          {data.map((a, i) => (
+            <div class="brf__chips" data-svc={a.id} hidden={i !== 0}>
+              {a.services.map((s) => (
+                <label class="brf__chip">
+                  <input type="checkbox" name={`svc-${a.id}`} value={s} />
+                  <span>{s}</span>
+                </label>
+              ))}
+            </div>
+          ))}
+        </fieldset>
+
+        <fieldset>
+          <legend><Icon name="signal" />¿Cuántas personas lo usarán?</legend>
+          <div class="brf__range">
+            <input type="range" name="usuarios" min="0" max={users.length - 1} step="1" value="1" aria-valuetext={users[1]} />
+            <ol class="brf__ticks mono" aria-hidden="true">
+              {users.map((u) => <li>{u}</li>)}
+            </ol>
+          </div>
+        </fieldset>
+
+        <label class="brf__switch">
+          <input type="checkbox" name="sensibles" role="switch" />
+          <span class="brf__track" aria-hidden="true"></span>
+          <span>Manejará datos sensibles (salud, identidad, pagos)</span>
+        </label>
+      </form>
+
+      <aside class="brf__ticket" aria-live="polite">
+        <Prop name="cinta-turquesa" w={8} at="top:-1.2rem;left:calc(50% - 4rem);z-index:5" rot={-3} mobile />
+        <div class="brf__paper">
+          <p class="brf__title mono">TU BRIEF · VERTIKA</p>
+          <dl class="brf__rows mono">
+            <div><dt>para</dt><dd data-out="para">Personas</dd></div>
+            <div><dt>usuarios</dt><dd data-out="usuarios">{users[1]}</dd></div>
+            <div><dt>datos sensibles</dt><dd data-out="sensibles">no</dd></div>
+          </dl>
+          <p class="brf__sub mono">necesito</p>
+          <ul class="brf__list mono" data-out="lista">
+            <li class="is-empty">marca una o más opciones</li>
+          </ul>
+          <div class="brf__next">
+            <p class="mono">siguiente paso</p>
+            <p class="brf__step">Conversación inicial</p>
+            <p class="mono brf__fine">Después, una propuesta <span class="brf__circle">por escrito</span> con alcance, etapas, plazos y presupuesto.</p>
+          </div>
+        </div>
+        <a class="btn btn--ink brf__send" href="#" data-send target="_blank" rel="noopener">
+          <Icon name="chat" /> Enviar por WhatsApp <Icon name="arrow" />
+        </a>
+        <p class="brf__mail">¿Prefieres correo? <a href={`mailto:${site.email}`} data-mail>Envíalo a {site.email}</a></p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ data, users, phone: site.whatsapp, email: site.email }}>
+  const form = document.querySelector('[data-brief]');
+  if (form) {
+    const $ = (s) => document.querySelector(s);
+    const out = (k) => document.querySelector(`[data-out="${k}"]`);
+    const send = $('[data-send]');
+    const mail = $('[data-mail]');
+    const range = form.querySelector('input[type=range]');
+    const update = () => {
+      const para = form.querySelector('input[name=para]:checked').value;
+      const aud = data.find((d) => d.id === para);
+      document.querySelectorAll('[data-svc]').forEach((el) => (el.hidden = el.dataset.svc !== para));
+      const picked = [...form.querySelectorAll(`input[name="svc-${para}"]:checked`)].map((i) => i.value);
+      const u = users[Number(range.value)];
+      range.setAttribute('aria-valuetext', u);
+      const sens = form.querySelector('input[name=sensibles]').checked || para === 'salud';
+      out('para').textContent = aud.label;
+      out('usuarios').textContent = u;
+      out('sensibles').textContent = sens ? 'sí · protección reforzada' : 'no';
+      const list = out('lista');
+      list.innerHTML = '';
+      (picked.length ? picked : ['marca una o más opciones']).forEach((t) => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        if (!picked.length) li.className = 'is-empty';
+        list.appendChild(li);
+      });
+      const msg = [
+        'Hola Vertika, este es mi brief:',
+        `• Para: ${aud.label}`,
+        `• Necesito: ${picked.length ? picked.join(', ') : 'por definir'}`,
+        `• Usuarios: ${u}`,
+        `• Datos sensibles: ${sens ? 'sí' : 'no'}`,
+        '¿Podemos agendar una conversación?',
+      ].join('\n');
+      send.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      mail.href = `mailto:${email}?subject=${encodeURIComponent('Brief de proyecto')}&body=${encodeURIComponent(msg)}`;
+    };
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    document.addEventListener('vertika:audiencia', (e) => {
+      const r = form.querySelector(`input[name=para][value="${e.detail}"]`);
+      if (r) { r.checked = true; update(); }
+    });
+    update();
+  }
+</script>
+
+<style>
+  .brf__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .brf__form {
+    display: grid;
+    gap: 2.25rem;
+  }
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+    font-weight: 700;
+    padding: 0;
+  }
+  legend :global(.icon) {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--tinta-2);
+  }
+  .brf__radios {
+    display: grid;
+    border-top: 1px solid var(--linea);
+  }
+  .brf__radio {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.95rem 0.25rem;
+    border-bottom: 1px solid var(--linea);
+    font-size: 1.125rem;
+    cursor: pointer;
+  }
+  .brf__radio input,
+  .brf__chip input,
+  .brf__switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .brf__mark {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--tinta);
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+  .brf__mark::after {
+    content: '';
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--tinta);
+    transform: scale(0);
+    transition: transform 0.3s var(--ease-out);
+  }
+  .brf__radio input:checked + .brf__mark::after {
+    transform: scale(1);
+  }
+  .brf__radio input:checked ~ span:last-child {
+    font-weight: 700;
+  }
+  .brf__radio input:focus-visible + .brf__mark,
+  .brf__chip input:focus-visible + span,
+  .brf__switch input:focus-visible + .brf__track {
+    outline: 2px solid var(--azul);
+    outline-offset: 3px;
+  }
+  .brf__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+  .brf__chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.6rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--linea);
+    border-radius: 3px;
+    background: var(--hoja);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+  }
+  .brf__chip span::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--linea);
+    transform: rotate(45deg);
+    border-radius: 1px;
+    transition: background-color 0.2s;
+  }
+  .brf__chip span:hover {
+    border-color: var(--tinta);
+  }
+  .brf__chip input:checked + span {
+    border-color: var(--azul);
+    background: var(--azul-suave);
+    color: var(--azul);
+    font-weight: 700;
+  }
+  .brf__chip input:checked + span::before {
+    background: var(--azul);
+  }
+  .brf__range input {
+    width: 100%;
+    accent-color: var(--azul);
+    height: 1.5rem;
+  }
+  .brf__ticks {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.3rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.75rem;
+    color: var(--tinta-3);
+  }
+  .brf__switch {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: 1.0625rem;
+    cursor: pointer;
+  }
+  .brf__track {
+    position: relative;
+    width: 2.75rem;
+    height: 1.5rem;
+    border-radius: 3px;
+    background: var(--linea);
+    flex: none;
+    transition: background-color 0.25s;
+  }
+  .brf__track::after {
+    content: '';
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 2px;
+    background: #fff;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .brf__switch input:checked + .brf__track {
+    background: var(--tinta);
+  }
+  .brf__switch input:checked + .brf__track::after {
+    transform: translateX(1.25rem);
+  }
+
+  /* The receipt */
+  .brf__ticket {
+    display: grid;
+    gap: 1rem;
+    position: sticky;
+    top: 6.5rem;
+  }
+  .brf__paper {
+    --z: 9px;
+    position: relative;
+    padding: 1.6rem 1.6rem 1.5rem;
+    background: var(--hoja);
+    filter: drop-shadow(0 14px 22px rgba(11, 27, 77, 0.16));
+    -webkit-mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--z) * 2) var(--z) repeat-x,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(var(--z) * 2) var(--z) repeat-x,
+      linear-gradient(#000 0 0) center / 100% calc(100% - var(--z) * 2) no-repeat;
+    mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--z) * 2) var(--z) repeat-x,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(var(--z) * 2) var(--z) repeat-x,
+      linear-gradient(#000 0 0) center / 100% calc(100% - var(--z) * 2) no-repeat;
+  }
+  .brf__title {
+    letter-spacing: 0.12em;
+    color: var(--tinta-2);
+    font-size: 0.8125rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px dashed var(--linea);
+    margin-bottom: 0.9rem;
+  }
+  .brf__rows {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+  }
+  .brf__rows div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .brf__rows div::after {
+    content: '';
+    order: 1;
+    flex: 1;
+    border-bottom: 1px dotted var(--tinta-3);
+    transform: translateY(-0.25rem);
+  }
+  .brf__rows dt {
+    color: var(--tinta-2);
+  }
+  .brf__rows dd {
+    order: 2;
+    margin: 0;
+    font-weight: 500;
+    text-align: right;
+  }
+  .brf__sub {
+    margin-top: 1rem;
+    color: var(--tinta-2);
+  }
+  .brf__list {
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.2rem;
+  }
+  .brf__list li::before {
+    content: '+ ';
+    color: var(--azul);
+  }
+  .brf__list li.is-empty {
+    color: var(--tinta-3);
+  }
+  .brf__list li.is-empty::before {
+    content: '';
+  }
+  .brf__next {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--linea);
+    display: grid;
+    gap: 0.3rem;
+  }
+  .brf__next > .mono:first-child {
+    color: var(--tinta-2);
+  }
+  .brf__step {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 110%;
+    font-size: 1.35rem;
+    text-transform: uppercase;
+    line-height: 1.15;
+  }
+  .brf__circle {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.3rem;
+    padding: 0.05rem 0.5rem;
+    color: var(--azul);
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    transform: rotate(-3deg);
+  }
+  .brf__circle::after {
+    content: '';
+    position: absolute;
+    inset: -0.3rem -0.35rem;
+    border: 2px solid var(--azul);
+    border-radius: 50%;
+    transform: rotate(-4deg);
+  }
+  .brf__fine {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--tinta-2);
+  }
+  .brf__send {
+    width: 100%;
+  }
+  .brf__mail {
+    font-size: 0.9rem;
+    color: var(--tinta-2);
+    text-align: center;
+  }
+  @media (max-width: 900px) {
+    .brf__grid {
+      grid-template-columns: 1fr;
+    }
+    .brf__ticket {
+      position: static;
+    }
+    .brf__ticks li:nth-child(even) {
+      visibility: hidden;
+    }
+  }
+</style>

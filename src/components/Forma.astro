@@ -1,0 +1,39 @@
+---
+/**
+ * One shape from the Vertika brand family (Blender, single brand colour, matte).
+ * Decorative: always empty alt and aria-hidden. Served at 450 and 900 px.
+ */
+import { asset } from '../lib/assets';
+interface Props {
+  name: 'cuerda' | 'personas' | 'empresas' | 'salud' | 'hoja' | 'candado' | 'burbuja';
+  class?: string;
+  /** rendered CSS width hint for srcset, e.g. "(max-width: 860px) 160px, 260px" */
+  sizes?: string;
+  eager?: boolean;
+  hidden?: boolean;
+  dataAud?: string;
+}
+const { name, class: cls, sizes = '260px', eager = false, hidden = false, dataAud } = Astro.props;
+const big = asset(`forma-${name}.webp`);
+const small = asset(`forma-${name}-450.webp`);
+const dims: Record<Props['name'], [number, number]> = {
+  cuerda: [783, 267], personas: [664, 610], empresas: [756, 593], salud: [712, 609], hoja: [393, 584], candado: [695, 602], burbuja: [713, 568],
+};
+const [w, h] = dims[name];
+---
+{big && (
+  <img
+    class:list={['forma', cls]}
+    src={big}
+    srcset={small ? `${small} 450w, ${big} ${w}w` : undefined}
+    sizes={sizes}
+    width={w}
+    height={h}
+    alt=""
+    aria-hidden="true"
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    hidden={hidden}
+    data-aud={dataAud}
+  />
+)}

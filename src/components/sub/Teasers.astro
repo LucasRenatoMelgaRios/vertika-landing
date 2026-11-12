@@ -1,0 +1,285 @@
+---
+/** Pilar teasers on /empresas/: the ready-made product and the automation service, each linking to its own page. */
+import Icon from '../Icon.astro';
+interface Props {
+  kind: 'producto' | 'automatizacion';
+}
+const { kind } = Astro.props;
+---
+{kind === 'producto' ? (
+  <section class="tz tz--prod" aria-labelledby="tz-p">
+    <div class="wrap tz__grid">
+      <div class="tz__copy">
+        <p class="tz__tag">Producto listo para usar</p>
+        <h2 id="tz-p" class="display tz__title">CRM para<br /><em>WhatsApp Business.</em></h2>
+        <p class="tz__lead">Tu número de siempre conectado a un CRM. Se configura una sola vez y los flujos ya están hechos.</p>
+        <ul class="tz__pts">
+          <li><Icon name="chat" /><span><b>Bandeja compartida</b> todo tu equipo en un solo lugar</span></li>
+          <li><Icon name="code" /><span><b>Bot con IA</b> responde, agenda y deriva a una persona</span></li>
+          <li><Icon name="signal" /><span><b>Campañas masivas</b> con plantillas aprobadas por Meta</span></li>
+        </ul>
+        <div class="tz__actions">
+          <a class="tz__btn" href="/empresas/crm-whatsapp/">Ver planes y funciones <Icon name="arrow" /></a>
+          <span class="tz__price">desde <b>S/ 99</b>/mes</span>
+        </div>
+      </div>
+      <div class="tz__mock" aria-hidden="true">
+        <div class="tz__chat">
+          <p class="in">Hola, ¿tienen envío a Arequipa?</p>
+          <p class="bot">¡Hola! Sí, llega en 48 h. ¿Te comparto el catálogo?</p>
+          <p class="in">Quiero hacer un reclamo de mi pedido</p>
+          <p class="note">Derivado a Atención al cliente</p>
+        </div>
+      </div>
+    </div>
+  </section>
+) : (
+  <section class="sec tz tz--auto" aria-labelledby="tz-a">
+    <div class="wrap">
+      <a class="tz__band hoja" href="/empresas/automatizacion-n8n/">
+        <span class="tz__flow" aria-hidden="true">
+          {['globe', 'table', 'doc', 'chat', 'check'].map((ic, i) => (
+            <>
+              <span class="tz__node" style={`--i:${i}`}><Icon name={ic as any} /></span>
+              {i < 4 && <span class="tz__wire" style={`--i:${i}`}></span>}
+            </>
+          ))}
+        </span>
+        <span class="tz__txt">
+          <b id="tz-a">Automatización e integraciones con n8n</b>
+          <small>Flujos que conectan tus herramientas y trabajan solos, con IA que deriva a tu equipo los temas delicados. Mira cómo funciona en seis rubros.</small>
+        </span>
+        <Icon name="arrow" class="tz__go" />
+      </a>
+    </div>
+  </section>
+)}
+
+<style>
+  .tz--prod {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+    background: var(--noche);
+    color: #fff;
+  }
+  .tz__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .tz__copy {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  .tz__tag {
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(94, 224, 217, 0.14);
+    color: var(--turquesa-claro);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .tz__title {
+    font-size: var(--step-3);
+  }
+  .tz__title :global(em) {
+    color: var(--turquesa-claro);
+  }
+  .tz__lead {
+    color: var(--sobre-noche-2);
+    max-width: 48ch;
+  }
+  .tz__pts {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tz__pts li {
+    display: flex;
+    gap: 0.6rem;
+    color: var(--sobre-noche-2);
+  }
+  .tz__pts b {
+    color: #fff;
+    margin-right: 0.3rem;
+  }
+  .tz :global(.icon) {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: none;
+  }
+  .tz__pts :global(.icon) {
+    color: var(--turquesa-claro);
+    margin-top: 0.2rem;
+  }
+  .tz__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .tz__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.85rem 1.3rem;
+    border-radius: 999px;
+    background: var(--turquesa-claro);
+    color: var(--noche);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .tz__btn:hover {
+    background: #fff;
+  }
+  .tz__price {
+    color: var(--sobre-noche-2);
+  }
+  .tz__price b {
+    color: #fff;
+    font-family: var(--display);
+    font-size: 1.3rem;
+  }
+  .tz__mock {
+    padding: 1.25rem;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+  }
+  .tz__chat {
+    display: grid;
+    gap: 0.55rem;
+    font-size: 0.9rem;
+  }
+  .tz__chat p {
+    max-width: 82%;
+    padding: 0.55rem 0.8rem;
+    border-radius: 14px;
+    color: var(--tinta);
+  }
+  .tz__chat .in {
+    background: var(--papel);
+    border-bottom-left-radius: 4px;
+  }
+  .tz__chat .bot {
+    justify-self: end;
+    background: var(--azul);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .tz__chat .note {
+    justify-self: center;
+    max-width: none;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+  }
+  .tz__band {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: 18px;
+    color: var(--tinta);
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.3s var(--ease-out);
+  }
+  .tz__band:hover {
+    border-color: var(--azul);
+    transform: translateY(-2px);
+  }
+  .tz__flow {
+    display: flex;
+    align-items: center;
+    flex: none;
+    padding: 0.9rem 1.1rem;
+    border-radius: 14px;
+    background: var(--noche);
+  }
+  .tz__node {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--azul);
+    animation: tz-on 3.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.45s);
+  }
+  .tz__wire {
+    width: 1.6rem;
+    height: 2px;
+    background: rgba(94, 224, 217, 0.3);
+    background-image: linear-gradient(90deg, var(--turquesa-claro), var(--turquesa-claro));
+    background-repeat: no-repeat;
+    background-size: 0 100%;
+    animation: tz-wire 3.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.45s + 0.2s);
+  }
+  @keyframes tz-on {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(94, 224, 217, 0); }
+    15% { box-shadow: 0 0 0 3px var(--turquesa-claro); }
+    40% { box-shadow: 0 0 0 3px rgba(94, 224, 217, 0.4); }
+  }
+  @keyframes tz-wire {
+    0% { background-size: 0 100%; }
+    15%, 100% { background-size: 100% 100%; }
+  }
+  .tz__txt {
+    flex: 1;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .tz__txt b {
+    font-size: var(--step-2);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+  .tz__txt small {
+    color: var(--tinta-2);
+    font-size: 1rem;
+  }
+  .tz__band :global(.tz__go) {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--azul);
+  }
+  .tz--prod :focus-visible {
+    outline-color: var(--turquesa-claro);
+  }
+  @media (max-width: 900px) {
+    .tz__grid {
+      grid-template-columns: 1fr;
+    }
+    .tz__band {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (max-width: 480px) {
+    .tz__wire {
+      width: 0.8rem;
+    }
+    .tz__node {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tz__node,
+    .tz__wire {
+      animation: none;
+      background-size: 100% 100%;
+    }
+  }
+</style>

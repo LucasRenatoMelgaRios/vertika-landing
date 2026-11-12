@@ -1,0 +1,187 @@
+---
+/** Hub diagram: the system in the middle, the kinds of tools it connects to around it. No brand logos. */
+import Icon, { type IconName } from '../Icon.astro';
+const nodes: { icon: IconName; label: string; sub: string }[] = [
+  { icon: 'doc', label: 'Facturación electrónica', sub: 'boletas y facturas' },
+  { icon: 'globe', label: 'Tu web o tienda', sub: 'pedidos en línea' },
+  { icon: 'chat', label: 'WhatsApp', sub: 'avisos a clientes' },
+  { icon: 'table', label: 'Hojas de cálculo', sub: 'importar lo que ya tienes' },
+  { icon: 'key', label: 'Pagos', sub: 'tarjeta, Yape, Plin' },
+  { icon: 'database', label: 'Tu sistema actual', sub: 'ERP o contable' },
+];
+---
+<section class="sec int" aria-labelledby="int-t">
+  <div class="wrap int__grid">
+    <div class="int__copy">
+      <h2 id="int-t" class="display sec__title int__title">Se conecta con<br />lo que ya usas.</h2>
+      <p class="sec__lead">No hace falta tirar lo que funciona. Conectamos tu sistema con las herramientas de tu operación para que la información no se copie a mano.</p>
+      <p class="int__fine">Definimos cada integración en la propuesta, según las herramientas que realmente uses.</p>
+    </div>
+    <div class="int__hub" aria-hidden="true">
+      <svg class="int__lines" viewBox="0 0 600 520">
+        {nodes.map((_, i) => {
+          const a = (Math.PI * 2 * i) / nodes.length - Math.PI / 2;
+          const x = 300 + Math.cos(a) * 215, y = 260 + Math.sin(a) * 195;
+          return <path d={`M300 260 L${x.toFixed(0)} ${y.toFixed(0)}`} style={`--d:${i * 0.35}s`} />;
+        })}
+      </svg>
+      <div class="int__core"><span class="int__k"></span><b>Tu sistema</b><small>a medida</small></div>
+      {nodes.map((n, i) => {
+        const a = (Math.PI * 2 * i) / nodes.length - Math.PI / 2;
+        const x = 50 + Math.cos(a) * 35.8, y = 50 + Math.sin(a) * 37.5;
+        return (
+          <div class="int__node hoja" style={`left:${x.toFixed(1)}%;top:${y.toFixed(1)}%`}>
+            <Icon name={n.icon} />
+            <span><b>{n.label}</b><small>{n.sub}</small></span>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .int__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .int__title {
+    padding-left: 0;
+  }
+  .int__title::before {
+    display: none;
+  }
+  .int__copy :global(.sec__lead) {
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+  .int__fine {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--tinta-2);
+  }
+  .int__hub {
+    position: relative;
+    aspect-ratio: 600 / 520;
+  }
+  .int__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .int__lines path {
+    stroke: var(--azul);
+    stroke-width: 2;
+    stroke-dasharray: 2 7;
+    stroke-linecap: round;
+    fill: none;
+    animation: dash 3s linear infinite;
+    animation-delay: var(--d);
+  }
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -54;
+    }
+  }
+  .int__core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.15rem;
+    width: 9.5rem;
+    height: 9.5rem;
+    border-radius: 22px;
+    background: var(--noche);
+    color: #fff;
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 30px 60px -28px rgba(11, 27, 77, 0.7);
+  }
+  .int__core > * {
+    transform: rotate(-45deg);
+  }
+  .int__core b {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+  }
+  .int__core small {
+    color: var(--turquesa-claro);
+    font-size: 0.78rem;
+  }
+  .int__k {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-bottom: 0.3rem;
+    border-radius: 2px;
+    background: var(--turquesa-claro);
+  }
+  .int__node {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.85rem 0.6rem 0.65rem;
+    border-radius: 12px;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+  .int__node :global(.icon) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--azul);
+  }
+  .int__node b {
+    display: block;
+    font-size: 0.85rem;
+  }
+  .int__node small {
+    color: var(--tinta-2);
+    font-size: 0.75rem;
+  }
+  @media (max-width: 900px) {
+    .int__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .int__hub {
+      aspect-ratio: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .int__lines {
+      display: none;
+    }
+    .int__core {
+      position: static;
+      grid-column: 1 / -1;
+      width: auto;
+      height: auto;
+      padding: 1rem;
+      transform: none;
+      border-radius: 12px;
+    }
+    .int__core > * {
+      transform: none;
+    }
+    .int__node {
+      position: static;
+      transform: none;
+      white-space: normal;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .int__lines path {
+      animation: none;
+    }
+  }
+</style>

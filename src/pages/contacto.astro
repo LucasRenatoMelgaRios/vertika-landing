@@ -1,0 +1,207 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { site, waLink, audiences } from '../data/site';
+
+const tips = [
+  'Qué quieres lograr o qué problema quieres resolver.',
+  'Quién usará el software: tú, tu equipo, tus clientes o tus pacientes.',
+  'Si ya usas algún sistema o herramienta que debamos considerar.',
+  'Si tienes una fecha o un presupuesto en mente.',
+];
+---
+<Base
+  title="Contacto: cuéntanos tu proyecto"
+  description="Escríbenos por WhatsApp o correo para conversar sobre tu proyecto de software a medida. Vertika Platforms, desarrollo de software en Perú."
+  path="/contacto/"
+  crumbs={[{ name: 'Contacto', path: '/contacto/' }]}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      name: 'Contacto',
+      url: `${site.url}/contacto/`,
+      about: { '@id': `${site.url}/#organizacion` },
+    },
+  ]}
+>
+  <section class="ct" aria-labelledby="ct-titulo">
+    <div class="wrap ct__grid">
+      <div class="ct__text">
+        <h1 id="ct-titulo" class="display">Hablemos de tu proyecto</h1>
+        <p>Elige para quién es el software y te abrimos WhatsApp con un mensaje listo para enviar. También puedes escribirnos por correo.</p>
+      </div>
+      <ul class="ct__cords">
+        {audiences.map((a) => (
+          <li>
+            <span class="ct__string" aria-hidden="true"></span>
+            <span class="knot" aria-hidden="true"></span>
+            <a href={waLink(a.waMessage)} target="_blank" rel="noopener">
+              <span class="ct__label">Software para {a.label.toLowerCase()}</span>
+              <span class="ct__go"><Icon name="chat" />Escribir por WhatsApp</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="wrap ct__mail">
+      <Icon name="mail" />
+      <span>O por correo: <a href={`mailto:${site.email}`}>{site.email}</a></span>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap ct__tips">
+      <h2 class="display">Para tu primer mensaje.</h2>
+      <div>
+        <p>No necesitas tener todo definido. Si puedes, cuéntanos:</p>
+        <ul>
+          {tips.map((t) => <li><span class="knot" aria-hidden="true"></span>{t}</li>)}
+        </ul>
+        <p class="ct__note">Usamos los datos que nos envíes solo para responder tu consulta.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ct {
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .ct__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .ct__text {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .ct h1 {
+    font-size: clamp(2.8rem, 1rem + 5.4vw, 5.6rem);
+    max-width: 11ch;
+  }
+  .ct__text p {
+    font-size: var(--step-1);
+    color: var(--tinta-2);
+    max-width: 44ch;
+  }
+  .ct__cords {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--cord) solid var(--azul);
+  }
+  .ct__cords li {
+    position: relative;
+    padding-left: 2.25rem;
+  }
+  .ct__string {
+    position: absolute;
+    left: 0.55rem;
+    top: 0;
+    bottom: 0;
+    width: var(--cord);
+    background: var(--azul);
+    opacity: 0.5;
+  }
+  .ct__cords li:last-child .ct__string {
+    bottom: 50%;
+  }
+  .ct__cords .knot {
+    position: absolute;
+    left: calc(0.55rem - 0.3rem + 1px);
+    top: calc(50% - 0.3rem);
+    transition: transform 0.4s var(--ease-out);
+  }
+  .ct__cords li:hover .knot {
+    transform: rotate(45deg) scale(1.5);
+  }
+  .ct__cords a {
+    display: grid;
+    justify-items: start;
+    gap: 0.5rem;
+    padding-block: 1.6rem;
+    border-bottom: 1px solid var(--linea);
+    color: var(--tinta) !important;
+    text-decoration: none;
+  }
+  .ct__label {
+    font-size: var(--step-2);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .ct__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--azul);
+    font-weight: 700;
+  }
+  .ct__go :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .ct__cords a:hover .ct__label {
+    color: var(--azul);
+  }
+  .ct__mail {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    color: var(--tinta-2);
+  }
+  .ct__mail :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+    flex: none;
+  }
+  .ct__tips {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+  .ct__tips h2 {
+    font-size: var(--step-3);
+  }
+  .ct__cords {
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    box-shadow: var(--shadow);
+    border-top: 2px solid var(--tinta) !important;
+  }
+  .ct__tips > div {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 60ch;
+  }
+  .ct__tips ul {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ct__tips li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    font-size: 1.0625rem;
+  }
+  .ct__tips li .knot {
+    background: var(--azul);
+    transform: translateY(-0.1rem) rotate(45deg);
+  }
+  .ct__note {
+    color: var(--tinta-2);
+    font-size: 0.95rem;
+  }
+  @media (max-width: 860px) {
+    .ct__grid,
+    .ct__tips {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

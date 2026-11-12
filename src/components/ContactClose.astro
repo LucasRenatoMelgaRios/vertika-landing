@@ -1,0 +1,78 @@
+---
+import Icon from './Icon.astro';
+import { site, waLink } from '../data/site';
+import Forma from './Forma.astro';
+interface Props {
+  message?: string;
+  title?: string;
+  headingLevel?: 'h1' | 'h2';
+}
+const {
+  message = 'Hola Vertika, quiero conversar sobre un proyecto.',
+  title = 'Cuéntanos<br /><em>tu idea.</em>',
+  headingLevel = 'h2',
+} = Astro.props;
+const H = headingLevel;
+---
+<section class="sec cc" id="contacto" aria-labelledby="cc-titulo">
+  <div class="wrap cc__inner">
+    <Forma name="burbuja" class="cc__forma" sizes="(max-width: 860px) 110px, 170px" />
+    <H id="cc-titulo" class="display cc__title" set:html={title} />
+    <p class="cc__lead">Escríbenos por WhatsApp o por correo. Te respondemos para agendar una conversación inicial y entender tu proyecto.</p>
+    <div class="cc__actions">
+      <a class="btn btn--ink" href={waLink(message)} target="_blank" rel="noopener">
+        <Icon name="chat" /> Escríbenos por WhatsApp <Icon name="arrow" />
+      </a>
+      <a class="btn btn--line" href={`mailto:${site.email}`}>
+        <Icon name="mail" /> {site.email}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cc {
+    padding-bottom: clamp(4.5rem, 9vw, 8rem);
+  }
+  .cc__inner {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    padding-top: clamp(3rem, 6vw, 4.5rem);
+    border-top: 2px solid var(--tinta);
+  }
+  .cc__inner :global(.cc__forma) {
+    width: clamp(6.5rem, 12vw, 10.5rem);
+    height: auto;
+    margin-bottom: -0.5rem;
+    pointer-events: none;
+  }
+  .cc__title {
+    font-size: clamp(3rem, 1rem + 7vw, 7rem);
+  }
+  .cc__lead {
+    max-width: 46ch;
+    font-size: var(--step-1);
+    color: var(--tinta-2);
+  }
+  .cc__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  .cc__actions .btn--line {
+    text-transform: none;
+    font-family: var(--font);
+    font-weight: 700;
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+  @media (max-width: 560px) {
+    .cc__actions .btn {
+      width: 100%;
+    }
+  }
+</style>

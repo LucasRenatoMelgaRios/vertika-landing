@@ -1,0 +1,80 @@
+---
+interface Props {
+  items: { q: string; a: string }[];
+  title?: string;
+}
+const { items, title = 'Preguntas frecuentes.' } = Astro.props;
+---
+<section class="sec faq" id="preguntas" aria-labelledby="faq-titulo">
+  <div class="wrap faq__wrap">
+    <div class="sec__head">
+      <h2 id="faq-titulo" class="display sec__title" set:html={title} />
+    </div>
+    <div class="faq__list">
+      {items.map((f, i) => (
+        <details class="hoja" open={i === 0}>
+          <summary>
+            <span>{f.q}</span>
+            <svg class="faq__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+          </summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__wrap {
+    max-width: calc(54rem + var(--gutter) * 2);
+  }
+  .faq__list {
+    display: grid;
+    gap: 0.6rem;
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.15rem 1.35rem;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover span {
+    color: var(--azul);
+  }
+  .faq__chev {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    fill: none;
+    stroke: var(--tinta);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.35s var(--ease-out);
+  }
+  details[open] .faq__chev {
+    transform: rotate(180deg);
+  }
+  details p {
+    padding: 0 1.35rem 1.35rem;
+    color: var(--tinta-2);
+    max-width: 66ch;
+  }
+  details[open] p {
+    animation: faq-in 0.4s var(--ease-out);
+  }
+  @keyframes faq-in {
+    from {
+      opacity: 0.001;
+      transform: translateY(-0.3rem);
+    }
+  }
+</style>

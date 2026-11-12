@@ -1,0 +1,642 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import { site, audiences, type Mini } from '../data/site';
+
+const path = Astro.url.pathname;
+const audIcon: Record<string, IconName> = { personas: 'user', empresas: 'building', salud: 'cross' };
+const miniIcon: Record<Mini, IconName> = {
+  web: 'globe', app: 'phone', proto: 'pen', auto: 'refresh', tabla: 'table', insumos: 'table', crm: 'user', erp: 'layers', api: 'plug',
+  portal: 'doc', panel: 'chart', agenda: 'calendar', roles: 'key', paciente: 'user',
+};
+const trabajo: { href: string; icon: IconName; name: string; text: string }[] = [
+  { href: '/#proceso', icon: 'layers', name: 'Nuestro proceso', text: 'Seis etapas, cada una con tu aprobación.' },
+  { href: '/#arma', icon: 'pen', name: 'Arma tu brief', text: 'Cuéntanos qué necesitas en un minuto.' },
+  { href: '/seguridad-y-datos/', icon: 'shield', name: 'Seguridad y datos', text: 'Cómo protegemos los datos, también los de salud.' },
+  { href: '/#preguntas', icon: 'chat', name: 'Preguntas frecuentes', text: 'Costos, plazos y qué pasa después del lanzamiento.' },
+];
+const isSol = audiences.some((a) => a.path === path);
+---
+<header class="hdr" data-hdr>
+  <div class="wrap hdr__bar">
+    <a class="hdr__logo" href="/" aria-label={`${site.name}, inicio`}>
+      <img src="/brand/vertika-horizontal-color.svg" alt="" width="150" height="36" />
+    </a>
+    <button class="hdr__toggle" type="button" aria-expanded="false" aria-controls="menu-principal">
+      <Icon name="menu" class="i-open" />
+      <Icon name="close" class="i-close" />
+      <span class="sr-only">Menú</span>
+    </button>
+
+    <nav class="hdr__nav" id="menu-principal" aria-label="Principal">
+      <ul class="hdr__list">
+        <li class="hdr__item" data-menu>
+          <button class="hdr__top" type="button" aria-expanded="false" aria-controls="mm-soluciones" aria-current={isSol ? 'true' : undefined}>
+            Soluciones <svg class="hdr__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+          </button>
+          <div class="mm hoja" id="mm-soluciones" data-panel>
+            <div class="mm__tabs" role="tablist" aria-label="Soluciones por público">
+              {audiences.map((a, i) => (
+                <a
+                  class="mm__tab"
+                  href={a.path}
+                  role="tab"
+                  id={`mmt-${a.id}`}
+                  aria-controls={`mmp-${a.id}`}
+                  aria-selected={i === 0 ? 'true' : 'false'}
+                  data-tab={a.id}
+                >
+                  <Icon name={audIcon[a.id]} />
+                  <span>
+                    <b>Para {a.label.toLowerCase()}</b>
+                    <small>{a.knots.join(' · ')}</small>
+                  </span>
+                </a>
+              ))}
+            </div>
+            {audiences.map((a, i) => (
+              <div class="mm__pane" role="tabpanel" id={`mmp-${a.id}`} aria-labelledby={`mmt-${a.id}`} data-pane={a.id} data-label={`Para ${a.label.toLowerCase()}`} hidden={i !== 0}>
+                {a.services.some((s) => s.group) ? (
+                  <div class="mm__groups">
+                    {[['producto', 'Producto listo para usar'], ['medida', 'Desarrollo a medida · con cotización']].map(([g, lbl]) => (
+                      <div class:list={['mm__group', `mm__group--${g}`]}>
+                        <p class="mm__glbl">{lbl}</p>
+                        <ul class:list={['mm__grid', { 'mm__grid--1': g === 'producto' }]}>
+                          {a.services.filter((s) => s.group === g).map((s) => (
+                            <li>
+                              <a class="mm__link" href={s.href ?? `${a.path}#soluciones`}>
+                                <span class="mm__ico"><Icon name={miniIcon[s.mini]} /></span>
+                                <span>
+                                  <b>{s.name}{s.badge && <em class="mm__badge">{s.badge}</em>}</b>
+                                  <small>{s.text}</small>
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <ul class="mm__grid">
+                    {a.services.map((s) => (
+                      <li>
+                        <a class="mm__link" href={s.href ?? `${a.path}#soluciones`}>
+                          <span class="mm__ico"><Icon name={miniIcon[s.mini]} /></span>
+                          <span>
+                            <b>{s.name}</b>
+                            <small>{s.text}</small>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <a class="mm__all link-arrow" href={a.path}>Todo lo que hacemos para {a.label.toLowerCase()} <Icon name="arrow" /></a>
+              </div>
+            ))}
+          </div>
+        </li>
+
+        <li class="hdr__item" data-menu>
+          <button class="hdr__top" type="button" aria-expanded="false" aria-controls="mm-trabajo">
+            Cómo trabajamos <svg class="hdr__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+          </button>
+          <div class="mm mm--simple hoja" id="mm-trabajo" data-panel>
+            <ul class="mm__grid mm__grid--2">
+              {trabajo.map((t) => (
+                <li>
+                  <a class="mm__link" href={t.href}>
+                    <span class="mm__ico"><Icon name={t.icon} /></span>
+                    <span>
+                      <b>{t.name}</b>
+                      <small>{t.text}</small>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <aside class="mm__side">
+              <p class="mm__side-title">¿Tienes una idea?</p>
+              <p>Arma tu brief y te respondemos para agendar una conversación inicial.</p>
+              <a class="btn btn--ink" href="/#arma">Arma tu brief <Icon name="arrow" /></a>
+            </aside>
+          </div>
+        </li>
+
+        <li class="hdr__item"><a class="hdr__top" href="/nosotros/" aria-current={path === '/nosotros/' ? 'page' : undefined}>Nosotros</a></li>
+        <li class="hdr__item"><a class="hdr__top" href="/contacto/" aria-current={path === '/contacto/' ? 'page' : undefined}>Contacto</a></li>
+      </ul>
+      <a class="btn btn--ink hdr__cta" href="/contacto/">Hablemos</a>
+    </nav>
+  </div>
+  <div class="hdr__scrim" aria-hidden="true"></div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: rgba(238, 241, 247, 0.96);
+    border-bottom: 1px solid var(--linea);
+  }
+  .hdr__bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    min-height: 4.5rem;
+  }
+  .hdr__logo img {
+    width: 8.5rem;
+    height: auto;
+  }
+  .hdr__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex: 1;
+  }
+  .hdr__list {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+  .hdr__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.8rem;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 500;
+    font-size: 0.975rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .hdr__top:hover,
+  .hdr__top[aria-expanded='true'] {
+    background: var(--hoja);
+    color: var(--azul);
+  }
+  .hdr__top[aria-current] {
+    color: var(--azul);
+  }
+  .hdr__chev {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .hdr__top[aria-expanded='true'] .hdr__chev {
+    transform: rotate(180deg);
+  }
+  .hdr__cta {
+    min-height: 2.6rem;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Mega panel: one sheet under the bar, spanning the content width */
+  .mm {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: calc(100% + 0.5rem);
+    display: grid;
+    grid-template-columns: 15.5rem minmax(0, 1fr);
+    gap: 0;
+    padding: 1rem;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      opacity 0.22s var(--ease-out),
+      transform 0.3s var(--ease-out),
+      visibility 0s linear 0.22s;
+    box-shadow: 0 24px 60px -28px rgba(11, 27, 77, 0.45);
+  }
+  .hdr__item.is-open .mm {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.22s var(--ease-out),
+      transform 0.3s var(--ease-out);
+  }
+  .mm__tabs {
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+    padding-right: 1rem;
+    border-right: 1px solid var(--linea-2);
+  }
+  .mm__tab {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.7rem 0.8rem;
+    border-radius: 3px;
+    color: var(--tinta);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  .mm__tab :global(.icon) {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    color: var(--tinta-2);
+  }
+  .mm__tab b {
+    display: block;
+    font-weight: 700;
+    font-size: 0.975rem;
+  }
+  .mm__tab small {
+    display: block;
+    color: var(--tinta-3);
+    font-size: 0.8rem;
+  }
+  .mm__tab:hover,
+  .mm__tab[aria-selected='true'] {
+    background: var(--papel);
+  }
+  .mm__tab[aria-selected='true'] :global(.icon) {
+    color: var(--azul);
+  }
+  .mm__pane {
+    padding: 0.4rem 0.5rem 0.4rem 1.5rem;
+  }
+  .mm__pane:not([hidden]) {
+    animation: pane-in 0.35s var(--ease-out);
+  }
+  @keyframes pane-in {
+    from {
+      opacity: 0.001;
+      transform: translateX(6px);
+    }
+  }
+  .mm__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mm__grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mm__link {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.7rem 0.75rem;
+    border-radius: 3px;
+    color: var(--tinta);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  .mm__link:hover {
+    background: var(--papel);
+  }
+  .mm__link:hover b {
+    color: var(--azul);
+  }
+  .mm__ico {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    border-radius: 3px;
+    background: var(--azul-suave);
+    color: var(--azul);
+  }
+  .mm__ico :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .mm__link b {
+    display: block;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    transition: color 0.2s;
+  }
+  .mm__link small {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--tinta-2);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+  .mm__groups {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 2.1fr);
+    gap: 1.25rem;
+  }
+  .mm__group--producto {
+    padding: 0.6rem;
+    border-radius: 6px;
+    background: var(--papel);
+  }
+  .mm__glbl {
+    margin: 0.2rem 0.75rem 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta-3);
+  }
+  .mm__group--medida .mm__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mm__grid--1 {
+    grid-template-columns: 1fr !important;
+  }
+  .mm__group--producto .mm__link:hover {
+    background: var(--hoja);
+  }
+  .mm__badge {
+    display: inline-block;
+    margin-left: 0.45rem;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+    font-style: normal;
+    font-size: 0.7rem;
+    font-weight: 700;
+    vertical-align: 1px;
+  }
+  .mm__all {
+    margin: 0.75rem 0 0 0.75rem;
+    font-size: 0.925rem;
+  }
+  .mm--simple {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+  }
+  .mm--simple .mm__grid {
+    padding: 0.4rem 0.5rem;
+  }
+  .mm__side {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    justify-items: start;
+    margin-left: 1rem;
+    padding: 1.25rem;
+    border-radius: 3px;
+    background: var(--papel);
+  }
+  .mm__side-title {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    font-size: 1.05rem;
+  }
+  .mm__side p:not(.mm__side-title) {
+    color: var(--tinta-2);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  .mm__side .btn {
+    min-height: 2.6rem;
+    font-size: 0.8rem;
+  }
+  .hdr__scrim {
+    position: fixed;
+    inset: 4.5rem 0 0 0;
+    z-index: -1;
+    background: rgba(11, 27, 77, 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s var(--ease-out), visibility 0s linear 0.25s;
+  }
+  :global(.hdr.has-open) .hdr__scrim {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.25s var(--ease-out);
+  }
+
+  .hdr__toggle {
+    display: none;
+    margin-left: auto;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--tinta);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--tinta);
+    cursor: pointer;
+  }
+  .hdr__toggle :global(.icon) {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  .hdr__toggle :global(.i-close) {
+    display: none;
+  }
+
+  @media (max-width: 1060px) {
+    .hdr__toggle {
+      display: inline-flex;
+    }
+    .hdr__nav {
+      position: fixed;
+      inset: 4.5rem 0 0 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1.5rem;
+      padding: 0.5rem var(--gutter) 2rem;
+      overflow-y: auto;
+      background: var(--papel);
+      background-image: var(--paper-image);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-0.5rem);
+      transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out), visibility 0s linear 0.25s;
+    }
+    .hdr__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin: 0;
+    }
+    .hdr__item {
+      border-bottom: 1px solid var(--linea);
+    }
+    .hdr__top {
+      width: 100%;
+      justify-content: space-between;
+      padding: 1rem 0;
+      font-size: 1.125rem;
+    }
+    .hdr__top:hover,
+    .hdr__top[aria-expanded='true'] {
+      background: transparent;
+    }
+    /* On phones the panels become accordions inside the drawer */
+    .mm,
+    .mm--simple {
+      position: static;
+      display: none;
+      width: auto;
+      margin: 0 0 1rem;
+      padding: 0.5rem;
+      grid-template-columns: 1fr;
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      box-shadow: none;
+    }
+    .hdr__item.is-open .mm {
+      display: grid;
+    }
+    .mm__tabs {
+      display: none;
+    }
+    .mm__pane {
+      display: block !important;
+      padding: 0.25rem 0;
+    }
+    .mm__pane::before {
+      content: attr(data-label);
+      display: block;
+      padding: 0.5rem 0.75rem 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tinta-3);
+    }
+    .mm__grid,
+    .mm__grid--2,
+    .mm__group--medida .mm__grid {
+      grid-template-columns: 1fr;
+    }
+    .mm__groups {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .mm__link small {
+      display: none;
+    }
+    .mm__side {
+      display: none;
+    }
+    .mm__all {
+      margin: 0.25rem 0 0.75rem 0.75rem;
+    }
+    .hdr__scrim {
+      display: none;
+    }
+    .hdr__cta {
+      min-height: 3rem;
+    }
+    :global(.hdr.is-open) .hdr__nav {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+    }
+    :global(.hdr.is-open) .hdr__toggle :global(.i-open) {
+      display: none;
+    }
+    :global(.hdr.is-open) .hdr__toggle :global(.i-close) {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const hdr = document.querySelector<HTMLElement>('[data-hdr]')!;
+  const btn = hdr.querySelector<HTMLButtonElement>('.hdr__toggle')!;
+  const nav = hdr.querySelector<HTMLElement>('.hdr__nav')!;
+  const desktop = matchMedia('(min-width: 1061px)');
+  const hover = matchMedia('(hover: hover) and (pointer: fine)');
+  const menus = [...hdr.querySelectorAll<HTMLElement>('[data-menu]')];
+
+  const setDrawer = (open: boolean) => {
+    hdr.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  };
+  btn.addEventListener('click', () => setDrawer(!hdr.classList.contains('is-open')));
+
+  let closeTimer = 0;
+  const openMenu = (m: HTMLElement | null) => {
+    menus.forEach((x) => {
+      const on = x === m;
+      x.classList.toggle('is-open', on);
+      x.querySelector('.hdr__top')!.setAttribute('aria-expanded', String(on));
+    });
+    hdr.classList.toggle('has-open', !!m && desktop.matches);
+  };
+
+  menus.forEach((m) => {
+    const top = m.querySelector<HTMLButtonElement>('.hdr__top')!;
+    top.addEventListener('click', () => openMenu(m.classList.contains('is-open') ? null : m));
+    m.addEventListener('pointerenter', () => {
+      if (!desktop.matches || !hover.matches) return;
+      clearTimeout(closeTimer);
+      openMenu(m);
+    });
+    m.addEventListener('pointerleave', () => {
+      if (!desktop.matches || !hover.matches) return;
+      closeTimer = window.setTimeout(() => openMenu(null), 180);
+    });
+    // Tabs inside the Soluciones panel: hover or focus switches the audience.
+    const tabs = [...m.querySelectorAll<HTMLAnchorElement>('[data-tab]')];
+    const pick = (id: string) => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === id)));
+      m.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== id));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('pointerenter', () => pick(t.dataset.tab!));
+      t.addEventListener('focus', () => pick(t.dataset.tab!));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        tabs[(i + d + tabs.length) % tabs.length].focus();
+      });
+    });
+  });
+
+  hdr.querySelector('.hdr__scrim')!.addEventListener('click', () => openMenu(null));
+  nav.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) {
+      openMenu(null);
+      setDrawer(false);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = menus.find((m) => m.classList.contains('is-open'));
+    if (open) {
+      openMenu(null);
+      open.querySelector<HTMLElement>('.hdr__top')!.focus();
+    } else if (hdr.classList.contains('is-open')) {
+      setDrawer(false);
+      btn.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (!hdr.contains(e.target as Node)) openMenu(null);
+  });
+</script>

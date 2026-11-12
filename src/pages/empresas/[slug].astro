@@ -1,0 +1,259 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import SubHero from '../../components/sub/SubHero.astro';
+import WhatsAppCRM from '../../components/sub/WhatsAppCRM.astro';
+import Steps3 from '../../components/sub/Steps3.astro';
+import VsTable from '../../components/sub/VsTable.astro';
+import SectorFlow from '../../components/sub/SectorFlow.astro';
+import HumanHandoff from '../../components/sub/HumanHandoff.astro';
+import Integrations from '../../components/sub/Integrations.astro';
+import TabBand from '../../components/sub/TabBand.astro';
+import Siblings from '../../components/sub/Siblings.astro';
+import CtaBand from '../../components/sub/CtaBand.astro';
+import Process from '../../components/Process.astro';
+import Faq from '../../components/Faq.astro';
+import { site } from '../../data/site';
+import { subpages, erpSignals, erpVs, erpTabs, crmVs, n8nUpkeep, type SubPage } from '../../data/empresas';
+
+export function getStaticPaths() {
+  return subpages.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: SubPage };
+const url = new URL(p.path, site.url).href;
+const org = { '@id': `${site.url}/#organizacion` };
+const crumbs = [
+  { name: 'Software para empresas', path: '/empresas/' },
+  { name: p.short, path: p.path },
+];
+const main =
+  p.kind === 'producto'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: `${p.short} · ${site.name}`,
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web',
+        url,
+        description: p.seoDescription,
+        provider: org,
+        offers: [
+          { name: 'Starter', price: 99 },
+          { name: 'Pro', price: 201 },
+          { name: 'Business', price: 338 },
+        ].map((o) => ({
+          '@type': 'Offer',
+          name: o.name,
+          price: o.price,
+          priceCurrency: 'PEN',
+          seller: org,
+          priceSpecification: { '@type': 'UnitPriceSpecification', price: o.price, priceCurrency: 'PEN', billingDuration: 'P1M' },
+        })),
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: p.seoTitle,
+        serviceType: p.serviceType,
+        url,
+        description: p.seoDescription,
+        provider: org,
+        areaServed: { '@type': 'Country', name: site.countryName },
+      };
+const jsonLd = [
+  main,
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: p.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<Base title={p.seoTitle} description={p.seoDescription} path={p.path} crumbs={crumbs} jsonLd={jsonLd}>
+  {p.slug === 'crm-whatsapp' ? (
+    <WhatsAppCRM part="hero" crumbs={crumbs} />
+  ) : (
+  <SubHero
+    crumbs={crumbs}
+    h1={p.h1}
+    h1em={p.h1em}
+    lead={p.lead}
+    points={p.points}
+    forma={p.forma}
+    wa={p.wa}
+    secondary={p.slug === 'erp-a-medida' ? { href: '#modulos', label: 'Ver módulos' } : { href: '#automatizacion', label: 'Ver un flujo' }}
+  />
+  )}
+
+  {p.slug === 'crm-whatsapp' && (
+    <>
+      <WhatsAppCRM part="features" />
+      <Steps3
+        title="Listo en<br />tres pasos."
+        steps={[
+          { icon: 'phone', title: 'Conectamos tu número', text: 'Con la API oficial de Meta, en minutos y sin perder el acceso desde tu celular.' },
+          { icon: 'user', title: 'Ordenamos tu equipo y contactos', text: 'Importamos tu base, definimos etiquetas y repartimos las conversaciones.' },
+          { icon: 'code', title: 'Activamos bot y campañas', text: 'Configuramos el bot con tu información y lanzas tu primera campaña.' },
+        ]}
+      />
+      <section class="sec req" aria-labelledby="req-t">
+        <div class="wrap req__grid">
+          <div class="sec__head">
+            <h2 id="req-t" class="display sec__title">Qué necesitas<br />para empezar.</h2>
+            <p class="sec__lead">Pocas cosas, y te acompañamos en cada una.</p>
+          </div>
+          <ul class="req__list">
+            <li><Icon name="phone" /><span><b>Tu número de WhatsApp Business</b>el de siempre; lo conectamos con la API oficial de Meta.</span></li>
+            <li><Icon name="key" /><span><b>Acceso a la cuenta de Facebook de tu negocio</b>la que administra tu página y tus anuncios.</span></li>
+            <li><Icon name="table" /><span><b>Tu base de contactos</b>si la tienes en Excel, la importamos.</span></li>
+            <li><Icon name="doc" /><span><b>La información de tu negocio</b>horarios, catálogo y respuestas frecuentes para entrenar al bot.</span></li>
+          </ul>
+        </div>
+      </section>
+      <WhatsAppCRM part="plans" />
+      <VsTable
+        id="plan-vs-medida"
+        title="¿Plan o CRM<br />a medida?"
+        lead="Si vendes y atiendes por WhatsApp, un plan te pone en marcha desde ya. Si tu proceso comercial es propio, lo construimos contigo."
+        a="Plan de WhatsApp"
+        b="CRM a medida"
+        rows={crmVs}
+        note={'¿Necesitas un CRM a medida? <a href="/empresas/#crm-a-medida">Conoce cómo lo construimos</a>.'}
+      />
+    </>
+  )}
+
+  {p.slug === 'automatizacion-n8n' && (
+    <>
+      <SectorFlow />
+      <HumanHandoff />
+      <Integrations />
+      <section class="sec up" aria-labelledby="up-t">
+        <div class="wrap">
+          <div class="sec__head">
+            <h2 id="up-t" class="display sec__title">Después de<br />automatizar.</h2>
+            <p class="sec__lead">Un flujo es software: necesita cuidado. Esto incluye el acompañamiento.</p>
+          </div>
+          <ul class="up__grid">
+            {n8nUpkeep.map((u) => <li class="hoja"><span class="tile"><Icon name={u.icon} /></span><h3>{u.t}</h3><p>{u.d}</p></li>)}
+          </ul>
+        </div>
+      </section>
+    </>
+  )}
+
+  {p.slug === 'erp-a-medida' && (
+    <>
+      <section class="sec sig" aria-labelledby="sig-t">
+        <div class="wrap">
+          <div class="sec__head">
+            <h2 id="sig-t" class="display sec__title">Señales de que<br />lo necesitas.</h2>
+            <p class="sec__lead">Si te reconoces en dos o más, un sistema de gestión hecho para ti te ahorrará tiempo y errores.</p>
+          </div>
+          <ul class="sig__grid">
+            {erpSignals.map((s) => <li class="hoja"><Icon name={s.icon} /><span>{s.t}</span></li>)}
+          </ul>
+        </div>
+      </section>
+      <TabBand id="modulos" tone="dark" title="Los módulos,<br /><em>a tu medida.</em>" lead="Empieza por uno y suma los demás por etapas. Pantallas ilustrativas de lo que podemos construir." tabs={erpTabs} url="sistema.tuempresa.pe" />
+      <VsTable
+        title="A medida o<br />ERP comercial."
+        lead="Las dos opciones tienen sentido. Esta es la comparación honesta."
+        a="ERP a medida"
+        b="ERP comercial"
+        rows={erpVs}
+        note={'Los datos de tu ERP se protegen con acceso por roles y registro de actividad. <a href="/seguridad-y-datos/">Cómo cuidamos los datos</a>.'}
+      />
+      <Process />
+    </>
+  )}
+
+  <Faq items={p.faq} title={`Preguntas sobre<br />${p.slug === "erp-a-medida" ? "ERP a medida" : p.slug === "crm-whatsapp" ? "el CRM para WhatsApp" : "automatización"}.`} />
+  <Siblings current={p.slug} />
+  <CtaBand title={p.kind === 'producto' ? 'Conecta tu<br /><em>WhatsApp hoy.</em>' : 'Cuéntanos<br /><em>tu proceso.</em>'} text={p.kind === 'producto' ? 'Escríbenos y te ayudamos a conectar tu número, elegir tu plan y configurar tu bot.' : 'Escríbenos y agendamos una conversación inicial. Después te enviamos una propuesta escrita por etapas.'} message={p.wa} />
+</Base>
+
+<style>
+  .req__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .req__list,
+  .sig__grid,
+  .up__grid {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .req__list li {
+    display: flex;
+    gap: 0.9rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--linea);
+    color: var(--tinta-2);
+  }
+  .req__list b {
+    display: block;
+    color: var(--tinta);
+  }
+  .req__list :global(.icon) {
+    width: 1.3rem;
+    height: 1.3rem;
+    flex: none;
+    color: var(--azul);
+    margin-top: 0.1rem;
+  }
+  .sig__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .sig__grid li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    border-radius: 14px;
+    font-size: 1.05rem;
+  }
+  .sig__grid :global(.icon) {
+    width: 1.3rem;
+    height: 1.3rem;
+    flex: none;
+    color: var(--azul);
+    margin-top: 0.15rem;
+  }
+  .up__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .up__grid li {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    padding: 1.4rem;
+    border-radius: 14px;
+  }
+  .up__grid h3 {
+    font-size: 1.1rem;
+  }
+  .up__grid p {
+    color: var(--tinta-2);
+  }
+  @media (max-width: 900px) {
+    .req__grid {
+      grid-template-columns: 1fr;
+    }
+    .sig__grid,
+    .up__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .sig__grid,
+    .up__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

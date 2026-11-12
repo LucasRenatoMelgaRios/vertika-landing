@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import About from '../components/About.astro';
+import Process from '../components/Process.astro';
+import ContactClose from '../components/ContactClose.astro';
+---
+<Base
+  title="Nosotros: agencia de software a medida en Perú"
+  description="Conoce a Vertika Platforms, agencia de desarrollo de software a medida con sede en Perú: cómo trabajamos, nuestros compromisos y las tecnologías que usamos."
+  path="/nosotros/"
+  crumbs={[{ name: 'Nosotros', path: '/nosotros/' }]}
+>
+  <PageHero
+    title="Un equipo peruano que construye software a medida"
+    lead="Trabajamos con personas, empresas y organizaciones de salud que necesitan software hecho para su caso, explicado con claridad y construido con cuidado."
+  />
+  <About showLink={false} />
+  <Process />
+  <ContactClose />
+</Base>

@@ -1,0 +1,170 @@
+---
+/** Hero for a service subpage: visible breadcrumb, H1, lead, three points, CTA and a brand shape. */
+import Icon from '../Icon.astro';
+import Forma from '../Forma.astro';
+import { waLink } from '../../data/site';
+interface Props {
+  crumbs: { name: string; path: string }[];
+  h1: string;
+  h1em: string;
+  lead: string;
+  points: string[];
+  forma: 'burbuja' | 'empresas' | 'cuerda' | 'candado' | 'hoja' | 'personas' | 'salud';
+  wa: string;
+  secondary?: { href: string; label: string };
+}
+const { crumbs, h1, h1em, lead, points, forma, wa, secondary } = Astro.props;
+---
+<section class="shr" aria-labelledby="shr-t">
+  <div class="wrap">
+    <nav class="shr__crumbs" aria-label="Ruta de navegación">
+      <ol>
+        <li><a href="/">Inicio</a></li>
+        {crumbs.map((c, i) => (
+          <li>{i === crumbs.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.path}>{c.name}</a>}</li>
+        ))}
+      </ol>
+    </nav>
+    <div class="shr__grid">
+      <div class="shr__copy">
+        <h1 id="shr-t" class="display shr__h1">{h1} <em>{h1em}</em></h1>
+        <p class="shr__lead">{lead}</p>
+        <ul class="shr__pts">{points.map((p) => <li><Icon name="check" />{p}</li>)}</ul>
+        <div class="shr__actions">
+          <a class="btn btn--ink" href={waLink(wa)} target="_blank" rel="noopener">Escríbenos por WhatsApp <Icon name="arrow" /></a>
+          {secondary && <a class="btn btn--line" href={secondary.href}>{secondary.label}</a>}
+        </div>
+      </div>
+      <div class="shr__art" aria-hidden="true">
+        <span class="shr__plate"></span>
+        <Forma name={forma} class="shr__forma" sizes="(max-width: 900px) 200px, 340px" eager />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .shr {
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+  .shr__crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--tinta-2);
+  }
+  .shr__crumbs li + li::before {
+    content: '/';
+    margin-right: 0.4rem;
+    color: var(--tinta-3);
+  }
+  .shr__crumbs a {
+    color: var(--tinta-2);
+    text-decoration: none;
+  }
+  .shr__crumbs a:hover {
+    color: var(--azul);
+  }
+  .shr__crumbs [aria-current] {
+    color: var(--tinta);
+    font-weight: 700;
+  }
+  .shr__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .shr__copy {
+    display: grid;
+    gap: 1.4rem;
+    container-type: inline-size;
+  }
+  .shr__h1 {
+    font-size: min(4.6rem, 9.5cqi);
+    overflow-wrap: break-word;
+  }
+  .shr__h1 em {
+    display: block;
+  }
+  .shr__lead {
+    max-width: 50ch;
+    font-size: var(--step-1);
+    color: var(--tinta-2);
+  }
+  .shr__pts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .shr__pts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .shr__pts :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    color: var(--turquesa);
+    stroke-width: 2.6;
+  }
+  .shr__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+  .shr__art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    max-width: 26rem;
+    justify-self: center;
+    width: 100%;
+  }
+  .shr__plate {
+    position: absolute;
+    inset: 12%;
+    border-radius: 28%;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    transform: rotate(45deg);
+    box-shadow: var(--shadow);
+  }
+  .shr__art :global(.shr__forma) {
+    position: relative;
+    width: 74%;
+    height: auto;
+    animation: shr-float 5s ease-in-out infinite;
+  }
+  @keyframes shr-float {
+    50% { transform: translateY(-8px); }
+  }
+  @media (max-width: 900px) {
+    .shr__grid {
+      grid-template-columns: 1fr;
+    }
+    .shr__art {
+      max-width: 15rem;
+    }
+  }
+  @media (max-width: 560px) {
+    .shr__actions .btn {
+      width: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shr__art :global(.shr__forma) {
+      animation: none;
+    }
+  }
+</style>

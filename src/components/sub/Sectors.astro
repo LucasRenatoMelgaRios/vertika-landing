@@ -1,0 +1,89 @@
+---
+/** Chips by project type; each opens WhatsApp with a prefilled message. */
+import Icon, { type IconName } from '../Icon.astro';
+import { waLink } from '../../data/site';
+interface Props {
+  title: string;
+  lead: string;
+  items: { icon: IconName; label: string; msg: string }[];
+}
+const { title, lead, items } = Astro.props;
+---
+<section class="sec sct" aria-labelledby="sct-t">
+  <div class="wrap sct__wrap">
+    <h2 id="sct-t" class="display sct__title" set:html={title} />
+    <p class="sct__lead">{lead}</p>
+    <ul class="sct__chips">
+      {items.map((it) => (
+        <li>
+          <a href={waLink(it.msg)} target="_blank" rel="noopener">
+            <Icon name={it.icon} />
+            <span>{it.label}</span>
+            <Icon name="arrow" class="sct__go" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sct__wrap {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  .sct__title {
+    font-size: var(--step-3);
+  }
+  .sct__lead {
+    color: var(--tinta-2);
+    max-width: 52ch;
+    font-size: 1.0625rem;
+  }
+  .sct__chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem;
+    max-width: 58rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sct__chips a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.75rem 1.1rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    background: var(--hoja);
+    color: var(--tinta);
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .sct__chips a :global(.icon) {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--azul);
+  }
+  .sct__chips a :global(.sct__go) {
+    width: 0.9rem;
+    height: 0.9rem;
+    color: var(--tinta-3);
+    transform: rotate(-45deg);
+    transition: transform 0.3s var(--ease-out), color 0.2s;
+  }
+  .sct__chips a:hover {
+    border-color: var(--azul);
+    color: var(--azul);
+  }
+  .sct__chips a:hover :global(.sct__go) {
+    color: var(--azul);
+    transform: rotate(-45deg) translateX(2px);
+  }
+</style>

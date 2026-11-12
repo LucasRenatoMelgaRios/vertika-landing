@@ -1,0 +1,796 @@
+---
+/**
+ * WhatsApp Business CRM (service delivered with partner AlsheepAI, presented under the Vertika
+ * brand). Animated inbox: a customer writes, the AI bot answers, the lead moves through the
+ * pipeline and a campaign card reports. Illustrative data.
+ */
+import Icon, { type IconName } from '../Icon.astro';
+import { waLink } from '../../data/site';
+interface Props {
+  /** hero: the product itself is the page hero · features · plans */
+  part: 'hero' | 'features' | 'plans';
+  crumbs?: { name: string; path: string }[];
+}
+const { part, crumbs = [] } = Astro.props;
+const wa = waLink('Hola Vertika, quiero conectar mi WhatsApp Business a un CRM con bot y campañas.');
+
+const feats: { icon: IconName; t: string; d: string }[] = [
+  { icon: 'chat', t: 'Bandeja compartida', d: 'Todos tus números de WhatsApp Business y tu equipo en una sola bandeja: asigna chats, etiqueta clientes y deja notas internas.' },
+  { icon: 'code', t: 'Chatbot con IA a medida', d: 'Entrenado con la información de tu negocio: responde, muestra tu catálogo, toma pedidos, agenda citas y pasa a una persona cuando hace falta. Un bot distinto por cada línea.' },
+  { icon: 'signal', t: 'Campañas masivas', d: 'Envíos segmentados por etiquetas con plantillas aprobadas por Meta, programados o inmediatos, con entregados, leídos y respuestas en vivo.' },
+  { icon: 'layers', t: 'CRM y embudo de ventas', d: 'Cada conversación se vuelve una oportunidad: contactos, etapas, pedidos y citas junto al chat. Importa tu base desde Excel.' },
+  { icon: 'chart', t: 'Métricas en tiempo real', d: 'Tiempo de respuesta, conversaciones por agente, resultados por campaña y ventas por etapa.' },
+  { icon: 'plug', t: 'Integraciones', d: 'Webhook por línea para conectar n8n, Make, Zapier o tu sistema, además de Facebook Ads, formularios de Meta y Google Calendar.' },
+];
+const steps = [
+  { t: 'Conectamos tu número', d: 'Con la API oficial de Meta, en minutos y sin perder el acceso desde tu celular.' },
+  { t: 'Ordenamos tu equipo y contactos', d: 'Importamos tu base, definimos etiquetas y repartimos las conversaciones.' },
+  { t: 'Activamos bot y campañas', d: 'Configuramos el bot con tu información y lanzas tu primera campaña.' },
+];
+const plans = [
+  { n: 'Starter', p: 'S/ 99', d: 'Para equipos pequeños', f: ['1 línea de WhatsApp Business', '1 chatbot con IA', '3 usuarios'] },
+  { n: 'Pro', p: 'S/ 201', d: 'Para campañas y publicidad', f: ['2 líneas de WhatsApp Business', '2 chatbots con IA', '8 usuarios'], hot: true },
+  { n: 'Business', p: 'S/ 338', d: 'WhatsApp como canal principal', f: ['5 líneas de WhatsApp Business', '5 chatbots con IA', '15 usuarios'] },
+];
+---
+{part === 'hero' && (
+<section class="wa wa--hero" id="whatsapp" aria-labelledby="wa-t">
+  <div class="wrap">
+    <nav class="wa__crumbs" aria-label="Ruta de navegación">
+      <ol>
+        <li><a href="/">Inicio</a></li>
+        {crumbs.map((c, i) => <li>{i === crumbs.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.path}>{c.name}</a>}</li>)}
+      </ol>
+    </nav>
+    <div class="wa__head">
+      <div>
+        <h1 id="wa-t" class="display wa__title">CRM para<br /><em>WhatsApp Business.</em></h1>
+        <p class="wa__lead">Tu número de siempre, conectado a un CRM: bandeja para tu equipo, bot con IA, campañas y embudo de ventas. Lo configuramos una sola vez y los flujos ya están hechos.</p>
+      </div>
+      <div class="wa__heroside">
+        <ul class="wa__badges">
+          <li><Icon name="check" /> API oficial de Meta</li>
+          <li><Icon name="check" /> Sin cobro por usuario</li>
+          <li><Icon name="check" /> Bot con IA por cada línea</li>
+        </ul>
+        <div class="wa__ctas">
+          <a class="wa__cta" href={wa} target="_blank" rel="noopener"><Icon name="chat" /> Quiero conectar mi WhatsApp <Icon name="arrow" /></a>
+          <a class="wa__ghost" href="#planes">Ver planes</a>
+        </div>
+      </div>
+    </div>
+    <div class="wa__app" data-wa aria-hidden="true">
+      <aside class="wa__list">
+        <p class="wa__lbl">Bandeja <span class="wa__on">en línea</span></p>
+        {[['M', 'María González', 'Quisiera una cita…', true], ['T', 'Tienda Norte', 'Pedido #1042', false], ['R', 'Rosa Delgado', 'Gracias 🙌', false], ['A', 'Ana Belén', '¿Tienen envíos?', false]].map(([i, n, m, on]) => (
+          <div class:list={['wa__c', { on }]}><span class="wa__av">{i}</span><span><b>{n}</b><small>{m}</small></span></div>
+        ))}
+      </aside>
+      <div class="wa__chat">
+        <p class="wa__lbl">María González <span class="wa__ia">IA activa</span></p>
+        <div class="wa__msgs" data-wa-msgs></div>
+        <div class="wa__input">Escribe un mensaje…</div>
+      </div>
+      <aside class="wa__side">
+        <div class="wa__card">
+          <p class="wa__lbl">Embudo</p>
+          <ol class="wa__pipe" data-wa-pipe>
+            {['Nuevo lead', 'Calificado IA', 'Cita agendada', 'Ganado'].map((s, k) => <li class:list={{ on: k === 0 }}><span></span>{s}</li>)}
+          </ol>
+        </div>
+        <div class="wa__card">
+          <p class="wa__lbl">Campaña · Promo de verano</p>
+          {[['Entregados', 96], ['Leídos', 74], ['Respondieron', 29]].map(([l, v]) => (
+            <p class="wa__bar"><span>{l}</span><i style={`--v:${v}%`}></i></p>
+          ))}
+          <small class="wa__fine">Datos de ejemplo</small>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</section>
+)}
+
+{part === 'features' && (
+<section class="sec waf" id="funciones" aria-labelledby="waf-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="waf-t" class="display sec__title">Todo lo que tu equipo<br />necesita en el chat.</h2>
+      <p class="sec__lead">Atiende, vende y mide desde un solo lugar, sin cambiar de pestaña.</p>
+    </div>
+    <ul class="waf__grid">
+      {feats.map((f, i) => (
+        <li class="hoja" data-reveal style={`transition-delay:${(i % 3) * 70}ms`}><span class="tile"><Icon name={f.icon} /></span><h3>{f.t}</h3><p>{f.d}</p></li>
+      ))}
+    </ul>
+  </div>
+</section>
+)}
+
+{part === 'plans' && (
+<section class="sec wap" id="planes" aria-labelledby="wap-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="wap-t" class="display sec__title">Planes.</h2>
+      <p class="sec__lead">Pago mensual, sin cobro por usuario ni permanencia. Elige según cuántas líneas, bots y personas necesitas.</p>
+    </div>
+    <ul class="wap__grid">
+      {plans.map((p) => (
+        <li class:list={['hoja', { hot: p.hot }]}>
+          {p.hot && <span class="wap__pop">Más elegido</span>}
+          <b class="wap__n">{p.n}</b>
+          <span class="wap__d">{p.d}</span>
+          <span class="wap__p">{p.p}<small>/mes</small></span>
+          <ul>{p.f.map((x) => <li><Icon name="check" />{x}</li>)}</ul>
+          <a class:list={['btn', p.hot ? 'btn--ink' : 'btn--line']} href={waLink(`Hola Vertika, me interesa el plan ${p.n} del CRM para WhatsApp.`)} target="_blank" rel="noopener">Elegir {p.n}</a>
+        </li>
+      ))}
+    </ul>
+    <p class="wap__ref">Precios referenciales en soles. Las tarifas de Meta por mensaje se cobran aparte según su tarifa vigente. Incluye 14 días de prueba.</p>
+  </div>
+</section>
+)}
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-wa]');
+    if (!root || root.dataset.waOn) return;
+    root.dataset.waOn = '1';
+    const box = root.querySelector('[data-wa-msgs]');
+    const pipe = [...root.querySelectorAll('[data-wa-pipe] li')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const script = [
+      ['in', 'Hola, quisiera una cita con la Dra. Ríos, es urgente 🙏', 0],
+      ['bot', '¡Hola María! Tengo hoy 4:30 p. m. o mañana 9:00 a. m. ¿Cuál prefieres?', 1],
+      ['in', 'Hoy 4:30, por favor', 1],
+      ['bot', 'Listo ✅ Cita agendada para hoy 4:30 p. m. Te enviaré un recordatorio.', 2],
+      ['note', 'Lead movido a «Cita agendada» · asignado a Recepción', 2],
+      ['in', '¡Gracias!', 3],
+    ];
+    const add = ([who, txt, stage]) => {
+      const p = document.createElement('p');
+      p.className = 'wa__m wa__m--' + who;
+      p.textContent = txt;
+      box.appendChild(p);
+      while (box.children.length > 5) box.firstChild.remove();
+      pipe.forEach((li, k) => li.classList.toggle('on', k <= stage));
+    };
+    if (reduce) { script.forEach(add); return; }
+    let i = 0;
+    const loop = () => {
+      if (i === 0) { box.innerHTML = ''; }
+      const s = script[i];
+      if (s[0] === 'bot') {
+        const t = document.createElement('p'); t.className = 'wa__m wa__m--bot wa__typing'; t.innerHTML = '<i></i><i></i><i></i>'; box.appendChild(t);
+        setTimeout(() => { t.remove(); add(s); }, 900);
+      } else add(s);
+      i = (i + 1) % script.length;
+      setTimeout(loop, i === 0 ? 3200 : 1900);
+    };
+    const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { loop(); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(root);
+  })();
+</script>
+
+<style>
+  .wa--hero {
+    margin-top: 0 !important;
+    padding-top: clamp(2rem, 4vw, 3rem) !important;
+  }
+  .wa__crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--sobre-noche-2);
+  }
+  .wa__crumbs li + li::before {
+    content: '/';
+    margin-right: 0.4rem;
+    opacity: 0.6;
+  }
+  .wa__crumbs a {
+    color: var(--sobre-noche-2);
+    text-decoration: none;
+  }
+  .wa__crumbs [aria-current] {
+    color: #fff;
+    font-weight: 700;
+  }
+  .wa__heroside {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .wa__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .wa__ctas .wa__cta {
+    margin-top: 0;
+  }
+  .wa__ghost {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  .wa__title {
+    font-size: clamp(2.6rem, 1rem + 4.6vw, 5rem) !important;
+  }
+  .waf__grid,
+  .wap__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .waf__grid li {
+    display: grid;
+    gap: 0.55rem;
+    align-content: start;
+    padding: 1.5rem;
+    border-radius: 14px;
+  }
+  .waf__grid h3 {
+    font-size: 1.15rem;
+    margin-top: 0.4rem;
+  }
+  .waf__grid p {
+    color: var(--tinta-2);
+  }
+  .wap__grid > li {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    padding: 1.6rem;
+    border-radius: 16px;
+  }
+  .wap__grid > li.hot {
+    border: 2px solid var(--azul);
+  }
+  .wap__pop {
+    position: absolute;
+    top: -0.75rem;
+    left: 1.5rem;
+    padding: 0.15rem 0.65rem;
+    border-radius: 999px;
+    background: var(--azul);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .wap__n {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+  }
+  .wap__d {
+    color: var(--tinta-2);
+    font-size: 0.925rem;
+  }
+  .wap__p {
+    margin: 0.5rem 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+  .wap__p small {
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--tinta-2);
+  }
+  .wap__grid ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+  }
+  .wap__grid ul li {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .wap__grid :global(.icon),
+  .waf__grid :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .wap__grid ul :global(.icon) {
+    margin-top: 0.25rem;
+    color: var(--turquesa);
+    stroke-width: 2.6;
+  }
+  .wap__grid .btn {
+    justify-self: stretch;
+  }
+  .wap__ref {
+    margin-top: 1.25rem;
+    color: var(--tinta-2);
+    font-size: 0.9rem;
+  }
+  @media (max-width: 900px) {
+    .waf__grid,
+    .wap__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .wa {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3.5rem, 7vw, 5.5rem);
+    background: var(--noche);
+    color: #fff;
+  }
+  .wa__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .wa__title {
+    font-size: var(--step-3);
+  }
+  .wa__title :global(em) {
+    color: var(--turquesa-claro);
+  }
+  .wa__lead {
+    margin-top: 1rem;
+    max-width: 56ch;
+    color: var(--sobre-noche-2);
+    font-size: 1.0625rem;
+  }
+  .wa__badges {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .wa__badges li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(94, 224, 217, 0.1);
+    border: 1px solid rgba(94, 224, 217, 0.3);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .wa :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .wa__badges :global(.icon) {
+    color: var(--turquesa-claro);
+    stroke-width: 2.6;
+  }
+
+  /* App mockup */
+  .wa__app {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr) 16rem;
+    min-height: 25rem;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    color: var(--tinta);
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7);
+    font-size: 0.85rem;
+  }
+  .wa__lbl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+  }
+  .wa__on, .wa__ia {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .wa__ia {
+    background: var(--azul-suave);
+    color: var(--azul);
+  }
+  .wa__list {
+    padding: 1rem;
+    background: var(--papel);
+    border-right: 1px solid var(--linea-2);
+  }
+  .wa__c {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.55rem;
+    border-radius: 10px;
+  }
+  .wa__c.on {
+    background: #fff;
+    box-shadow: 0 6px 14px -10px rgba(11, 27, 77, 0.5);
+  }
+  .wa__c b, .wa__c small {
+    display: block;
+  }
+  .wa__c small {
+    color: var(--tinta-2);
+  }
+  .wa__av {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--azul);
+    color: #fff;
+    font-weight: 700;
+  }
+  .wa__chat {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 1rem 1.2rem;
+  }
+  .wa__msgs {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    min-height: 16rem;
+    overflow: hidden;
+  }
+  .wa__msgs :global(.wa__m) {
+    max-width: 78%;
+    padding: 0.55rem 0.8rem;
+    border-radius: 14px;
+    line-height: 1.4;
+    animation: wa-in 0.4s var(--ease-out);
+  }
+  @keyframes wa-in {
+    from { opacity: 0.001; transform: translateY(8px); }
+  }
+  .wa__msgs :global(.wa__m--in) {
+    align-self: flex-start;
+    background: var(--papel);
+    border-bottom-left-radius: 4px;
+  }
+  .wa__msgs :global(.wa__m--bot) {
+    align-self: flex-end;
+    background: var(--azul);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .wa__msgs :global(.wa__m--note) {
+    align-self: center;
+    max-width: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+  }
+  .wa__msgs :global(.wa__typing) {
+    display: inline-flex;
+    gap: 0.25rem;
+    width: auto;
+  }
+  .wa__msgs :global(.wa__typing i) {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: #fff;
+    animation: wa-dot 0.9s ease-in-out infinite;
+  }
+  .wa__msgs :global(.wa__typing i:nth-child(2)) { animation-delay: 0.15s; }
+  .wa__msgs :global(.wa__typing i:nth-child(3)) { animation-delay: 0.3s; }
+  @keyframes wa-dot { 50% { opacity: 0.35; transform: translateY(-2px); } }
+  .wa__input {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--linea);
+    color: var(--tinta-3);
+  }
+  .wa__side {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    padding: 1rem;
+    background: var(--papel);
+    border-left: 1px solid var(--linea-2);
+  }
+  .wa__card {
+    padding: 0.85rem;
+    border-radius: 12px;
+    background: #fff;
+  }
+  .wa__pipe {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .wa__pipe li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--tinta-3);
+    transition: color 0.3s;
+  }
+  .wa__pipe li span {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    border: 1.5px solid var(--linea);
+    transform: rotate(45deg);
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  .wa__pipe li.on {
+    color: var(--tinta);
+    font-weight: 700;
+  }
+  .wa__pipe li.on span {
+    background: var(--turquesa);
+    border-color: var(--turquesa);
+  }
+  .wa__bar {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--tinta-2);
+  }
+  .wa__bar i {
+    height: 0.45rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--azul) var(--v), var(--linea-2) var(--v));
+  }
+  .wa__fine {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.68rem;
+    color: var(--tinta-3);
+  }
+
+  /* Features */
+  .wa__feats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(94, 224, 217, 0.22);
+    border-left: 1px solid rgba(94, 224, 217, 0.22);
+  }
+  .wa__feats li {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+    padding: 1.5rem;
+    border-right: 1px solid rgba(94, 224, 217, 0.22);
+    border-bottom: 1px solid rgba(94, 224, 217, 0.22);
+  }
+  .wa__ico {
+    display: grid;
+    place-items: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    background: rgba(94, 224, 217, 0.12);
+    color: var(--turquesa-claro);
+  }
+  .wa__feats h3 {
+    font-size: 1.05rem;
+  }
+  .wa__feats p {
+    color: var(--sobre-noche-2);
+    font-size: 0.925rem;
+  }
+
+  /* Steps + plans */
+  .wa__bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .wa__sub {
+    margin-bottom: 1.2rem;
+    font-size: 1.2rem;
+  }
+  .wa__sub small {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--sobre-noche-2);
+  }
+  .wa__steps ol {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .wa__steps li {
+    display: flex;
+    gap: 0.8rem;
+    color: var(--sobre-noche-2);
+  }
+  .wa__steps b {
+    display: block;
+    color: #fff;
+  }
+  .wa__n {
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--turquesa-claro);
+    color: var(--noche);
+    font-weight: 700;
+  }
+  .wa__plans > ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .wa__plans > ul > li {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    padding: 1.2rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(94, 224, 217, 0.22);
+  }
+  .wa__plans > ul > li.hot {
+    background: #fff;
+    color: var(--tinta);
+    border-color: #fff;
+  }
+  .wa__pop {
+    position: absolute;
+    top: -0.65rem;
+    right: 1rem;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: var(--turquesa-claro);
+    color: var(--noche);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .wa__pn {
+    font-family: var(--display);
+    font-weight: 850;
+    font-stretch: 110%;
+    text-transform: uppercase;
+  }
+  .wa__pp {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.8rem;
+  }
+  .wa__pp small {
+    font-family: var(--font);
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.75;
+  }
+  .wa__pd {
+    font-size: 0.85rem;
+    color: var(--sobre-noche-2);
+    margin-bottom: 0.4rem;
+  }
+  .hot .wa__pd {
+    color: var(--tinta-2);
+  }
+  .wa__plans li ul {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+  .wa__plans li ul li {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .wa__plans li ul :global(.icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-top: 0.2rem;
+    color: var(--turquesa-claro);
+    stroke-width: 2.6;
+  }
+  .hot ul :global(.icon) {
+    color: var(--turquesa);
+  }
+  .wa__plans {
+    scroll-margin-top: 6rem;
+  }
+  .wa__ref {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--sobre-noche-2);
+  }
+  .wa__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1.25rem;
+    padding: 0.85rem 1.3rem;
+    border-radius: 999px;
+    background: var(--turquesa-claro);
+    color: var(--noche);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .wa__cta:hover {
+    background: #fff;
+  }
+  .wa :focus-visible {
+    outline-color: var(--turquesa-claro);
+  }
+  @media (max-width: 1100px) {
+    .wa__app {
+      grid-template-columns: 13rem minmax(0, 1fr);
+    }
+    .wa__side {
+      display: none;
+    }
+  }
+  @media (max-width: 900px) {
+    .wa__head,
+    .wa__bottom {
+      grid-template-columns: 1fr;
+    }
+    .wa__feats {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .wa__app {
+      grid-template-columns: 1fr;
+    }
+    .wa__list {
+      display: none;
+    }
+    .wa__feats,
+    .wa__plans > ul {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-expediente.blend",
+ "fecha": "2026-11-10",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Rombo del logo Vertika en turquesa claro como insignia 3D.",
+ "postproceso": "sin corrección de color; fundido de alfa en bordes, recorte al contenido, WebP q86."
+}

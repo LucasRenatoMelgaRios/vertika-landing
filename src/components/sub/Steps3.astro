@@ -1,0 +1,115 @@
+---
+/** Three numbered steps on one cord (compact version of the process). */
+import Icon, { type IconName } from '../Icon.astro';
+interface Props {
+  title: string;
+  steps: { icon: IconName; title: string; text: string }[];
+  cta?: { href: string; label: string };
+}
+const { title, steps, cta } = Astro.props;
+---
+<section class="sec st3" aria-labelledby="st3-t">
+  <div class="wrap">
+    <h2 id="st3-t" class="display st3__title" set:html={title} />
+    <ol class="st3__row">
+      {steps.map((s, i) => (
+        <li class="st3__step hoja" data-reveal style={`transition-delay:${i * 90}ms`}>
+          <span class="st3__knot" aria-hidden="true"></span>
+          <span class="st3__n">{i + 1}</span>
+          <span class="tile"><Icon name={s.icon} /></span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </li>
+      ))}
+    </ol>
+    {cta && <div class="st3__cta"><a class="btn btn--ink" href={cta.href}>{cta.label} <Icon name="arrow" /></a></div>}
+  </div>
+</section>
+
+<style>
+  .st3__title {
+    font-size: var(--step-3);
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .st3__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 1.6rem 0 0;
+    list-style: none;
+  }
+  .st3__row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--noche);
+  }
+  .st3__step {
+    position: relative;
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    padding: 1.6rem 1.5rem 1.75rem;
+  }
+  .st3__knot {
+    position: absolute;
+    left: 1.6rem;
+    top: calc(-1.6rem - 0.5rem + 1px);
+    width: 1rem;
+    height: 1rem;
+    border-radius: 2px;
+    background: var(--turquesa);
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 3px var(--papel);
+  }
+  .st3__knot::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    height: 1.6rem;
+    background: var(--noche);
+    transform: rotate(-45deg) translate(-50%, 0);
+    transform-origin: 0 0;
+    opacity: 0;
+  }
+  .st3__n {
+    position: absolute;
+    right: 1.25rem;
+    top: 0.6rem;
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 125%;
+    font-size: 3.4rem;
+    line-height: 1;
+    color: var(--linea-2);
+  }
+  .st3__step h3 {
+    font-size: 1.2rem;
+    margin-top: 0.4rem;
+  }
+  .st3__step p {
+    color: var(--tinta-2);
+  }
+  .st3__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+  @media (max-width: 800px) {
+    .st3__row {
+      grid-template-columns: 1fr;
+    }
+    .st3__step + .st3__step .st3__knot {
+      display: none;
+    }
+  }
+</style>

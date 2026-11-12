@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import { audiences } from '../data/site';
+---
+<Base title="Página no encontrada" description="La página que buscas no existe." path="/404/" noindex>
+  <section class="nf">
+    <div class="wrap nf__inner">
+      <h1 class="display">Esta cuerda no lleva a ninguna parte</h1>
+      <p>La página que buscas no existe o cambió de dirección. Elige por dónde seguir:</p>
+      <ul>
+        <li><a href="/">Inicio</a></li>
+        {audiences.map((a) => <li><a href={a.path}>Software para {a.label.toLowerCase()}</a></li>)}
+        <li><a href="/contacto/">Contacto</a></li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: clamp(4rem, 10vw, 8rem);
+  }
+  .nf__inner {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .nf h1 {
+    font-size: clamp(2.6rem, 1rem + 5vw, 5rem);
+    max-width: 14ch;
+  }
+  .nf p {
+    font-size: var(--step-1);
+    color: var(--tinta-2);
+  }
+  .nf ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin: 0;
+    padding: 1.5rem 0 0;
+    list-style: none;
+    border-top: var(--cord) solid var(--azul);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,329 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import { processSteps } from '../data/site';
+import Forma from './Forma.astro';
+const icons: IconName[] = ['chat', 'doc', 'pen', 'code', 'rocket', 'refresh'];
+---
+<section class="sec prc" id="proceso" aria-labelledby="prc-titulo">
+  <div class="wrap">
+    <div class="sec__head prc__head">
+      <h2 id="prc-titulo" class="display sec__title">Cómo trabajamos.</h2>
+      <p class="sec__lead">Como un quipu: el proyecto es una sola cuerda y cada nudo es una aprobación tuya. En los cuatro nudos revisas lo hecho antes de seguir, así nada avanza sin que lo veas.</p>
+      <Forma name="cuerda" class="prc__sello" sizes="300px" />
+    </div>
+    <ol class="prc__list">
+      {processSteps.map((s, i) => (
+        <li class:list={['prc__step', { 'is-knot': s.approval }]} data-reveal>
+          <span class="prc__node" aria-hidden="true"><Icon name={icons[i]} /></span>
+          {s.approval && <span class="prc__knot" aria-hidden="true"></span>}
+          <div class="prc__text">
+            <h3><span class="prc__n">{i + 1}.</span> {s.name}</h3>
+            <p>{s.text}</p>
+            {s.approval && <span class="tag"><Icon name="check" /> Tu aprobación</span>}
+          </div>
+          <div class="prc__art hoja" aria-hidden="true">
+            {i === 0 && (
+              <div class="art-chat">
+                <p class="me">Hola, tengo una clínica y quiero que los pacientes reserven en línea.</p>
+                <p class="us">¡Hola! Cuéntanos cómo agendan hoy y cuántas sedes tienen.</p>
+              </div>
+            )}
+            {i === 1 && (
+              <dl class="art-doc mono">
+                {[['alcance', '5 módulos'], ['etapas', '4'], ['plazos', 'por etapa'], ['presupuesto', 'por escrito']].map(([k, v]) => (
+                  <div><dt>{k}</dt><dd>{v}</dd></div>
+                ))}
+              </dl>
+            )}
+            {i === 2 && (
+              <div class="art-frames">
+                <div><span class="l1"></span><span class="l2"></span><span class="b"></span></div>
+                <div><span class="l1"></span><span class="grid"></span></div>
+                <div><span class="l2"></span><span class="l1"></span><span class="b"></span></div>
+              </div>
+            )}
+            {i === 3 && (
+              <div class="art-progress mono">
+                <div class="segs"><span class="done"></span><span class="now"></span><span></span><span></span></div>
+                <p><span>entrega 2 de 4</span><span class="ok">demo lista</span></p>
+              </div>
+            )}
+            {i === 4 && (
+              <ul class="art-check mono">
+                {['pruebas con tu equipo', 'correcciones', 'publicación', 'guía de uso'].map((t) => <li><Icon name="check" />{t}</li>)}
+              </ul>
+            )}
+            {i === 5 && (
+              <div class="art-support mono">
+                <p><span class="dot"></span>canal directo con el equipo</p>
+                <p class="muted">mejoras · soporte · nuevas etapas</p>
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .prc__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .prc__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 1.25rem 2.5rem;
+    align-items: start;
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--linea);
+  }
+  .prc__step:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .prc__head {
+    position: relative;
+  }
+  .prc__head :global(.prc__sello) {
+    position: absolute;
+    right: 0;
+    top: 1.5rem;
+    width: min(28%, 19rem);
+    filter: drop-shadow(0 14px 16px rgba(11, 27, 77, 0.2));
+    pointer-events: none;
+  }
+  @media (max-width: 860px) {
+    .prc__head :global(.prc__sello) {
+      display: none;
+    }
+  }
+  /* The quipu cord: one continuous strand through every step */
+  .prc__step::before {
+    content: '';
+    position: absolute;
+    left: calc(1.5rem - 1.5px);
+    top: 3rem;
+    bottom: -1.75rem;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--noche);
+  }
+  /* A knot on the cord marks each approval */
+  .prc__knot {
+    position: absolute;
+    z-index: 2;
+    left: calc(1.5rem - 0.55rem);
+    top: calc(1.75rem + 3.65rem);
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 2px;
+    background: var(--turquesa);
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 3px var(--papel);
+  }
+  .prc__step:first-child .prc__knot {
+    top: 3.65rem;
+  }
+  .prc__step:first-child::before {
+    top: 3rem;
+  }
+  .prc__step:last-child::before {
+    display: none;
+  }
+  .prc__node {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--tinta);
+    background: var(--hoja);
+  }
+  .prc__node :global(.icon) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .prc__text {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+    padding-top: 0.45rem;
+  }
+  .prc__text h3 {
+    font-size: var(--step-2);
+    letter-spacing: -0.02em;
+  }
+  .prc__n {
+    color: var(--azul);
+  }
+  .prc__text p {
+    color: var(--tinta-2);
+    max-width: 42ch;
+  }
+  .tag :global(.icon) {
+    width: 0.85rem;
+    height: 0.85rem;
+    stroke-width: 2.4;
+  }
+  .prc__art {
+    padding: 1rem 1.1rem;
+    font-size: 0.9rem;
+  }
+  .art-chat {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .art-chat p {
+    max-width: 85%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+  }
+  .art-chat .me {
+    justify-self: end;
+    background: var(--azul);
+    color: #fff;
+    border-bottom-right-radius: 2px;
+  }
+  .art-chat .us {
+    background: var(--papel);
+    border-bottom-left-radius: 2px;
+  }
+  .art-doc {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+  }
+  .art-doc div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+  .art-doc div::after {
+    content: '';
+    order: 1;
+    flex: 1;
+    border-bottom: 1px dotted var(--tinta-3);
+  }
+  .art-doc dt {
+    color: var(--tinta-2);
+  }
+  .art-doc dd {
+    order: 2;
+    margin: 0;
+    font-weight: 500;
+  }
+  .art-frames {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+  .art-frames div {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    height: 5.5rem;
+    padding: 0.55rem;
+    border: 1.5px dashed var(--tinta-3);
+    border-radius: 3px;
+  }
+  .art-frames span {
+    height: 0.4rem;
+    border-radius: 2px;
+    background: var(--linea);
+  }
+  .art-frames .l1 { width: 80%; }
+  .art-frames .l2 { width: 55%; }
+  .art-frames .b {
+    width: 50%;
+    height: 0.75rem;
+    background: var(--azul);
+  }
+  .art-frames .grid {
+    height: 2.5rem;
+    background:
+      linear-gradient(90deg, var(--linea) 0 45%, transparent 45% 55%, var(--linea) 55%) top / 100% 45% no-repeat,
+      linear-gradient(90deg, var(--linea) 0 45%, transparent 45% 55%, var(--linea) 55%) bottom / 100% 45% no-repeat;
+  }
+  .art-progress .segs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.3rem;
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: var(--noche);
+  }
+  .art-progress .segs span {
+    height: 0.5rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .art-progress .segs .done {
+    background: var(--azul);
+  }
+  .art-progress .segs .now {
+    background: linear-gradient(90deg, var(--azul) 55%, rgba(255, 255, 255, 0.14) 55%);
+  }
+  .art-progress p {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--tinta-2);
+  }
+  .art-progress .ok {
+    color: var(--turquesa-tinta);
+  }
+  .art-check {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .art-check li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .art-check :global(.icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+    color: var(--turquesa);
+    stroke-width: 2.4;
+  }
+  .art-support p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .art-support .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--turquesa);
+    box-shadow: 0 0 0 3px var(--turquesa-suave);
+  }
+  .art-support .muted {
+    margin-top: 0.3rem;
+    color: var(--tinta-3);
+  }
+  @media (max-width: 860px) {
+    .prc__step {
+      grid-template-columns: 3rem minmax(0, 1fr);
+    }
+    .prc__art {
+      grid-column: 2;
+    }
+    .prc__step::before {
+      bottom: -1.75rem;
+    }
+  }
+</style>

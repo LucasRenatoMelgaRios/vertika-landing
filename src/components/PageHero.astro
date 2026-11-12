@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  lead: string;
+}
+const { title, lead } = Astro.props;
+---
+<section class="ph" aria-labelledby="ph-titulo">
+  <div class="wrap ph__inner">
+    <h1 id="ph-titulo" class="display" set:html={title} />
+    <p>{lead}</p>
+  </div>
+</section>
+
+<style>
+  .ph {
+    padding-top: clamp(3rem, 7vw, 5.5rem);
+  }
+  .ph__inner {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .ph h1 {
+    font-size: clamp(2.8rem, 1rem + 5.4vw, 5.6rem);
+    max-width: 15ch;
+  }
+  .ph p {
+    font-size: var(--step-1);
+    color: var(--tinta-2);
+    max-width: 52ch;
+  }
+</style>

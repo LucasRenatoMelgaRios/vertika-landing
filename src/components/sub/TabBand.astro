@@ -1,0 +1,536 @@
+---
+/**
+ * Tabs that switch a product screen. Empresas uses it on navy for modules, Salud on paper for
+ * roles. Every screen is an illustrative example (demo names, demo numbers).
+ */
+import Icon, { type IconName } from '../Icon.astro';
+export type Screen = 'crm' | 'inventario' | 'pedidos' | 'facturacion' | 'reportes' | 'paciente' | 'recepcion' | 'medico' | 'admin';
+export interface Tab {
+  id: Screen;
+  label: string;
+  icon: IconName;
+  heading: string;
+  text: string;
+  points: string[];
+}
+interface Props {
+  id: string;
+  title: string;
+  lead: string;
+  tabs: Tab[];
+  tone?: 'dark' | 'light';
+  url: string;
+}
+const { id, title, lead, tabs, tone = 'light', url } = Astro.props;
+---
+<section class:list={['tb', `tb--${tone}`]} id={id} aria-labelledby={`${id}-t`}>
+  <div class="wrap">
+    <div class="tb__head">
+      <h2 id={`${id}-t`} class="display tb__title" set:html={title} />
+      <p class="tb__lead">{lead}</p>
+    </div>
+    <div class="tb__tabs" role="tablist" aria-label={title.replace(/<[^>]+>/g, ' ')} data-tb>
+      {tabs.map((t, i) => (
+        <button type="button" role="tab" id={`${id}-tab-${t.id}`} aria-controls={`${id}-pan-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tb-tab={t.id}>
+          <Icon name={t.icon} /> {t.label}
+        </button>
+      ))}
+    </div>
+    {tabs.map((t, i) => (
+      <div class="tb__pane" role="tabpanel" id={`${id}-pan-${t.id}`} aria-labelledby={`${id}-tab-${t.id}`} data-tb-pane={t.id} hidden={i !== 0}>
+        <div class="tb__copy">
+          <h3>{t.heading}</h3>
+          <p>{t.text}</p>
+          <ul>{t.points.map((p) => <li><Icon name="check" />{p}</li>)}</ul>
+        </div>
+        <div class="tb__screen" aria-hidden="true">
+          <div class="tb__bar"><i></i><i></i><i></i><span>{url}/{t.id}</span></div>
+          <div class="tb__app">
+            {t.id === 'crm' && (
+              <div class="scr">
+                <p class="scr__h">Embudo de ventas <em>este mes</em></p>
+                <div class="scr__kanban">
+                  {[['Prospectos', ['Clínica Norte · S/ 8k', 'Bodega Lucía · S/ 2k']], ['Propuesta', ['Comercial Sur · S/ 15k']], ['Cerrado', ['Market 24 · S/ 6k', 'Ferretería Ríos · S/ 4k']]].map(([col, items]) => (
+                    <div><small>{col}</small>{(items as string[]).map((x) => <span>{x}</span>)}</div>
+                  ))}
+                </div>
+                <p class="scr__note"><Icon name="calendar" /> Recordatorio: llamar a Comercial Sur mañana 10:00</p>
+              </div>
+            )}
+            {t.id === 'inventario' && (
+              <div class="scr">
+                <p class="scr__h">Inventario <em>3 almacenes</em></p>
+                <div class="scr__kpis"><span><small>Productos</small><b>1 248</b></span><span><small>Por reponer</small><b>7</b></span><span><small>Valor</small><b>S/ 84k</b></span></div>
+                <div class="scr__table">
+                  {[['Caja A-12', 'Lima', '148', 'ok'], ['Caja B-07', 'Lima', '12', 'reponer'], ['Cinta 48 mm', 'Arequipa', '320', 'ok'], ['Film stretch', 'Trujillo', '9', 'reponer']].map(([a, b, c, d]) => (
+                    <p><span>{a}</span><span>{b}</span><span>{c}</span><em class:list={{ ok: d === 'ok' }}>{d}</em></p>
+                  ))}
+                </div>
+              </div>
+            )}
+            {t.id === 'pedidos' && (
+              <div class="scr">
+                <p class="scr__h">Pedidos de hoy <em>web · WhatsApp · tienda</em></p>
+                <div class="scr__kanban">
+                  {[['Nuevos', ['#1042 · Comercial Sur', '#1043 · Bodega Lucía']], ['Preparando', ['#1039 · Market Norte']], ['En camino', ['#1035 · Ferretería Ríos', '#1036 · Minimarket 24']]].map(([col, items]) => (
+                    <div><small>{col}</small>{(items as string[]).map((x) => <span>{x}</span>)}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {t.id === 'facturacion' && (
+              <div class="scr">
+                <p class="scr__h">Comprobantes <em>emitidos automáticamente</em></p>
+                <div class="scr__table">
+                  {[['F001-00231', 'Factura', 'S/ 1 240', 'aceptado'], ['B001-01877', 'Boleta', 'S/ 86', 'aceptado'], ['F001-00232', 'Factura', 'S/ 3 410', 'enviando']].map(([a, b, c, d]) => (
+                    <p><span>{a}</span><span>{b}</span><span>{c}</span><em class:list={{ ok: d === 'aceptado' }}>{d}</em></p>
+                  ))}
+                </div>
+                <p class="scr__note"><Icon name="refresh" /> Sincronizado con tu sistema de facturación electrónica</p>
+              </div>
+            )}
+            {t.id === 'reportes' && (
+              <div class="scr">
+                <p class="scr__h">Ventas por sede <em>últimos 7 días</em></p>
+                <div class="scr__bars">{[46, 62, 55, 78, 70, 90, 84].map((h, k) => <i style={`--h:${h}%`} class:list={{ last: k === 6 }}></i>)}</div>
+                <p class="scr__note"><Icon name="mail" /> Llega a gerencia cada lunes a las 8:00</p>
+              </div>
+            )}
+            {t.id === 'paciente' && (
+              <div class="scr">
+                <p class="scr__h">Hola, María <em>portal del paciente</em></p>
+                <div class="scr__cards">
+                  <span class="on"><b>Próxima cita</b><small>Jue 14 · 10:30 · Dra. Ríos</small></span>
+                  <span><b>Resultados</b><small>Hemograma · nuevo · PDF</small></span>
+                  <span><b>Indicaciones</b><small>Actualizadas hoy</small></span>
+                </div>
+                <p class="scr__note"><Icon name="lock" /> Solo tú ves tu información</p>
+              </div>
+            )}
+            {t.id === 'recepcion' && (
+              <div class="scr">
+                <p class="scr__h">Agenda del día <em>3 consultorios</em></p>
+                <div class="scr__agenda">
+                  {[['08:30', 'Consultorio 1', 'confirmada'], ['09:00', 'Consultorio 2', 'confirmada'], ['09:30', 'Consultorio 1', 'recordatorio enviado'], ['10:00', 'Consultorio 3', 'libre']].map(([h, c, e]) => (
+                    <p><b>{h}</b><span>{c}</span><em class:list={{ ok: e !== 'libre' }}>{e}</em></p>
+                  ))}
+                </div>
+              </div>
+            )}
+            {t.id === 'medico' && (
+              <div class="scr">
+                <p class="scr__h">Historia clínica · Paciente 00482 <em>médico tratante</em></p>
+                {['Motivo de consulta', 'Antecedentes', 'Diagnóstico', 'Indicaciones'].map((l, k) => (
+                  <p class="scr__line"><span>{l}</span><i style={`--w:${[72, 48, 58, 66][k]}%`}></i></p>
+                ))}
+                <p class="scr__note"><Icon name="eye" /> Cada consulta queda en el registro de actividad</p>
+              </div>
+            )}
+            {t.id === 'admin' && (
+              <div class="scr">
+                <p class="scr__h">Permisos por rol <em>administración</em></p>
+                <div class="scr__roles">
+                  {[['Médico tratante', 'Historia clínica', true], ['Recepción', 'Agenda y datos de contacto', true], ['Caja', 'Pagos y comprobantes', true], ['Recepción', 'Historia clínica', false]].map(([r, w, ok]) => (
+                    <p><span><b>{r}</b><small>{w}</small></span><em class:list={{ ok }}>{ok ? 'permitido' : 'sin acceso'}</em></p>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+    <p class="tb__fine">Pantallas ilustrativas con datos de ejemplo.</p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tb]').forEach((list) => {
+    const root = list.closest('section')!;
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[data-tb-tab]')];
+    const pick = (id: string, focus = false) => {
+      tabs.forEach((t) => {
+        const on = t.dataset.tbTab === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (on && focus) t.focus();
+      });
+      root.querySelectorAll<HTMLElement>('[data-tb-pane]').forEach((p) => (p.hidden = p.dataset.tbPane !== id));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => pick(t.dataset.tbTab!));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        pick(tabs[(i + d + tabs.length) % tabs.length].dataset.tbTab!, true);
+      });
+    });
+  });
+</script>
+
+<style>
+  .tb {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3.5rem, 7vw, 5.5rem);
+  }
+  .tb--dark {
+    background: var(--noche);
+    color: #fff;
+  }
+  .tb__head {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .tb__title {
+    font-size: var(--step-3);
+  }
+  .tb--dark .tb__title :global(em) {
+    color: var(--turquesa-claro);
+  }
+  .tb__lead {
+    max-width: 54ch;
+    color: var(--tinta-2);
+    font-size: 1.0625rem;
+  }
+  .tb--dark .tb__lead {
+    color: var(--sobre-noche-2);
+  }
+  .tb__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .tb__tabs button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    background: var(--hoja);
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .tb--dark .tb__tabs button {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(94, 224, 217, 0.25);
+    color: var(--sobre-noche-2);
+  }
+  .tb__tabs button :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .tb__tabs button[aria-selected='true'] {
+    background: var(--noche);
+    border-color: var(--noche);
+    color: #fff;
+  }
+  .tb--dark .tb__tabs button[aria-selected='true'] {
+    background: var(--turquesa-claro);
+    border-color: var(--turquesa-claro);
+    color: var(--noche);
+  }
+  .tb__pane:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+    animation: tb-in 0.45s var(--ease-out);
+  }
+  @keyframes tb-in {
+    from {
+      opacity: 0.001;
+      transform: translateY(8px);
+    }
+  }
+  .tb__copy {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .tb__copy h3 {
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .tb__copy p {
+    color: var(--tinta-2);
+  }
+  .tb--dark .tb__copy p {
+    color: var(--sobre-noche-2);
+  }
+  .tb__copy ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0.3rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tb__copy li {
+    display: flex;
+    gap: 0.55rem;
+  }
+  .tb__copy li :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.3rem;
+    color: var(--turquesa);
+    stroke-width: 2.4;
+  }
+  .tb--dark .tb__copy li :global(.icon) {
+    color: var(--turquesa-claro);
+  }
+  .tb__screen {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    color: var(--tinta);
+    box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(11, 27, 77, 0.08);
+  }
+  .tb__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.6rem 0.8rem;
+    background: #f1f3f8;
+    border-bottom: 1px solid var(--linea-2);
+  }
+  .tb__bar i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: #d4d9e6;
+  }
+  .tb__bar span {
+    flex: 1;
+    margin-left: 0.6rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--tinta-2);
+  }
+  .tb__app {
+    padding: 1.25rem;
+    min-height: 17rem;
+    font-size: 0.85rem;
+  }
+  .scr {
+    display: grid;
+    gap: 0.8rem;
+  }
+  .scr__h {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .scr__h em {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.75rem;
+    color: var(--tinta-3);
+  }
+  .scr__kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  .scr__kpis span {
+    padding: 0.6rem 0.7rem;
+    border-radius: 8px;
+    background: var(--papel);
+  }
+  .scr__kpis small {
+    display: block;
+    color: var(--tinta-2);
+    font-size: 0.72rem;
+  }
+  .scr__kpis b {
+    font-family: var(--display);
+    font-size: 1.25rem;
+  }
+  .scr__table p,
+  .scr__agenda p {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 0.7fr 0.8fr;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid var(--linea-2);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+  }
+  .scr__agenda p {
+    grid-template-columns: 4rem 1fr auto;
+  }
+  .scr em {
+    font-style: normal;
+    color: var(--azul);
+    text-align: right;
+  }
+  .scr em.ok {
+    color: var(--turquesa-tinta);
+  }
+  .scr__h em {
+    text-align: left;
+  }
+  .scr__kanban {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+  .scr__kanban div {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+    padding: 0.6rem;
+    border-radius: 8px;
+    background: var(--papel);
+    min-height: 11rem;
+  }
+  .scr__kanban small {
+    font-weight: 700;
+    color: var(--tinta-2);
+  }
+  .scr__kanban span {
+    padding: 0.55rem;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 4px 10px -6px rgba(11, 27, 77, 0.35);
+    font-size: 0.75rem;
+  }
+  .scr__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    height: 9rem;
+    padding-top: 0.5rem;
+  }
+  .scr__bars i {
+    flex: 1;
+    height: var(--h);
+    border-radius: 3px 3px 0 0;
+    background: var(--azul);
+  }
+  .scr__bars i.last {
+    background: var(--turquesa);
+  }
+  .scr__note {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--linea);
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--tinta-2);
+  }
+  .scr__note :global(.icon) {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+  .scr__cards {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .scr__cards span {
+    display: grid;
+    padding: 0.7rem 0.8rem;
+    border-radius: 10px;
+    background: var(--papel);
+  }
+  .scr__cards span.on {
+    background: var(--azul);
+    color: #fff;
+  }
+  .scr__cards small {
+    color: inherit;
+    opacity: 0.8;
+  }
+  .scr__line {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--tinta-2);
+  }
+  .scr__line i {
+    height: 0.55rem;
+    width: var(--w);
+    border-radius: 999px;
+    background: var(--linea);
+  }
+  .scr__roles {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .scr__roles p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    background: var(--papel);
+  }
+  .scr__roles b {
+    display: block;
+  }
+  .scr__roles small {
+    color: var(--tinta-2);
+  }
+  .scr__roles em {
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--tinta-3);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+  }
+  .scr__roles em.ok {
+    background: var(--turquesa-suave);
+    color: var(--turquesa-tinta);
+  }
+  .tb__fine {
+    margin-top: 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--tinta-2);
+    text-align: center;
+  }
+  .tb--dark .tb__fine {
+    color: var(--sobre-noche-2);
+  }
+  .tb--dark :focus-visible {
+    outline-color: var(--turquesa-claro);
+  }
+  @media (max-width: 900px) {
+    .tb__pane:not([hidden]) {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .scr__kanban {
+      grid-template-columns: 1fr;
+    }
+    .scr__kanban div {
+      min-height: 0;
+    }
+    .scr__table p {
+      grid-template-columns: 1.3fr 0.8fr 0.8fr;
+    }
+    .scr__table p span:nth-child(2) {
+      display: none;
+    }
+  }
+</style>

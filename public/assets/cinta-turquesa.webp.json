@@ -1,0 +1,8 @@
+{
+ "origen": "Render Blender 5.2 (Cycles, MCP desde Claude Code)",
+ "blend": "assets-blender/vertika-papeleria.blend",
+ "fecha": "2026-11-10",
+ "hdri": "ninguno (mundo de color plano + 3 luces de área)",
+ "descripcion": "Tira de cinta washi semitransparente (#5EE0D9) con bordes rasgados, vista cenital con sombra suave.",
+ "postproceso": "Fundido de alfa en bordes, recorte al contenido, WebP q86."
+}

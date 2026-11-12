@@ -1,0 +1,195 @@
+---
+/**
+ * Vertika's own products, one block per product. The screenshot is the real product
+ * (owned by Vertika); copy describes the mechanism only, no metrics.
+ */
+import Icon from '../Icon.astro';
+import type { Producto } from '../../data/subpaginas';
+interface Props {
+  items: Producto[];
+}
+const { items } = Astro.props;
+---
+<section class="sec prd" id="soluciones" aria-labelledby="prd-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="prd-t" class="display sec__title">Tecnología propia,<br />en producción.</h2>
+      <p class="sec__lead">Diseñamos, desarrollamos y operamos estas plataformas de principio a fin. Son productos de Vertika que hoy usan personas y negocios en el Perú.</p>
+    </div>
+    <div class="prd__list">
+      {items.map((p, i) => (
+        <article class:list={['prd__item', { 'prd__item--flip': i % 2 === 1 }]} style={`--marca:${p.color}`} data-reveal>
+          <a class="prd__shot" href={p.href} target="_blank" rel="noopener" aria-label={`Abrir ${p.nombre} en una pestaña nueva`}>
+            <span class="prd__bar"><i></i><i></i><i></i><span>{p.url}</span></span>
+            <img src={p.captura} alt={`Captura de la página de ${p.nombre}`} width="1440" height="900" loading="lazy" decoding="async" />
+          </a>
+          <div class="prd__copy">
+            <p class="prd__tipo"><span class="prd__dot" aria-hidden="true"></span>{p.tipo}</p>
+            <h3 class="prd__nombre">{p.nombre}</h3>
+            <p class="prd__res">{p.resumen}</p>
+            <ol class="prd__como">
+              {p.como.map((c, k) => (
+                <li><span class="prd__n">{k + 1}</span><span><b>{c.t}</b> {c.d}</span></li>
+              ))}
+            </ol>
+            <ul class="prd__tec">{p.tecnologia.map((t) => <li>{t}</li>)}</ul>
+            <a class="prd__ver" href={p.href} target="_blank" rel="noopener">Visitar {p.url} <Icon name="arrow" /></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .prd__list {
+    display: grid;
+    gap: clamp(4rem, 8vw, 6.5rem);
+  }
+  .prd__item {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .prd__item--flip .prd__shot {
+    order: 2;
+  }
+  .prd__shot {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 34px 70px -34px rgba(11, 27, 77, 0.55), 0 0 0 1px rgba(11, 27, 77, 0.08);
+    transition: transform 0.5s var(--ease-out);
+  }
+  .prd__shot:hover {
+    transform: translateY(-3px);
+  }
+  .prd__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.6rem 0.8rem;
+    background: #f1f3f8;
+    border-bottom: 1px solid var(--linea-2);
+  }
+  .prd__bar i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: #d4d9e6;
+  }
+  .prd__bar span {
+    flex: 1;
+    margin-left: 0.6rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--tinta-2);
+  }
+  .prd__shot img {
+    width: 100%;
+    height: auto;
+  }
+  .prd__copy {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+  }
+  .prd__tipo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+  .prd__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background: var(--marca);
+    transform: rotate(45deg);
+  }
+  .prd__nombre {
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 115%;
+    font-size: var(--step-3);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .prd__res {
+    font-size: 1.125rem;
+    color: var(--tinta-2);
+  }
+  .prd__como {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .prd__como li {
+    display: flex;
+    gap: 0.8rem;
+    color: var(--tinta-2);
+    font-size: 0.975rem;
+  }
+  .prd__como b {
+    color: var(--tinta);
+  }
+  .prd__n {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: none;
+    border-radius: 50%;
+    border: 1.5px solid var(--tinta);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .prd__tec {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .prd__tec li {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: var(--hoja);
+    border: 1px solid var(--linea);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .prd__ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.4rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .prd__ver :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    transform: rotate(-45deg);
+  }
+  @media (max-width: 900px) {
+    .prd__item {
+      grid-template-columns: 1fr;
+    }
+    .prd__item--flip .prd__shot {
+      order: 0;
+    }
+  }
+</style>
