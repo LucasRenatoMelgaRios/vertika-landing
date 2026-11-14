@@ -3,14 +3,20 @@
 import Icon, { type IconName } from '../Icon.astro';
 interface Props {
   items: { icon: IconName; titulo: string; texto: string }[];
+  title?: string;
+  lead?: string;
 }
-const { items } = Astro.props;
+const {
+  items,
+  title = 'Lo que ya sabemos<br /><em>construir y operar.</em>',
+  lead = 'Cada producto propio nos dejó piezas probadas en producción. Las combinamos para crear nuevas plataformas y automatizaciones.',
+} = Astro.props;
 ---
 <section class="ars" aria-labelledby="ars-t">
   <div class="wrap">
     <div class="ars__head">
-      <h2 id="ars-t" class="display ars__title">Lo que ya sabemos<br /><em>construir y operar.</em></h2>
-      <p>Cada producto propio nos dejó piezas probadas en producción. Las combinamos para crear nuevas plataformas y automatizaciones.</p>
+      <h2 id="ars-t" class="display ars__title" set:html={title} />
+      <p>{lead}</p>
     </div>
     <ul class="ars__grid">
       {items.map((it) => (

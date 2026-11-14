@@ -119,6 +119,7 @@ const plans = [
       {plans.map((p) => (
         <li class:list={['hoja', { hot: p.hot }]}>
           {p.hot && <span class="wap__pop">Más elegido</span>}
+          <span class="wap__trial">14 días gratis</span>
           <b class="wap__n">{p.n}</b>
           <span class="wap__d">{p.d}</span>
           <span class="wap__p">{p.p}<small>/mes</small></span>
@@ -266,6 +267,15 @@ const plans = [
     border-radius: 999px;
     background: var(--azul);
     color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .wap__trial {
+    justify-self: start;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(15, 181, 174, 0.14);
+    color: var(--tinta);
     font-size: 0.75rem;
     font-weight: 700;
   }

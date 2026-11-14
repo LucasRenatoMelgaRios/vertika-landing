@@ -10,8 +10,7 @@ export const site = {
     'Agencia de software a medida en Perú: apps, sistemas web e integraciones para personas, empresas y salud, con un proceso claro y datos protegidos.',
   // PENDIENTE: reemplazar por el número real (código de país + número, sin + ni espacios).
   whatsapp: '51900000000',
-  // PENDIENTE: confirmar el correo real.
-  email: 'hola@vertikaplatforms.com',
+  email: 'support@vertikaplatforms.com',
   country: 'PE',
   countryName: 'Perú',
   ogImage: '/og-vertika.jpg',
@@ -143,7 +142,7 @@ export const audiences: Audience[] = [
     lead: 'Para pymes y empresas en Perú que quieren ordenar, conectar y automatizar su operación.',
     knots: ['Sistemas', 'Integraciones', 'Automatización'],
     intro:
-      'Desarrollamos CRMs, ERPs y automatizaciones con n8n. Cuando las hojas de cálculo y las herramientas genéricas ya no alcanzan, construimos el sistema que tu operación necesita y lo conectamos con lo que ya usas.',
+      'Desarrollamos CRMs, ERPs y automatizaciones con código propio. Cuando las hojas de cálculo y las herramientas genéricas ya no alcanzan, construimos el sistema que tu operación necesita y lo conectamos con lo que ya usas.',
     waMessage: 'Hola Vertika, quiero conversar sobre un proyecto de software para mi empresa.',
     services: [
       {
@@ -166,11 +165,11 @@ export const audiences: Audience[] = [
       },
       {
         name: 'Automatización e integraciones',
-        text: 'Flujos con n8n que conectan tus herramientas y trabajan solos, con agentes de IA que derivan a tu equipo los temas delicados.',
+        text: 'Automatizaciones hechas con código propio que conectan tus herramientas y trabajan solas, con agentes de IA que derivan a tu equipo los temas delicados.',
         example: 'Un pedido web que crea la factura, avisa por WhatsApp y actualiza el stock.',
         mini: 'api',
         group: 'medida',
-        href: '/empresas/automatizacion-n8n/',
+        href: '/empresas/automatizacion-de-procesos/',
         wide: true,
       },
       {
@@ -188,7 +187,7 @@ export const audiences: Audience[] = [
         example: 'Un portal donde tus clientes descargan sus comprobantes.',
         mini: 'portal',
         group: 'medida',
-        href: '/empresas/#soluciones',
+        href: '/empresas/#a-medida',
       },
       {
         name: 'Paneles y apps móviles',
@@ -196,7 +195,7 @@ export const audiences: Audience[] = [
         example: 'Una app para registrar visitas y fotos en campo, con su panel para gerencia.',
         mini: 'panel',
         group: 'medida',
-        href: '/empresas/#soluciones',
+        href: '/empresas/#a-medida',
       },
     ],
     expediente: {
@@ -390,7 +389,7 @@ export interface TeamMember {
   linkedin?: string;
 }
 
-// PENDIENTE: reemplazar las fotos de muestra por las reales y revisar etapas y tareas con cada integrante.
+// PENDIENTE: revisar etapas y tareas con cada integrante.
 export const team: TeamMember[] = [
   {
     id: 'lucas',
@@ -398,7 +397,6 @@ export const team: TeamMember[] = [
     role: 'Ingeniero de software y fundador',
     area: 'Ingeniería',
     photo: '/equipo/lucas.webp',
-    muestra: true,
     etapas: [0, 1, 3, 5],
     tareas: ['Tu contacto principal durante el proyecto', 'Propuesta técnica, alcance y estimación', 'Arquitectura y desarrollo del software'],
   },
@@ -408,19 +406,8 @@ export const team: TeamMember[] = [
     role: 'Ingeniero de software y cofundador',
     area: 'Ingeniería',
     photo: '/equipo/alessandro.webp',
-    muestra: true,
     etapas: [2, 3, 4, 5],
     tareas: ['Desarrollo y calidad del código', 'Integraciones y puesta en producción', 'Pruebas y seguridad técnica'],
-  },
-  {
-    id: 'adys',
-    name: 'Adys Silva',
-    role: 'Marketing y socia de marca',
-    area: 'Marketing',
-    photo: '/equipo/adys.webp',
-    muestra: true,
-    etapas: [0, 2, 4],
-    tareas: ['Que tu producto se entienda y se encuentre', 'Mensajes claros para tus usuarios', 'Lanzamiento y crecimiento'],
   },
   {
     id: 'cory',
@@ -428,7 +415,6 @@ export const team: TeamMember[] = [
     role: 'Identidad de marca y legal',
     area: 'Marca y legal',
     photo: '/equipo/cory.webp',
-    muestra: true,
     etapas: [1, 2, 4],
     tareas: ['Identidad visual de tu producto', 'Contratos y acuerdos de confidencialidad', 'Protección de datos y cumplimiento'],
   },

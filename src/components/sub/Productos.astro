@@ -1,27 +1,33 @@
 ---
 /**
- * Vertika's own products, one block per product. The screenshot is the real product
- * (owned by Vertika); copy describes the mechanism only, no metrics.
+ * Products in production, one block per product. The screenshot is the real product;
+ * copy describes the mechanism only, no metrics.
  */
 import Icon from '../Icon.astro';
 import type { Producto } from '../../data/subpaginas';
 interface Props {
   items: Producto[];
+  title?: string;
+  lead?: string;
 }
-const { items } = Astro.props;
+const {
+  items,
+  title = 'Tecnología propia,<br />en producción.',
+  lead = 'Diseñamos, desarrollamos y operamos estas plataformas de principio a fin. Son productos de Vertika que hoy usan personas y negocios en el Perú.',
+} = Astro.props;
 ---
 <section class="sec prd" id="soluciones" aria-labelledby="prd-t">
   <div class="wrap">
     <div class="sec__head">
-      <h2 id="prd-t" class="display sec__title">Tecnología propia,<br />en producción.</h2>
-      <p class="sec__lead">Diseñamos, desarrollamos y operamos estas plataformas de principio a fin. Son productos de Vertika que hoy usan personas y negocios en el Perú.</p>
+      <h2 id="prd-t" class="display sec__title" set:html={title} />
+      <p class="sec__lead">{lead}</p>
     </div>
     <div class="prd__list">
       {items.map((p, i) => (
         <article class:list={['prd__item', { 'prd__item--flip': i % 2 === 1 }]} style={`--marca:${p.color}`} data-reveal>
           <a class="prd__shot" href={p.href} target="_blank" rel="noopener" aria-label={`Abrir ${p.nombre} en una pestaña nueva`}>
             <span class="prd__bar"><i></i><i></i><i></i><span>{p.url}</span></span>
-            <img src={p.captura} alt={`Captura de la página de ${p.nombre}`} width="1440" height="900" loading="lazy" decoding="async" />
+            <img src={p.captura} alt={`Captura de la página de ${p.nombre}`} width="1440" height={p.alto ?? 900} loading="lazy" decoding="async" />
           </a>
           <div class="prd__copy">
             <p class="prd__tipo"><span class="prd__dot" aria-hidden="true"></span>{p.tipo}</p>
@@ -33,7 +39,11 @@ const { items } = Astro.props;
               ))}
             </ol>
             <ul class="prd__tec">{p.tecnologia.map((t) => <li>{t}</li>)}</ul>
-            <a class="prd__ver" href={p.href} target="_blank" rel="noopener">Visitar {p.url} <Icon name="arrow" /></a>
+            {p.nota && <p class="prd__nota">{p.nota}</p>}
+            <div class="prd__links">
+              <a class="prd__ver" href={p.href} target="_blank" rel="noopener">Visitar {p.url} <Icon name="arrow" /></a>
+              {p.detalle && <a class="prd__ver prd__ver--in" href={p.detalle.href}>{p.detalle.label} <Icon name="arrow" /></a>}
+            </div>
           </div>
         </article>
       ))}
@@ -171,11 +181,23 @@ const { items } = Astro.props;
     font-size: 0.8rem;
     font-weight: 500;
   }
+  .prd__nota {
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--marca) 12%, transparent);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .prd__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    margin-top: 0.4rem;
+  }
   .prd__ver {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    margin-top: 0.4rem;
     font-weight: 700;
     text-decoration: none;
   }
@@ -183,6 +205,9 @@ const { items } = Astro.props;
     width: 1rem;
     height: 1rem;
     transform: rotate(-45deg);
+  }
+  .prd__ver--in :global(.icon) {
+    transform: none;
   }
   @media (max-width: 900px) {
     .prd__item {

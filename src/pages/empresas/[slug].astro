@@ -14,7 +14,7 @@ import CtaBand from '../../components/sub/CtaBand.astro';
 import Process from '../../components/Process.astro';
 import Faq from '../../components/Faq.astro';
 import { site } from '../../data/site';
-import { subpages, erpSignals, erpVs, erpTabs, crmVs, n8nUpkeep, type SubPage } from '../../data/empresas';
+import { subpages, erpSignals, erpVs, erpTabs, crmVs, autoUpkeep, type SubPage } from '../../data/empresas';
 
 export function getStaticPaths() {
   return subpages.map((p) => ({ params: { slug: p.slug }, props: { p } }));
@@ -123,7 +123,7 @@ const jsonLd = [
     </>
   )}
 
-  {p.slug === 'automatizacion-n8n' && (
+  {p.slug === 'automatizacion-de-procesos' && (
     <>
       <SectorFlow />
       <HumanHandoff />
@@ -132,10 +132,10 @@ const jsonLd = [
         <div class="wrap">
           <div class="sec__head">
             <h2 id="up-t" class="display sec__title">Después de<br />automatizar.</h2>
-            <p class="sec__lead">Un flujo es software: necesita cuidado. Esto incluye el acompañamiento.</p>
+            <p class="sec__lead">Una automatización es software: necesita cuidado. Esto incluye el acompañamiento.</p>
           </div>
           <ul class="up__grid">
-            {n8nUpkeep.map((u) => <li class="hoja"><span class="tile"><Icon name={u.icon} /></span><h3>{u.t}</h3><p>{u.d}</p></li>)}
+            {autoUpkeep.map((u) => <li class="hoja"><span class="tile"><Icon name={u.icon} /></span><h3>{u.t}</h3><p>{u.d}</p></li>)}
           </ul>
         </div>
       </section>

@@ -7,12 +7,10 @@ import DataCare from '../components/DataCare.astro';
 import CtaBand from '../components/sub/CtaBand.astro';
 import TabBand from '../components/sub/TabBand.astro';
 import Responsibility from '../components/sub/Responsibility.astro';
-import { productos, personasAreas, saludTabs } from '../data/subpaginas';
+import { productos, productosEmpresas, personasAreas, empresasAreas, saludTabs } from '../data/subpaginas';
 import Productos from '../components/sub/Productos.astro';
 import Areas from '../components/sub/Areas.astro';
-import Teasers from '../components/sub/Teasers.astro';
 import Faq from '../components/Faq.astro';
-import ContactClose from '../components/ContactClose.astro';
 import { site, audiences, generalFaq, type Audience } from '../data/site';
 
 export function getStaticPaths() {
@@ -73,11 +71,20 @@ const jsonLd = [
 
   {a.id === 'empresas' && (
     <>
-      <Teasers kind="producto" />
-      <Bento only={a} group="medida" title="Desarrollo<br />a medida." lead="Cuando necesitas un sistema hecho para tu operación. Se cotiza por etapas, con una propuesta escrita." />
+      <Productos
+        items={productosEmpresas}
+        title="Producto listo,<br />en producción."
+        lead="Alsheep es el CRM para WhatsApp Business que ponemos en marcha para empresas en el Perú. Ya está en producción y puedes probarlo gratis durante 14 días."
+      />
+      <Areas
+        items={empresasAreas}
+        title="Lo que tu empresa<br /><em>ya puede usar.</em>"
+        lead="Alsheep reúne en una sola plataforma lo que una empresa necesita para vender y atender por WhatsApp. Lo configuramos una sola vez, con tu información."
+      />
+      <Bento only={a} id="a-medida" group="medida" title="Desarrollo<br />a medida." lead="Cuando necesitas un sistema hecho para tu operación. Se cotiza por etapas, con una propuesta escrita." />
       <Process />
       <Faq items={faq} />
-      <ContactClose message={a.waMessage} title="Hablemos de<br /><em>tu operación.</em>" />
+      <CtaBand title="Hablemos de<br /><em>tu operación.</em>" text="Empieza con Alsheep desde hoy o cuéntanos qué sistema necesita tu empresa. Agendamos una conversación inicial y te enviamos una propuesta escrita." message={a.waMessage} />
     </>
   )}
 

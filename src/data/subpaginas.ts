@@ -9,6 +9,12 @@ export interface Producto {
   url: string;
   href: string;
   captura: string;
+  /** alto de la captura a 1440 px de ancho (por defecto 900) */
+  alto?: number;
+  /** etiqueta corta sobre los enlaces, p. ej. una prueba gratis */
+  nota?: string;
+  /** enlace interno a la página de detalle */
+  detalle?: { href: string; label: string };
   color: string;
   tipo: string;
   resumen: string;
@@ -49,6 +55,37 @@ export const productos: Producto[] = [
     ],
     tecnologia: ['QR único por entrada', 'Cobro directo por Yape', 'Dashboard en tiempo real', 'Control de aforo', 'Zonas y boxes VIP'],
   },
+];
+
+export const productosEmpresas: Producto[] = [
+  {
+    id: 'alsheep',
+    nombre: 'Alsheep',
+    url: 'alsheepai.com',
+    href: 'https://alsheepai.com/',
+    captura: '/fotos/prod-alsheep.webp',
+    alto: 695,
+    color: '#1D5BFF',
+    tipo: 'CRM para WhatsApp Business',
+    resumen: 'Centraliza, automatiza y escala las conversaciones de tu empresa por WhatsApp desde un solo lugar, con la API oficial de Meta.',
+    como: [
+      { t: 'Centralizar', d: 'Todos tus números y tu equipo en una bandeja compartida, con etiquetas y notas internas.' },
+      { t: 'Automatizar', d: 'Una IA entrenada con tu negocio responde, muestra productos en el chat y deriva a una persona.' },
+      { t: 'Escalar', d: 'Campañas masivas con plantillas aprobadas por Meta y un embudo de ventas junto a cada chat.' },
+    ],
+    tecnologia: ['Mensajes interactivos', 'IA a medida', 'Productos en el chat', 'Campañas masivas', 'API oficial de Meta'],
+    nota: '14 días gratis · sin tarjeta',
+    detalle: { href: '/empresas/crm-whatsapp/', label: 'Ver planes y funciones' },
+  },
+];
+
+export const empresasAreas: { icon: IconName; titulo: string; texto: string }[] = [
+  { icon: 'chat', titulo: 'Atención por WhatsApp', texto: 'Bandejas compartidas, asignación de chats y varias líneas en un mismo lugar.' },
+  { icon: 'code', titulo: 'Agentes de IA', texto: 'Bots entrenados con tu información que saben cuándo pasar el tema a una persona.' },
+  { icon: 'signal', titulo: 'Campañas y difusión', texto: 'Envíos segmentados con plantillas aprobadas y resultados en vivo.' },
+  { icon: 'layers', titulo: 'Embudos y CRM', texto: 'Contactos, etapas, pedidos y citas junto a cada conversación.' },
+  { icon: 'plug', titulo: 'Integraciones', texto: 'Tu CRM conectado con tu ERP, tu facturación y tus formularios.' },
+  { icon: 'chart', titulo: 'Métricas en tiempo real', texto: 'Tiempos de respuesta, trabajo por agente y ventas por etapa.' },
 ];
 
 export const personasAreas: { icon: IconName; titulo: string; texto: string }[] = [

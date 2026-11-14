@@ -9,8 +9,10 @@ interface Props {
   group?: 'producto' | 'medida';
   title?: string;
   lead?: string;
+  /** section anchor; change it when another block on the page owns #soluciones */
+  id?: string;
 }
-const { only, group, title, lead } = Astro.props;
+const { only, group, title, lead, id = 'soluciones' } = Astro.props;
 const icons: Record<Mini, IconName> = {
   web: 'globe', app: 'phone', proto: 'pen', auto: 'refresh', tabla: 'table', insumos: 'table', crm: 'user', erp: 'layers', api: 'plug',
   portal: 'doc', panel: 'chart', agenda: 'calendar', roles: 'key', paciente: 'user',
@@ -21,7 +23,7 @@ const wideAt: Record<number, number[]> = { 4: [0, 3], 5: [0], 7: [0, 4], 8: [0, 
 const hasWide = cards.some((c) => c.wide);
 const wide = hasWide ? cards.map((c, i) => (c.wide ? i : -1)).filter((i) => i >= 0) : (wideAt[cards.length] ?? []);
 ---
-<section class="sec bento" id="soluciones" aria-labelledby="bento-titulo">
+<section class="sec bento" id={id} aria-labelledby="bento-titulo">
   <div class="wrap">
     <div class="sec__head bento__head">
       <h2 id="bento-titulo" class="display sec__title">
