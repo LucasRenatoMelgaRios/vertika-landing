@@ -390,7 +390,7 @@ export interface TeamMember {
   linkedin?: string;
 }
 
-// PENDIENTE: reemplazar las fotos de muestra por las reales y revisar etapas y tareas con cada integrante.
+// PENDIENTE: revisar etapas y tareas con cada integrante.
 export const team: TeamMember[] = [
   {
     id: 'lucas',
@@ -398,7 +398,6 @@ export const team: TeamMember[] = [
     role: 'Ingeniero de software y fundador',
     area: 'Ingeniería',
     photo: '/equipo/lucas.webp',
-    muestra: true,
     etapas: [0, 1, 3, 5],
     tareas: ['Tu contacto principal durante el proyecto', 'Propuesta técnica, alcance y estimación', 'Arquitectura y desarrollo del software'],
   },
@@ -408,19 +407,8 @@ export const team: TeamMember[] = [
     role: 'Ingeniero de software y cofundador',
     area: 'Ingeniería',
     photo: '/equipo/alessandro.webp',
-    muestra: true,
     etapas: [2, 3, 4, 5],
     tareas: ['Desarrollo y calidad del código', 'Integraciones y puesta en producción', 'Pruebas y seguridad técnica'],
-  },
-  {
-    id: 'adys',
-    name: 'Adys Silva',
-    role: 'Marketing y socia de marca',
-    area: 'Marketing',
-    photo: '/equipo/adys.webp',
-    muestra: true,
-    etapas: [0, 2, 4],
-    tareas: ['Que tu producto se entienda y se encuentre', 'Mensajes claros para tus usuarios', 'Lanzamiento y crecimiento'],
   },
   {
     id: 'cory',
@@ -428,7 +416,6 @@ export const team: TeamMember[] = [
     role: 'Identidad de marca y legal',
     area: 'Marca y legal',
     photo: '/equipo/cory.webp',
-    muestra: true,
     etapas: [1, 2, 4],
     tareas: ['Identidad visual de tu producto', 'Contratos y acuerdos de confidencialidad', 'Protección de datos y cumplimiento'],
   },
