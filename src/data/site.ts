@@ -10,8 +10,7 @@ export const site = {
     'Agencia de software a medida en Perú: apps, sistemas web e integraciones para personas, empresas y salud, con un proceso claro y datos protegidos.',
   // PENDIENTE: reemplazar por el número real (código de país + número, sin + ni espacios).
   whatsapp: '51900000000',
-  // PENDIENTE: confirmar el correo real.
-  email: 'hola@vertikaplatforms.com',
+  email: 'support@vertikaplatforms.com',
   country: 'PE',
   countryName: 'Perú',
   ogImage: '/og-vertika.jpg',
