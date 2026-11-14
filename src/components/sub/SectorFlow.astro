@@ -1,6 +1,6 @@
 ---
 /**
- * Animated n8n-style workflow per business sector.
+ * Animated workflow per business sector.
  * Left: an animated SVG scene of the sector. Right: six nodes that run in sequence
  * (idle → running → done) with an output chip each, pulses travelling the edges and a live log.
  * Everything is an illustrative example.
@@ -99,7 +99,7 @@ const data = Object.fromEntries(sectors.map((s) => [s.id, s.log]));
   <div class="wrap">
     <div class="sec__head">
       <h2 id="sfl-t" class="display sec__title">Automatiza<br />tu rubro.</h2>
-      <p class="sec__lead">Diseñamos flujos con n8n que conectan tu CRM, tu ERP y tus herramientas, con agentes de IA que saben cuándo pasarle el tema a una persona. Elige un rubro y mira un flujo trabajando de principio a fin.</p>
+      <p class="sec__lead">Programamos automatizaciones con código propio que conectan tu CRM, tu ERP y tus herramientas, con agentes de IA que saben cuándo pasarle el tema a una persona. Elige un rubro y mira un flujo trabajando de principio a fin.</p>
     </div>
 
     <div class="sfl__chips" role="tablist" aria-label="Rubros">
@@ -112,7 +112,7 @@ const data = Object.fromEntries(sectors.map((s) => [s.id, s.log]));
 
     <div class="sfl__board" data-sfl-board>
       <div class="sfl__top">
-        <span class="sfl__tag"><span class="sfl__live"></span>Flujo en n8n · ejemplo ilustrativo</span>
+        <span class="sfl__tag"><span class="sfl__live"></span>Automatización · ejemplo ilustrativo</span>
         <span class="sfl__run mono"><span data-sfl-state>en espera</span> · <span data-sfl-run>ejecución #1</span></span>
       </div>
 

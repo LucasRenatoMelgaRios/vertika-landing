@@ -3,7 +3,7 @@ import type { IconName } from '../components/Icon.astro';
 import type { Tab } from '../components/sub/TabBand.astro';
 import { empresasTabs } from './subpaginas';
 
-export type Slug = 'crm-whatsapp' | 'automatizacion-n8n' | 'erp-a-medida';
+export type Slug = 'crm-whatsapp' | 'automatizacion-de-procesos' | 'erp-a-medida';
 
 export interface SubPage {
   slug: Slug;
@@ -47,22 +47,22 @@ export const subpages: SubPage[] = [
     ],
   },
   {
-    slug: 'automatizacion-n8n',
-    path: '/empresas/automatizacion-n8n/',
+    slug: 'automatizacion-de-procesos',
+    path: '/empresas/automatizacion-de-procesos/',
     short: 'Automatización e integraciones',
-    seoTitle: 'Automatización de procesos con n8n en Perú',
+    seoTitle: 'Automatización de procesos a medida en Perú',
     seoDescription:
-      'Automatizamos procesos de tu empresa con n8n e integraciones: pedidos, facturación electrónica, WhatsApp, CRM y ERP conectados, con agentes de IA que derivan a tu equipo los temas delicados.',
+      'Automatizamos procesos de tu empresa con código propio e integraciones: pedidos, facturación electrónica, WhatsApp, CRM y ERP conectados, con agentes de IA que derivan a tu equipo los temas delicados.',
     h1: 'Automatización',
-    h1em: 'con n8n',
+    h1em: 'con código propio',
     lead: 'Flujos que conectan tus herramientas y trabajan solos: pedidos, comprobantes, avisos y reportes sin copiar datos a mano. Con IA que sabe cuándo pasarle el tema a una persona.',
     forma: 'cuerda',
     kind: 'servicio',
     serviceType: 'Automatización de procesos e integración de sistemas',
-    wa: 'Hola Vertika, quiero automatizar procesos de mi empresa con n8n.',
-    points: ['Flujos con n8n', 'Integraciones y APIs', 'IA con derivación a personas'],
+    wa: 'Hola Vertika, quiero automatizar procesos de mi empresa.',
+    points: ['Código propio, sin plantillas', 'Integraciones y APIs', 'IA con derivación a personas'],
     faq: [
-      { q: '¿Qué es n8n?', a: 'Es una herramienta para crear flujos automáticos que conectan aplicaciones: cuando pasa algo en un sistema, otro reacciona solo. Nosotros diseñamos, construimos y mantenemos esos flujos.' },
+      { q: '¿Con qué construyen las automatizaciones?', a: 'Con código propio, escrito para tu proceso: cuando pasa algo en un sistema, otro reacciona solo. No usamos constructores de flujos de terceros; diseñamos, programamos y mantenemos cada automatización.' },
       { q: '¿Necesito cambiar los sistemas que ya uso?', a: 'No. Partimos de lo que ya tienes y lo conectamos. Solo proponemos reemplazar algo cuando tiene sentido.' },
       { q: '¿Dónde funciona la automatización y cuánto cuesta mantenerla?', a: 'Depende de tu caso. En la propuesta te explicamos dónde corre, qué licencias o servicios implica y el costo de mantenimiento.' },
       { q: '¿Qué pasa si la IA no sabe responder?', a: 'No improvisa: deriva la conversación a una persona de tu equipo con todo el contexto. Tú defines qué temas pasan siempre por una persona.' },
@@ -119,7 +119,7 @@ export const crmVs: [string, string, string][] = [
   ['Integraciones', 'Webhook por línea (n8n, Make, Zapier)', 'Con cualquier sistema que uses'],
 ];
 
-export const n8nUpkeep: { icon: IconName; t: string; d: string }[] = [
+export const autoUpkeep: { icon: IconName; t: string; d: string }[] = [
   { icon: 'eye', t: 'Monitoreo', d: 'Revisamos que cada flujo se ejecute y te avisamos si algo falla.' },
   { icon: 'refresh', t: 'Mejoras', d: 'Ajustamos los flujos cuando cambian tus procesos o tus herramientas.' },
   { icon: 'doc', t: 'Documentación', d: 'Te entregamos qué hace cada flujo, en lenguaje claro.' },

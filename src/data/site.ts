@@ -143,7 +143,7 @@ export const audiences: Audience[] = [
     lead: 'Para pymes y empresas en Perú que quieren ordenar, conectar y automatizar su operación.',
     knots: ['Sistemas', 'Integraciones', 'Automatización'],
     intro:
-      'Desarrollamos CRMs, ERPs y automatizaciones con n8n. Cuando las hojas de cálculo y las herramientas genéricas ya no alcanzan, construimos el sistema que tu operación necesita y lo conectamos con lo que ya usas.',
+      'Desarrollamos CRMs, ERPs y automatizaciones con código propio. Cuando las hojas de cálculo y las herramientas genéricas ya no alcanzan, construimos el sistema que tu operación necesita y lo conectamos con lo que ya usas.',
     waMessage: 'Hola Vertika, quiero conversar sobre un proyecto de software para mi empresa.',
     services: [
       {
@@ -166,11 +166,11 @@ export const audiences: Audience[] = [
       },
       {
         name: 'Automatización e integraciones',
-        text: 'Flujos con n8n que conectan tus herramientas y trabajan solos, con agentes de IA que derivan a tu equipo los temas delicados.',
+        text: 'Automatizaciones hechas con código propio que conectan tus herramientas y trabajan solas, con agentes de IA que derivan a tu equipo los temas delicados.',
         example: 'Un pedido web que crea la factura, avisa por WhatsApp y actualiza el stock.',
         mini: 'api',
         group: 'medida',
-        href: '/empresas/automatizacion-n8n/',
+        href: '/empresas/automatizacion-de-procesos/',
         wide: true,
       },
       {
@@ -188,7 +188,7 @@ export const audiences: Audience[] = [
         example: 'Un portal donde tus clientes descargan sus comprobantes.',
         mini: 'portal',
         group: 'medida',
-        href: '/empresas/#soluciones',
+        href: '/empresas/#a-medida',
       },
       {
         name: 'Paneles y apps móviles',
@@ -196,7 +196,7 @@ export const audiences: Audience[] = [
         example: 'Una app para registrar visitas y fotos en campo, con su panel para gerencia.',
         mini: 'panel',
         group: 'medida',
-        href: '/empresas/#soluciones',
+        href: '/empresas/#a-medida',
       },
     ],
     expediente: {
